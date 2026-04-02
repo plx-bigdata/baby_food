@@ -1,0 +1,100 @@
+<!-- pages/settings/settings.wxml — 设置页 -->
+<view class="page-container">
+
+  <!-- ===== 用户信息 ===== -->
+  <view class="user-card card" bindtap="editUserInfo">
+    <image
+      class="user-avatar"
+      src="{{userInfo.avatarUrl || '/static/icons/user-default.png'}}"
+      mode="aspectFill"
+    />
+    <view class="user-info flex-1">
+      <text class="user-name">{{userInfo.nickname || '点击设置昵称'}}</text>
+      <text class="user-meta" wx:if="{{userInfo.city}}">{{userInfo.city}}</text>
+    </view>
+    <text class="edit-icon">›</text>
+  </view>
+
+  <!-- ===== 用户信息编辑弹窗 ===== -->
+  <view class="edit-mask" wx:if="{{showUserEditForm}}" bindtap="closeUserEditForm"></view>
+  <view class="edit-panel {{showUserEditForm ? 'edit-panel--show' : ''}}">
+    <view class="edit-panel__header">
+      <text class="edit-panel__title">编辑用户信息</text>
+      <text class="edit-panel__close" bindtap="closeUserEditForm">x</text>
+    </view>
+
+    <view class="avatar-field">
+      <image
+        class="avatar-preview"
+        src="{{userEditForm.avatarUrl || '/static/icons/user-default.png'}}"
+        mode="aspectFill"
+      />
+      <view class="avatar-btn" bindtap="chooseAvatar">更换头像</view>
+    </view>
+
+    <view class="edit-field">
+      <text class="edit-field__label">昵称</text>
+      <input
+        class="edit-field__input"
+        placeholder="输入昵称"
+        value="{{userEditForm.nickname}}"
+        bindinput="onNicknameInput"
+        maxlength="20"
+      />
+    </view>
+
+    <view class="edit-field">
+      <text class="edit-field__label">城市</text>
+      <input
+        class="edit-field__input"
+        placeholder="如 北京"
+        value="{{userEditForm.city}}"
+        bindinput="onCityInput"
+        maxlength="20"
+      />
+    </view>
+
+    <button class="save-btn" bindtap="saveUserInfo">保存</button>
+  </view>
+
+  <!-- ===== 排敏规则 ===== -->
+  <view class="section-title-text">排敏规则</view>
+  <view class="section card">
+    <view class="rule-item">
+      <view class="rule-item__left">
+        <text class="rule-item__label">每种食物测试天数</text>
+        <text class="rule-item__desc">连续食用观察天数</text>
+      </view>
+      <view class="rule-item__right">
+        <view class="stepper-btn" bindtap="decreaseTestDays">-</view>
+        <text class="stepper-val">{{settings.testDays}}</text>
+        <view class="stepper-btn" bindtap="increaseTestDays">+</view>
+        <text class="rule-item__unit">天</text>
+      </view>
+    </view>
+
+    <view class="rule-item">
+      <view class="rule-item__left">
+        <text class="rule-item__label">每日新食物上限</text>
+        <text class="rule-item__desc">每天最多引入新食物种类</text>
+      </view>
+      <view class="rule-item__right">
+        <view class="stepper-btn" bindtap="decreaseNewFoodLimit">-</view>
+        <text class="stepper-val">{{settings.dailyNewFoodLimit}}</text>
+        <view class="stepper-btn" bindtap="increaseNewFoodLimit">+</view>
+        <text class="rule-item__unit">种</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 关于 ===== -->
+  <view class="about-section card">
+    <text class="about-title">关于</text>
+    <text class="about-arrow">›</text>
+  </view>
+
+  <view class="version-text">
+    宝宝今天吃什么 v1.0.0
+  </view>
+
+</view>

@@ -1,0 +1,457 @@
+/* pages/trace/trace.wxss — 过敏溯源页样式 */
+
+/* ===== 入口卡片 ===== */
+.alert-card {
+  margin: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #FFF1F0 0%, #FFE4E4 100%);
+  border: 1rpx solid #FFCCC7;
+  padding: 28rpx 24rpx;
+  gap: 16rpx;
+}
+
+.alert-card__left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.alert-card__icon {
+  width: 64rpx;
+  height: 64rpx;
+  background: var(--color-danger);
+  color: #fff;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.alert-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.alert-card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-danger);
+  display: block;
+}
+
+.alert-card__desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  display: block;
+}
+
+.alert-card__arrow {
+  font-size: 24px;
+  color: var(--color-danger);
+}
+
+/* ===== 表单弹窗 ===== */
+.form-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+}
+
+.form-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--color-white);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 30rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 101;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  max-height: 88vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.form-panel--show {
+  transform: translateY(0);
+}
+
+.form-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.form-panel__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.form-panel__close {
+  font-size: 18px;
+  color: var(--color-text-hint);
+  padding: 8rpx;
+}
+
+.form-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.form-field {
+  margin-bottom: 24rpx;
+}
+
+.form-field__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.form-field__picker {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  padding: 14rpx 18rpx;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.form-field__textarea {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  padding: 14rpx 18rpx;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  width: 100%;
+  min-height: 100rpx;
+  line-height: 1.5;
+}
+
+/* ===== 症状多选 ===== */
+.symptom-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.symptom-chip {
+  padding: 10rpx 22rpx;
+  background: var(--color-bg);
+  border: 2rpx solid transparent;
+  border-radius: 100rpx;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.symptom-chip--default {
+  background: var(--color-bg);
+  border-color: transparent;
+  color: var(--color-text-secondary);
+}
+
+.symptom-chip--selected {
+  background: var(--color-danger-light);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+/* ===== 严重程度 ===== */
+.severity-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.severity-btn {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx;
+  border-radius: var(--border-radius-base);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 2rpx solid transparent;
+}
+
+.severity-btn--active {
+  color: var(--color-danger);
+  background: var(--color-danger-light);
+  border-color: var(--color-danger);
+}
+
+.form-submit-btn {
+  width: 100%;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 100rpx;
+  font-size: 16px;
+  padding: 24rpx;
+  margin-top: 8rpx;
+}
+
+.form-submit-btn::after {
+  border: none;
+}
+
+/* ===== 可疑食物分析 ===== */
+.suspect-section {
+  margin: 0 24rpx 20rpx;
+}
+
+.suspect-hint {
+  font-size: 13px;
+  color: var(--color-text-hint);
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.suspect-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.suspect-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx;
+  border-radius: var(--border-radius-base);
+  background: var(--color-bg);
+  gap: 14rpx;
+  border: 2rpx solid transparent;
+}
+
+.suspect-item--high {
+  background: var(--color-danger-light);
+  border-color: var(--color-danger);
+}
+
+.suspect-item--mid {
+  background: var(--color-warning-light);
+  border-color: var(--color-warning);
+}
+
+.suspect-rank {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.rank-1 { background: #FFD700; color: #333; }
+.rank-2 { background: #C0C0C0; color: #333; }
+.rank-3 { background: #CD7F32; color: #fff; }
+.rank-other { background: var(--color-bg); color: var(--color-text-hint); }
+
+.suspect-img {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 10rpx;
+  flex-shrink: 0;
+}
+
+.suspect-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.suspect-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.suspect-tags {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-wrap: wrap;
+}
+
+.suspect-tag {
+  padding: 2rpx 10rpx;
+  border-radius: 100rpx;
+  font-size: 11px;
+}
+
+.suspect-time {
+  font-size: 11px;
+  color: var(--color-text-hint);
+}
+
+.suspect-confidence {
+  padding: 6rpx 16rpx;
+  border-radius: 100rpx;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.suspect-confidence--high { background: var(--color-danger-light); color: var(--color-danger); }
+.suspect-confidence--mid { background: var(--color-warning-light); color: var(--color-warning); }
+.suspect-confidence--low { background: var(--color-bg); color: var(--color-text-hint); }
+
+/* ===== 确认区 ===== */
+.confirm-section {
+  margin-top: 24rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid var(--color-border);
+}
+
+.confirm-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 14rpx;
+}
+
+.confirm-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.confirm-btn {
+  padding: 10rpx 22rpx;
+  border-radius: 100rpx;
+  font-size: 13px;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+}
+
+.confirm-btn--selected {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.save-allergy-btn {
+  width: 100%;
+  background: var(--color-danger);
+  color: #fff;
+  border-radius: 100rpx;
+  font-size: 15px;
+  padding: 20rpx;
+}
+
+.save-allergy-btn::after {
+  border: none;
+}
+
+/* ===== 过敏历史时间线 ===== */
+.history-section {
+  margin-top: 24rpx;
+  padding-bottom: 40rpx;
+}
+
+.empty-state__text {
+  font-size: 14px;
+  color: var(--color-text-hint);
+  display: block;
+  text-align: center;
+  padding: 60rpx 0;
+}
+
+.timeline {
+  padding: 0 24rpx;
+}
+
+.timeline-item {
+  position: relative;
+  padding-left: 36rpx;
+  margin-bottom: 24rpx;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: 0;
+  top: 16rpx;
+  width: 18rpx;
+  height: 18rpx;
+  background: var(--color-danger);
+  border-radius: 50%;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 8rpx;
+  top: 34rpx;
+  width: 2rpx;
+  bottom: -24rpx;
+  background: var(--color-border);
+}
+
+.timeline-content {
+  margin: 0;
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.timeline-date {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.timeline-symptom {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.timeline-food {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.timeline-food-img {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+}
+
+.timeline-food-name {
+  font-size: 13px;
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.timeline-notes {
+  font-size: 13px;
+  color: var(--color-text-hint);
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.timeline-retest {
+  font-size: 12px;
+  color: var(--color-warning);
+  display: block;
+  margin-top: 4rpx;
+}

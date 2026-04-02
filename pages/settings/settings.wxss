@@ -1,0 +1,252 @@
+/* pages/settings/settings.wxss — 设置页样式 */
+
+/* ===== 标题 ===== */
+.section-title-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  padding: 24rpx 24rpx 0;
+}
+
+/* ===== 用户卡片 ===== */
+.user-card {
+  margin: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 24rpx;
+}
+
+.user-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--color-primary-light);
+  flex-shrink: 0;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.user-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.user-meta {
+  font-size: 13px;
+  color: var(--color-text-hint);
+  display: block;
+}
+
+.edit-icon {
+  font-size: 20px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* ===== 编辑面板 ===== */
+.edit-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+}
+
+.edit-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--color-white);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 30rpx;
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 101;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.edit-panel--show {
+  transform: translateY(0);
+}
+
+.edit-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.edit-panel__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.edit-panel__close {
+  font-size: 18px;
+  color: var(--color-text-hint);
+  padding: 8rpx;
+}
+
+.avatar-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.avatar-preview {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--color-primary-light);
+}
+
+.avatar-btn {
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.edit-field {
+  margin-bottom: 20rpx;
+}
+
+.edit-field__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.edit-field__input {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  padding: 16rpx 20rpx;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  width: 100%;
+  height: 80rpx;
+}
+
+.edit-field__picker {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  padding: 16rpx 20rpx;
+  font-size: 14px;
+  color: var(--color-text-primary);
+}
+
+.save-btn {
+  width: 100%;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 100rpx;
+  font-size: 16px;
+  padding: 24rpx;
+  margin-top: 8rpx;
+  border: none;
+}
+
+.save-btn::after {
+  border: none;
+}
+
+/* ===== 通用 section ===== */
+.section {
+  margin: 0 24rpx 20rpx;
+}
+
+/* ===== 排敏规则 ===== */
+.rule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 0;
+  gap: 20rpx;
+}
+
+.rule-item__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.rule-item__label {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.rule-item__desc {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  display: block;
+}
+
+.rule-item__right {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.stepper-btn {
+  width: 48rpx;
+  height: 48rpx;
+  background: var(--color-bg);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--color-text-secondary);
+}
+
+.stepper-val {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary);
+  min-width: 40rpx;
+  text-align: center;
+}
+
+.rule-item__unit {
+  font-size: 13px;
+  color: var(--color-text-hint);
+}
+
+/* ===== 关于 ===== */
+.about-section {
+  margin: 0 24rpx 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.about-title {
+  font-size: 15px;
+  color: var(--color-text-primary);
+}
+
+.about-arrow {
+  font-size: 18px;
+  color: var(--color-text-hint);
+}
+
+/* ===== 版本号 ===== */
+.version-text {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-hint);
+  padding: 24rpx;
+}

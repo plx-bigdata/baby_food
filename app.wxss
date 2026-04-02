@@ -1,0 +1,203 @@
+/* app.wxss — 全局样式 */
+
+/* ===== CSS 变量 ===== */
+page {
+  --color-primary: #FF8C69;
+  --color-primary-light: #FFE4D9;
+  --color-success: #52C41A;
+  --color-success-light: #D9F7BE;
+  --color-warning: #FAAD14;
+  --color-warning-light: #FFF7E6;
+  --color-danger: #FF4D4F;
+  --color-danger-light: #FFF1F0;
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-hint: #999999;
+  --color-border: #E8E8E8;
+  --color-bg: #F7F8FA;
+  --color-white: #FFFFFF;
+
+  --font-size-xs: 13px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-md: 17px;
+  --font-size-lg: 19px;
+  --font-size-xl: 21px;
+  --font-size-xxl: 26px;
+
+  --border-radius-sm: 6rpx;
+  --border-radius-base: 12rpx;
+  --border-radius-lg: 20rpx;
+  --border-radius-circle: 50%;
+
+  --shadow-sm: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  --shadow-base: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-family: -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+/* ===== 通用重置 ===== */
+view, text, image, input, button, scroll-view {
+  box-sizing: border-box;
+}
+
+/* ===== 通用布局 ===== */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* ===== 卡片 ===== */
+.card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+/* ===== 按钮 ===== */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: var(--border-radius-base);
+  font-size: var(--font-size-md);
+  padding: 20rpx 40rpx;
+  border: none;
+  text-align: center;
+}
+
+.btn-primary::after {
+  border: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2rpx solid var(--color-primary);
+  border-radius: var(--border-radius-base);
+  font-size: var(--font-size-md);
+  padding: 18rpx 40rpx;
+  text-align: center;
+}
+
+.btn-outline::after {
+  border: none;
+}
+
+/* ===== 标签 ===== */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 16rpx;
+  border-radius: 100rpx;
+  font-size: var(--font-size-xs);
+}
+
+.tag-success {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.tag-warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.tag-danger {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.tag-primary {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+/* ===== 分割线 ===== */
+.divider {
+  height: 1rpx;
+  background: var(--color-border);
+  margin: 20rpx 0;
+}
+
+/* ===== 空状态 ===== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 40rpx;
+  color: var(--color-text-hint);
+}
+
+.empty-state__icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.4;
+}
+
+.empty-state__text {
+  font-size: var(--font-size-base);
+  text-align: center;
+}
+
+/* ===== 安全区域底部适配 ===== */
+.safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ===== 页面容器 ===== */
+.page-container {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding-bottom: 120rpx;
+}
+
+/* ===== 节标题 ===== */
+.section-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 16rpx;
+}
+
+/* ===== 加载状态 ===== */
+.loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  color: var(--color-text-hint);
+  font-size: var(--font-size-sm);
+}

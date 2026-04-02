@@ -1,0 +1,236 @@
+/* pages/plan/plan.wxss — 排敏计划页样式 */
+
+/* ===== 分类 Tab（自动换行）===== */
+.cat-tabs {
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+}
+
+.cat-tabs__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.cat-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 24rpx;
+  border-radius: 100rpx;
+  background: var(--color-bg);
+}
+
+.cat-tab--active {
+  background: var(--color-primary);
+}
+
+.cat-tab__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.cat-tab--active .cat-tab__name {
+  color: #fff;
+}
+
+/* ===== 食物列表 ===== */
+.food-list {
+  margin-top: 24rpx;
+  padding: 0 24rpx;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+}
+
+/* ===== 食物卡片 ===== */
+.food-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: var(--border-radius-base);
+  padding: 16rpx 8rpx 12rpx;
+  box-shadow: var(--shadow-sm);
+  border: 2rpx solid transparent;
+}
+
+.food-card--passed { border-color: var(--color-success); background: #F6FFED; }
+.food-card--testing { border-color: var(--color-warning); background: #FFFBE6; }
+.food-card--allergy { border-color: var(--color-danger); background: #FFF1F0; }
+
+.food-card__img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+.food-card__name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+/* ===== 进度点 ===== */
+.progress-dots {
+  display: flex;
+  gap: 6rpx;
+}
+
+.progress-dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2rpx solid var(--color-border);
+}
+
+.progress-dot--filled {
+  background: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.progress-dot--danger {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+/* ===== 食物详情面板 ===== */
+.detail-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+}
+
+.detail-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--color-white);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 30rpx;
+  padding-bottom: calc(32rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 101;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.detail-panel--show {
+  transform: translateY(0);
+}
+
+.detail-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.detail-panel__title-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.detail-panel__food-img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+}
+
+.detail-panel__title-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.detail-panel__food-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.detail-panel__status {
+  font-size: 12px;
+  padding: 2rpx 12rpx;
+  border-radius: 100rpx;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.detail-panel__status--passed { background: var(--color-success-light); color: var(--color-success); }
+.detail-panel__status--testing { background: var(--color-warning-light); color: var(--color-warning); }
+.detail-panel__status--allergy { background: var(--color-danger-light); color: var(--color-danger); }
+.detail-panel__status--pending { background: var(--color-bg); color: var(--color-text-hint); }
+
+.detail-panel__close {
+  font-size: 24px;
+  color: var(--color-text-hint);
+  padding: 8rpx;
+}
+
+.detail-panel__records {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.detail-record {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx;
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+}
+
+.detail-record__date {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  min-width: 180rpx;
+}
+
+.detail-record__info {
+  flex: 1;
+  display: flex;
+  gap: 16rpx;
+  align-items: center;
+}
+
+.detail-record__time {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.detail-record__reaction {
+  font-size: 12px;
+  padding: 2rpx 12rpx;
+  border-radius: 100rpx;
+  font-weight: 500;
+}
+
+.detail-record__reaction--normal { background: var(--color-success-light); color: var(--color-success); }
+.detail-record__reaction--warning { background: var(--color-warning-light); color: var(--color-warning); }
+.detail-record__reaction--danger { background: var(--color-danger-light); color: var(--color-danger); }
+
+.detail-empty {
+  text-align: center;
+  padding: 40rpx;
+  color: var(--color-text-hint);
+  font-size: 14px;
+}

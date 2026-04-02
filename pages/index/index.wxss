@@ -1,0 +1,672 @@
+/* pages/index/index.wxss — 首页样式 */
+
+/* ===== 头部 ===== */
+.header {
+  margin: 24rpx 24rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 3rpx solid var(--color-primary-light);
+}
+
+.header-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.header-age {
+  font-size: 13px;
+  color: var(--color-text-hint);
+  margin-top: 4rpx;
+  display: block;
+}
+
+.header-date-text {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.header-arrow {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+/* ===== 宝宝切换弹窗 ===== */
+.switcher-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+}
+
+.switcher-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--color-white);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 30rpx;
+  padding-bottom: calc(32rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  z-index: 101;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.switcher-panel--show {
+  transform: translateY(0);
+}
+
+.switcher-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.switcher-panel__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.switcher-panel__close {
+  font-size: 24px;
+  color: var(--color-text-hint);
+  padding: 8rpx;
+}
+
+.switcher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-bottom: 24rpx;
+}
+
+.switcher-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  gap: 16rpx;
+  border: 2rpx solid transparent;
+}
+
+.switcher-item--active {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.switcher-item__avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.switcher-item__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.switcher-item__name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.switcher-item__age {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.switcher-item__check {
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.switcher-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 24rpx;
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  border: 2rpx dashed var(--color-border);
+}
+
+.switcher-add__icon {
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+.switcher-add__text {
+  font-size: 15px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ===== 生长发育卡片 ===== */
+.growth-card {
+  margin: 20rpx 24rpx 0;
+}
+
+.growth-row {
+  display: flex;
+  align-items: center;
+}
+
+.growth-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.growth-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.growth-value.risk-low { color: var(--color-success); }
+.growth-value.risk-mid { color: var(--color-warning); }
+.growth-value.risk-high { color: var(--color-danger); }
+
+.growth-status-normal { color: var(--color-success); }
+.growth-status-high { color: var(--color-warning); }
+.growth-status-low { color: var(--color-danger); }
+
+.growth-value-row {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.growth-edit-icon {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+.growth-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.growth-edit-input {
+  width: 100rpx;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 2rpx solid var(--color-primary);
+  padding: 0 4rpx;
+}
+
+.growth-edit-confirm {
+  font-size: 16px;
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.growth-label {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  margin-top: 4rpx;
+  display: block;
+}
+
+.growth-divider {
+  width: 1rpx;
+  height: 40rpx;
+  background: var(--color-border);
+}
+
+.growth-hint {
+  font-size: 12px;
+  color: var(--color-warning);
+  display: block;
+  text-align: center;
+  margin-top: 12rpx;
+  padding-top: 12rpx;
+  border-top: 1rpx solid var(--color-border);
+}
+
+/* ===== 快捷入口 ===== */
+.quick-entries {
+  display: flex;
+  gap: 16rpx;
+  padding: 20rpx 24rpx 0;
+}
+
+.quick-entry {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-lg);
+  padding: 24rpx 12rpx;
+  gap: 8rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-entry-icon {
+  font-size: 28px;
+  color: #fff;
+}
+
+.quick-entry-label {
+  font-size: 13px;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* ===== 排敏进度 ===== */
+.progress-card {
+  margin: 20rpx 24rpx 0;
+}
+
+.progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.progress-count {
+  font-size: 13px;
+  color: var(--color-text-hint);
+}
+
+.progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 10rpx;
+  background: var(--color-bg);
+  border-radius: 100rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 100rpx;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 13px;
+  color: var(--color-primary);
+  font-weight: 600;
+  min-width: 40rpx;
+}
+
+/* ===== 安全/过敏入口 ===== */
+.safety-boxes {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.safety-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 8rpx;
+  border-radius: var(--border-radius-base);
+  gap: 4rpx;
+}
+
+.safety-box--safe {
+  background: var(--color-success-light);
+  border: 2rpx solid var(--color-success);
+}
+
+.safety-box--testing {
+  background: var(--color-warning-light);
+  border: 2rpx solid var(--color-warning);
+}
+
+.safety-box--danger {
+  background: var(--color-danger-light);
+  border: 2rpx solid var(--color-danger);
+}
+
+.safety-box__icon {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.safety-box--safe .safety-box__icon { color: var(--color-success); }
+.safety-box--testing .safety-box__icon { color: var(--color-warning); }
+.safety-box--danger .safety-box__icon { color: var(--color-danger); }
+
+.safety-box__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.safety-box__count {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+/* ===== 安全/过敏食物列表面板 ===== */
+.food-list-panel {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+}
+
+.food-list-panel__inner {
+  width: 100%;
+  background: var(--color-white);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 30rpx;
+  padding-bottom: calc(32rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
+  max-height: 75vh;
+  overflow-y: auto;
+}
+
+.food-list-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.food-list-panel__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.food-list-panel__close {
+  font-size: 24px;
+  color: var(--color-text-hint);
+  padding: 8rpx;
+}
+
+.food-list-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+}
+
+.food-list-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.food-list-item__img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+}
+
+.food-list-item__name {
+  font-size: 12px;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.food-list-item--allergy .food-list-item__name {
+  color: var(--color-danger);
+}
+
+/* ===== 当前排敏中 ===== */
+.testing-section {
+  margin-top: 24rpx;
+}
+
+.testing-scroll {
+  width: 100%;
+}
+
+.testing-list {
+  display: flex;
+  flex-direction: row;
+  padding: 0 24rpx;
+  gap: 16rpx;
+  white-space: nowrap;
+}
+
+.testing-item {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: 16rpx 20rpx;
+  gap: 12rpx;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+}
+
+.testing-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.testing-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.testing-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.testing-days {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+.testing-progress-bar {
+  width: 120rpx;
+  height: 6rpx;
+  background: var(--color-bg);
+  border-radius: 100rpx;
+  overflow: hidden;
+  margin-top: 4rpx;
+}
+
+.testing-progress-fill {
+  height: 100%;
+  background: var(--color-warning);
+  border-radius: 100rpx;
+  transition: width 0.3s ease;
+}
+
+/* ===== 过敏食物 ===== */
+.allergy-section {
+  margin: 20rpx 24rpx 0;
+}
+
+.allergy-count {
+  font-size: 12px;
+}
+
+.allergy-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.allergy-tag {
+  padding: 8rpx 20rpx;
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border-radius: 100rpx;
+  font-size: 13px;
+}
+
+/* ===== 今日建议 ===== */
+.suggestion-section {
+  margin-top: 24rpx;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: row;
+  padding: 0 24rpx;
+  gap: 16rpx;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.suggestion-item {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: 20rpx 16rpx;
+  gap: 10rpx;
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  width: 180rpx;
+}
+
+.suggestion-img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 12rpx;
+}
+
+.suggestion-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+  text-align: center;
+}
+
+.suggestion-cat {
+  font-size: 11px;
+  color: var(--color-text-hint);
+  display: block;
+}
+
+.suggestion-reason {
+  font-size: 11px;
+  color: var(--color-primary);
+  display: block;
+  background: var(--color-primary-light);
+  padding: 2rpx 10rpx;
+  border-radius: 100rpx;
+}
+
+/* ===== 今日食谱 ===== */
+.records-section {
+  margin-top: 32rpx;
+}
+
+.meal-list {
+  padding: 0 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.meal-item {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: 20rpx 24rpx;
+  box-shadow: var(--shadow-sm);
+}
+
+.meal-header {
+  margin-bottom: 12rpx;
+}
+
+.meal-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.meal-count {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+.meal-foods-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.meal-food-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.meal-food-img {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 12rpx;
+}
+
+.meal-food-name {
+  font-size: 12px;
+  color: var(--color-text-primary);
+}
+
+.empty-state-text {
+  font-size: 14px;
+  color: var(--color-text-hint);
+  display: block;
+  text-align: center;
+  padding: 40rpx;
+}

@@ -1,0 +1,138 @@
+<!-- pages/record/record.wxml — 辅食记录页 -->
+<view class="page-container">
+
+  <!-- ===== 顶部：日期 ===== -->
+  <view class="top-bar">
+    <picker mode="date" value="{{today}}" bindchange="onDateChange">
+      <view class="top-bar__date">{{today}}</view>
+    </picker>
+  </view>
+
+  <!-- ===== 分类标签栏 ===== -->
+  <view class="category-wrap">
+    <view class="category-tabs">
+      <view
+        class="category-tab {{currentCategory === item.id ? 'category-tab--active' : ''}}"
+        wx:for="{{categoryTabs}}"
+        wx:key="id"
+        bindtap="switchCategory"
+        data-id="{{item.id}}"
+      >
+        <text class="category-tab__name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 食物网格（4列）===== -->
+  <scroll-view scroll-y class="food-grid-scroll">
+    <view class="food-grid">
+      <view
+        class="{{foodClassMap[item.id] || 'food-card'}}"
+        wx:for="{{displayFoods}}"
+        wx:key="id"
+        bindtap="selectFood"
+        data-id="{{item.id}}"
+      >
+        <!-- 已选中打勾（用 selectedSet 预计算，避免箭头函数）-->
+        <view class="food-card__check" wx:if="{{selectedSet[item.id]}}">ok</view>
+        <image class="food-card__img" src="{{item.imageUrl}}" mode="aspectFill" />
+        <text class="food-card__name">{{item.name}}</text>
+        <!-- 过敏风险标签 -->
+        <view class="food-card__risk food-card__risk--{{riskClassMap[item.allergyRisk]}}">
+          <text wx:if="{{riskClassMap[item.allergyRisk] !== 'low'}}">{{riskLabelMap[item.allergyRisk]}}</text>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- ===== 已选食物底部栏 ===== -->
+  <view class="selected-bar" wx:if="{{selectedFoods.length > 0}}">
+    <scroll-view scroll-x class="selected-bar__scroll">
+      <view class="selected-list">
+        <view class="selected-item" wx:for="{{selectedFoods}}" wx:key="id">
+          <image class="selected-item__img" src="{{item.imageUrl}}" mode="aspectFill" />
+          <text class="selected-item__name">{{item.name}}</text>
+          <view class="selected-item__remove" catchtap="removeFood" data-id="{{item.id}}">x</view>
+        </view>
+      </view>
+    </scroll-view>
+    <button class="selected-bar__btn" bindtap="openRecordPanel">
+      记录 {{selectedFoods.length}} 种食物
+    </button>
+  </view>
+
+  <!-- ===== 记录面板（底部弹出）===== -->
+  <view class="panel-mask" wx:if="{{showRecordPanel}}" bindtap="closeRecordPanel"></view>
+  <view class="record-panel {{showRecordPanel ? 'record-panel--show' : ''}}">
+    <view class="record-panel__header">
+      <text class="record-panel__title">记录辅食</text>
+      <text class="record-panel__close" bindtap="closeRecordPanel">x</text>
+    </view>
+
+    <!-- 已选食物摘要 -->
+    <view class="selected-summary">
+      <view class="selected-summary__item" wx:for="{{selectedFoods}}" wx:key="id">
+        <image class="selected-summary__img" src="{{item.imageUrl}}" mode="aspectFill" />
+        <text class="selected-summary__name">{{item.name}}</text>
+        <!-- 首次标注（用预计算的 firstTimeDayIndexMap）-->
+        <view class="selected-summary__first" wx:if="{{firstTimeDayIndexMap[item.id] > 0}}">
+          <text>第{{firstTimeDayIndexMap[item.id]}}天(首次)</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 时间 -->
+    <view class="field">
+      <text class="field__label">用餐时间</text>
+      <picker mode="time" value="{{recordForm.time}}" bindchange="onTimeChange">
+        <view class="field__picker">{{recordForm.time}}</view>
+      </picker>
+    </view>
+
+    <!-- 食用量 -->
+    <view class="field">
+      <text class="field__label">食用量</text>
+      <view class="option-row">
+        <view
+          class="option-btn {{recordForm.amount === item ? 'option-btn--active' : ''}}"
+          wx:for="{{amountOptions}}"
+          wx:key="*this"
+          bindtap="selectAmount"
+          data-value="{{item}}"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <!-- 反应 -->
+    <view class="field">
+      <text class="field__label">宝宝反应</text>
+      <view class="option-row">
+        <view
+          class="option-btn option-btn--reaction {{recordForm.reaction === item.value ? 'option-btn--active option-btn--' + item.type : ''}}"
+          wx:for="{{reactionOptions}}"
+          wx:key="value"
+          bindtap="selectReaction"
+          data-value="{{item.value}}"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="field">
+      <text class="field__label">备注（可选）</text>
+      <textarea
+        class="field__textarea"
+        placeholder="记录细节，如宝宝很喜欢..."
+        value="{{recordForm.note}}"
+        bindinput="onNoteInput"
+        maxlength="200"
+      />
+    </view>
+
+    <!-- 保存 -->
+    <button class="save-btn" bindtap="saveRecord" loading="{{saving}}">
+      保存记录
+    </button>
+  </view>
+
+</view>

@@ -1,0 +1,118 @@
+/* pages/history/history.wxss — 历史记录页样式 */
+
+.page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-btn {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx;
+  border-radius: var(--border-radius-base);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.toggle-btn--active {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.date-nav__btn {
+  font-size: 28px;
+  color: var(--color-text-secondary);
+  padding: 0 20rpx;
+}
+
+.date-nav__btn--disabled {
+  opacity: 0.3;
+}
+
+.date-nav__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.records-scroll {
+  flex: 1;
+  overflow: hidden;
+  padding-bottom: 40rpx;
+}
+
+.day-group {
+  margin-bottom: 20rpx;
+}
+
+.day-group__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8rpx 30rpx 12rpx;
+}
+
+.day-group__date {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.day-group__count {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+.day-records {
+  margin: 0 24rpx;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid var(--color-border);
+  gap: 16rpx;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item__img {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 10rpx;
+}
+
+.history-item__name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.history-item__time {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  margin-top: 4rpx;
+  display: block;
+}
+
+.history-item__reaction {
+  padding: 6rpx 16rpx;
+  border-radius: 100rpx;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.history-item__reaction--normal {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.history-item__reaction--alert {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}

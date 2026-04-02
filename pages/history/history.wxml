@@ -1,0 +1,58 @@
+<!-- pages/history/history.wxml — 历史记录页 -->
+<view class="page-container">
+
+  <!-- 视图切换 -->
+  <view class="view-toggle flex-row card" style="margin: 16rpx 24rpx 0; padding: 8rpx;">
+    <view
+      class="toggle-btn {{viewMode === 'day' ? 'toggle-btn--active' : ''}}"
+      bindtap="switchView"
+      data-mode="day"
+    >按日查看</view>
+    <view
+      class="toggle-btn {{viewMode === 'week' ? 'toggle-btn--active' : ''}}"
+      bindtap="switchView"
+      data-mode="week"
+    >按周查看</view>
+  </view>
+
+  <!-- 日期导航 -->
+  <view class="date-nav flex-between" style="padding: 16rpx 24rpx;">
+    <view class="date-nav__btn" bindtap="prevPeriod">‹</view>
+    <text class="date-nav__title">{{periodTitle}}</text>
+    <view class="date-nav__btn {{isCurrentPeriod ? 'date-nav__btn--disabled' : ''}}" bindtap="nextPeriod">›</view>
+  </view>
+
+  <!-- 记录列表 -->
+  <scroll-view scroll-y class="records-scroll">
+    <view class="empty-state" wx:if="{{groupedRecords.length === 0}}">
+      <text class="empty-state__text">这段时间没有记录</text>
+    </view>
+
+    <view wx:else>
+      <view class="day-group" wx:for="{{groupedRecords}}" wx:key="date">
+        <view class="day-group__header">
+          <text class="day-group__date">{{item.dateText}}</text>
+          <text class="day-group__count">{{item.records.length}}种辅食</text>
+        </view>
+        <view class="day-records card">
+          <view
+            class="history-item"
+            wx:for="{{item.records}}"
+            wx:for-item="record"
+            wx:key="_id"
+          >
+            <image class="history-item__img" src="{{record.imageUrl}}" mode="aspectFill" />
+            <view class="history-item__info flex-1">
+              <text class="history-item__name">{{record.foodName}}</text>
+              <text class="history-item__time">{{record.timeText}} · {{record.amount}}</text>
+            </view>
+            <view class="history-item__reaction history-item__reaction--{{record.reaction === '正常' ? 'normal' : 'alert'}}">
+              <text>{{record.reaction}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+</view>

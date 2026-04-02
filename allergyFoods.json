@@ -1,0 +1,191 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "standard": "参考中国营养学会《婴幼儿喂养指南2022》及AAP/ESPGHAN排敏添加顺序",
+    "note": "introduce_month 为建议最早引入月龄；allergen_risk: low/medium/high；每种新食物单独引入，观察3~5天",
+    "image_key_format": "foods/{category_key}/{key}.png"
+  },
+  "categories": [
+    {
+      "id": 1,
+      "key": "grain",
+      "name": "谷物主食",
+      "icon": "🌾",
+      "introduce_month": 4,
+      "allergen_risk": "low",
+      "items": [
+        { "key": "rice_cereal",    "name": "米粉",     "en": "Rice Cereal",    "introduce_month": 4,  "allergen_risk": "low",    "unit": "g", "note": "第一口辅食首选，铁强化米粉" },
+        { "key": "oat_cereal",     "name": "燕麦糊",   "en": "Oat Cereal",     "introduce_month": 6,  "allergen_risk": "low",    "unit": "g", "note": "含β-葡聚糖，营养丰富" },
+        { "key": "millet_porridge","name": "小米粥",   "en": "Millet Porridge","introduce_month": 6,  "allergen_risk": "low",    "unit": "g", "note": "温和，易消化" },
+        { "key": "wheat_cereal",   "name": "小麦糊",   "en": "Wheat Cereal",   "introduce_month": 7,  "allergen_risk": "medium", "unit": "g", "note": "含麸质，观察过敏反应" },
+        { "key": "soft_rice",      "name": "稠粥/软饭","en": "Soft Rice",      "introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "逐渐加稠，锻炼咀嚼" },
+        { "key": "noodles",        "name": "细面条",   "en": "Noodles",        "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "含麸质，煮软后食用" },
+        { "key": "bread",          "name": "面包",     "en": "Bread",          "introduce_month": 10, "allergen_risk": "medium", "unit": "g", "note": "选低糖低盐，软化后食用" },
+        { "key": "corn_porridge",  "name": "玉米糊",   "en": "Corn Porridge",  "introduce_month": 7,  "allergen_risk": "low",    "unit": "g", "note": "过滤玉米皮" }
+      ]
+    },
+    {
+      "id": 2,
+      "key": "vegetable",
+      "name": "蔬菜",
+      "icon": "🥦",
+      "introduce_month": 4,
+      "allergen_risk": "low",
+      "items": [
+        { "key": "carrot",       "name": "胡萝卜", "en": "Carrot",        "introduce_month": 4,  "allergen_risk": "low", "unit": "g", "note": "富含β-胡萝卜素，蒸熟打泥" },
+        { "key": "pumpkin",      "name": "南瓜",   "en": "Pumpkin",       "introduce_month": 4,  "allergen_risk": "low", "unit": "g", "note": "甜味，宝宝易接受" },
+        { "key": "sweet_potato", "name": "红薯",   "en": "Sweet Potato",  "introduce_month": 4,  "allergen_risk": "low", "unit": "g", "note": "富含膳食纤维，预防便秘" },
+        { "key": "potato",       "name": "土豆",   "en": "Potato",        "introduce_month": 5,  "allergen_risk": "low", "unit": "g", "note": "蒸熟压泥，不加盐" },
+        { "key": "zucchini",     "name": "西葫芦", "en": "Zucchini",      "introduce_month": 5,  "allergen_risk": "low", "unit": "g", "note": "水分多，口感软" },
+        { "key": "broccoli",     "name": "西兰花", "en": "Broccoli",      "introduce_month": 6,  "allergen_risk": "low", "unit": "g", "note": "富含维生素C，焯水后打泥" },
+        { "key": "spinach",      "name": "菠菜",   "en": "Spinach",       "introduce_month": 6,  "allergen_risk": "low", "unit": "g", "note": "草酸较高，焯水去除" },
+        { "key": "pea",          "name": "豌豆",   "en": "Pea",           "introduce_month": 6,  "allergen_risk": "low", "unit": "g", "note": "过滤豆皮，研磨成泥" },
+        { "key": "corn",         "name": "玉米",   "en": "Corn",          "introduce_month": 7,  "allergen_risk": "low", "unit": "g", "note": "过滤玉米皮后使用" },
+        { "key": "tomato",       "name": "西红柿", "en": "Tomato",        "introduce_month": 7,  "allergen_risk": "low", "unit": "g", "note": "去皮去籽，少量引入" },
+        { "key": "eggplant",     "name": "茄子",   "en": "Eggplant",      "introduce_month": 7,  "allergen_risk": "low", "unit": "g", "note": "蒸熟压泥" },
+        { "key": "celery",       "name": "芹菜",   "en": "Celery",        "introduce_month": 8,  "allergen_risk": "low", "unit": "g", "note": "焯水切末，纤维较粗" },
+        { "key": "cabbage",      "name": "卷心菜", "en": "Cabbage",       "introduce_month": 7,  "allergen_risk": "low", "unit": "g", "note": "煮软后食用" },
+        { "key": "cauliflower",  "name": "花椰菜", "en": "Cauliflower",   "introduce_month": 6,  "allergen_risk": "low", "unit": "g", "note": "与西兰花同类，温和" },
+        { "key": "cucumber",     "name": "黄瓜",   "en": "Cucumber",      "introduce_month": 8,  "allergen_risk": "low", "unit": "g", "note": "去皮去籽，蒸软或生食条状" },
+        { "key": "chinese_cabbage","name": "白菜", "en": "Chinese Cabbage","introduce_month": 6, "allergen_risk": "low", "unit": "g", "note": "叶片柔软，易消化" },
+        { "key": "yam",          "name": "山药",   "en": "Yam",           "introduce_month": 6,  "allergen_risk": "low", "unit": "g", "note": "蒸熟压泥，润肺健脾" },
+        { "key": "asparagus",    "name": "芦笋",   "en": "Asparagus",     "introduce_month": 8,  "allergen_risk": "low", "unit": "g", "note": "取嫩尖部分，焯水后使用" },
+        { "key": "lotus_root",   "name": "莲藕",   "en": "Lotus Root",    "introduce_month": 9,  "allergen_risk": "low", "unit": "g", "note": "煮熟压泥或切丁" },
+        { "key": "mushroom",     "name": "蘑菇",   "en": "Mushroom",      "introduce_month": 9,  "allergen_risk": "low", "unit": "g", "note": "煮熟切碎，增加鲜味" }
+      ]
+    },
+    {
+      "id": 3,
+      "key": "fruit",
+      "name": "水果",
+      "icon": "🍎",
+      "introduce_month": 4,
+      "allergen_risk": "low",
+      "items": [
+        { "key": "apple",       "name": "苹果",   "en": "Apple",       "introduce_month": 4,  "allergen_risk": "low",    "unit": "g", "note": "蒸熟打泥，或研磨生泥" },
+        { "key": "pear",        "name": "梨",     "en": "Pear",        "introduce_month": 4,  "allergen_risk": "low",    "unit": "g", "note": "润肺，蒸熟后更易消化" },
+        { "key": "banana",      "name": "香蕉",   "en": "Banana",      "introduce_month": 5,  "allergen_risk": "low",    "unit": "g", "note": "直接捣泥，富含钾" },
+        { "key": "avocado",     "name": "牛油果", "en": "Avocado",     "introduce_month": 5,  "allergen_risk": "low",    "unit": "g", "note": "富含健康脂肪，直接捣泥" },
+        { "key": "watermelon",  "name": "西瓜",   "en": "Watermelon",  "introduce_month": 6,  "allergen_risk": "low",    "unit": "g", "note": "去籽去皮，少量引入" },
+        { "key": "blueberry",   "name": "蓝莓",   "en": "Blueberry",   "introduce_month": 6,  "allergen_risk": "low",    "unit": "g", "note": "压泥或切半，富含花青素" },
+        { "key": "mango",       "name": "芒果",   "en": "Mango",       "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "少数宝宝过敏，少量观察" },
+        { "key": "strawberry",  "name": "草莓",   "en": "Strawberry",  "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "有过敏风险，捣泥后引入" },
+        { "key": "grape",       "name": "葡萄",   "en": "Grape",       "introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "去皮去籽，压泥或切小块" },
+        { "key": "peach",       "name": "桃",     "en": "Peach",       "introduce_month": 7,  "allergen_risk": "low",    "unit": "g", "note": "去皮去核，蒸熟后食用" },
+        { "key": "kiwi",        "name": "猕猴桃", "en": "Kiwi",        "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "酸性较强，少量引入" },
+        { "key": "orange",      "name": "橙子",   "en": "Orange",      "introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "榨汁稀释或取果肉" },
+        { "key": "cherry",      "name": "樱桃",   "en": "Cherry",      "introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "去核压泥" },
+        { "key": "plum",        "name": "李子",   "en": "Plum",        "introduce_month": 9,  "allergen_risk": "low",    "unit": "g", "note": "去皮去核" },
+        { "key": "papaya",      "name": "木瓜",   "en": "Papaya",      "introduce_month": 7,  "allergen_risk": "low",    "unit": "g", "note": "助消化，压泥食用" }
+      ]
+    },
+    {
+      "id": 4,
+      "key": "protein_meat",
+      "name": "肉类蛋白",
+      "icon": "🍖",
+      "introduce_month": 6,
+      "allergen_risk": "low",
+      "items": [
+        { "key": "pork_lean",   "name": "猪里脊",   "en": "Pork Tenderloin","introduce_month": 6,  "allergen_risk": "low",    "unit": "g", "note": "最先引入的肉类，蒸熟打泥" },
+        { "key": "beef",        "name": "牛肉",      "en": "Beef",           "introduce_month": 6,  "allergen_risk": "low",    "unit": "g", "note": "补铁首选，蒸熟打泥" },
+        { "key": "chicken",     "name": "鸡肉",      "en": "Chicken",        "introduce_month": 7,  "allergen_risk": "low",    "unit": "g", "note": "去皮去骨，蒸熟切碎" },
+        { "key": "lamb",        "name": "羊肉",      "en": "Lamb",           "introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "膻味较重，与蔬菜搭配" },
+        { "key": "duck",        "name": "鸭肉",      "en": "Duck",           "introduce_month": 9,  "allergen_risk": "low",    "unit": "g", "note": "去皮，脂肪较高" },
+        { "key": "pig_liver",   "name": "猪肝",      "en": "Pig Liver",      "introduce_month": 7,  "allergen_risk": "low",    "unit": "g", "note": "富含铁和维生素A，每周1~2次" }
+      ]
+    },
+    {
+      "id": 5,
+      "key": "protein_seafood",
+      "name": "水产蛋白",
+      "icon": "🐟",
+      "introduce_month": 7,
+      "allergen_risk": "medium",
+      "items": [
+        { "key": "white_fish",  "name": "白肉鱼（鳕鱼）","en": "White Fish",    "introduce_month": 7,  "allergen_risk": "medium", "unit": "g", "note": "过敏风险中等，仔细去刺" },
+        { "key": "salmon",      "name": "三文鱼",    "en": "Salmon",         "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "富含DHA，蒸熟去刺" },
+        { "key": "crucian",     "name": "鲫鱼",      "en": "Crucian Carp",   "introduce_month": 7,  "allergen_risk": "medium", "unit": "g", "note": "刺多需过滤，取鱼肉泥" },
+        { "key": "tilapia",     "name": "罗非鱼",    "en": "Tilapia",        "introduce_month": 7,  "allergen_risk": "medium", "unit": "g", "note": "刺少，适合辅食" },
+        { "key": "shrimp",      "name": "虾",        "en": "Shrimp",         "introduce_month": 9,  "allergen_risk": "high",   "unit": "g", "note": "甲壳类高敏食物，少量谨慎引入" },
+        { "key": "crab",        "name": "螃蟹",      "en": "Crab",           "introduce_month": 12, "allergen_risk": "high",   "unit": "g", "note": "高敏，建议1岁后引入" },
+        { "key": "oyster",      "name": "牡蛎",      "en": "Oyster",         "introduce_month": 12, "allergen_risk": "high",   "unit": "g", "note": "高敏，富含锌，1岁后" },
+        { "key": "clam",        "name": "蛤蜊",      "en": "Clam",           "introduce_month": 12, "allergen_risk": "high",   "unit": "g", "note": "贝类高敏，谨慎引入" }
+      ]
+    },
+    {
+      "id": 6,
+      "key": "protein_egg",
+      "name": "蛋类",
+      "icon": "🥚",
+      "introduce_month": 6,
+      "allergen_risk": "medium",
+      "items": [
+        { "key": "egg_yolk",    "name": "鸡蛋黄",   "en": "Egg Yolk",       "introduce_month": 6,  "allergen_risk": "low",    "unit": "个", "note": "先引入蛋黄，富含铁和DHA" },
+        { "key": "whole_egg",   "name": "全蛋",      "en": "Whole Egg",      "introduce_month": 8,  "allergen_risk": "medium", "unit": "个", "note": "蛋白有过敏风险，观察3~5天" },
+        { "key": "quail_egg",   "name": "鹌鹑蛋",   "en": "Quail Egg",      "introduce_month": 8,  "allergen_risk": "medium", "unit": "个", "note": "营养类似鸡蛋，同样观察" },
+        { "key": "duck_egg",    "name": "鸭蛋黄",   "en": "Duck Egg Yolk",  "introduce_month": 8,  "allergen_risk": "medium", "unit": "个", "note": "可替代鸡蛋，注意腥味" }
+      ]
+    },
+    {
+      "id": 7,
+      "key": "protein_legume",
+      "name": "豆类",
+      "icon": "🫘",
+      "introduce_month": 8,
+      "allergen_risk": "medium",
+      "items": [
+        { "key": "tofu",        "name": "豆腐",      "en": "Tofu",           "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "优质蛋白，嫩豆腐直接压泥" },
+        { "key": "soybean",     "name": "大豆",      "en": "Soybean",        "introduce_month": 10, "allergen_risk": "high",   "unit": "g", "note": "八大过敏原之一，谨慎引入" },
+        { "key": "edamame",     "name": "毛豆",      "en": "Edamame",        "introduce_month": 9,  "allergen_risk": "medium", "unit": "g", "note": "去皮压泥" },
+        { "key": "lentil",      "name": "扁豆/红豆", "en": "Lentil",         "introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "煮软压泥，植物蛋白" },
+        { "key": "chickpea",    "name": "鹰嘴豆",   "en": "Chickpea",       "introduce_month": 9,  "allergen_risk": "low",    "unit": "g", "note": "煮软打泥，营养丰富" }
+      ]
+    },
+    {
+      "id": 8,
+      "key": "dairy",
+      "name": "乳制品",
+      "icon": "🥛",
+      "introduce_month": 6,
+      "allergen_risk": "high",
+      "items": [
+        { "key": "formula",     "name": "配方奶",    "en": "Formula",        "introduce_month": 0,  "allergen_risk": "low",    "unit": "ml","note": "主食，非排敏引入项" },
+        { "key": "yogurt",      "name": "原味酸奶",  "en": "Plain Yogurt",   "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "乳糖分解更好，选无糖全脂" },
+        { "key": "cheese",      "name": "奶酪",      "en": "Cheese",         "introduce_month": 9,  "allergen_risk": "medium", "unit": "g", "note": "高钙，选低钠儿童奶酪" },
+        { "key": "cows_milk",   "name": "纯牛奶",    "en": "Cow's Milk",     "introduce_month": 12, "allergen_risk": "high",   "unit": "ml","note": "1岁后作为饮品，八大过敏原" },
+        { "key": "butter",      "name": "黄油",      "en": "Butter",         "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "少量用于烹饪，增加热量" }
+      ]
+    },
+    {
+      "id": 9,
+      "key": "nut_seed",
+      "name": "坚果种子",
+      "icon": "🥜",
+      "introduce_month": 6,
+      "allergen_risk": "high",
+      "items": [
+        { "key": "peanut_paste","name": "花生酱",    "en": "Peanut Butter",  "introduce_month": 6,  "allergen_risk": "high",   "unit": "g", "note": "八大过敏原；早期引入反而降低过敏风险（LEAP研究），稀释后引入" },
+        { "key": "almond_paste","name": "杏仁泥",    "en": "Almond Paste",   "introduce_month": 8,  "allergen_risk": "high",   "unit": "g", "note": "坚果类高敏，稀释后引入" },
+        { "key": "walnut_paste","name": "核桃泥",    "en": "Walnut Paste",   "introduce_month": 8,  "allergen_risk": "high",   "unit": "g", "note": "富含omega-3，研磨细腻" },
+        { "key": "sesame_paste","name": "芝麻酱",    "en": "Sesame Paste",   "introduce_month": 8,  "allergen_risk": "high",   "unit": "g", "note": "补钙，少量引入观察" },
+        { "key": "tahini",      "name": "葵花籽泥",  "en": "Sunflower Seed", "introduce_month": 8,  "allergen_risk": "medium", "unit": "g", "note": "富含维生素E" },
+        { "key": "flaxseed",    "name": "亚麻籽粉",  "en": "Flaxseed Powder","introduce_month": 8,  "allergen_risk": "low",    "unit": "g", "note": "富含omega-3，研磨后使用" }
+      ]
+    },
+    {
+      "id": 10,
+      "key": "oil_fat",
+      "name": "油脂",
+      "icon": "🫒",
+      "introduce_month": 6,
+      "allergen_risk": "low",
+      "items": [
+        { "key": "olive_oil",   "name": "橄榄油",    "en": "Olive Oil",      "introduce_month": 6,  "allergen_risk": "low", "unit": "ml","note": "初榨橄榄油，每餐少量" },
+        { "key": "coconut_oil", "name": "椰子油",    "en": "Coconut Oil",    "introduce_month": 6,  "allergen_risk": "low", "unit": "ml","note": "饱和脂肪，少量使用" },
+        { "key": "rapeseed_oil","name": "菜籽油",    "en": "Rapeseed Oil",   "introduce_month": 6,  "allergen_risk": "low", "unit": "ml","note": "常见食用油" },
+        { "key": "walnut_oil",  "name": "核桃油",    "en": "Walnut Oil",     "introduce_month": 6,  "allergen_risk": "low", "unit": "ml","note": "富含omega-3" }
+      ]
+    }
+  ]
+}

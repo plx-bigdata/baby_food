@@ -1,0 +1,64 @@
+<!-- pages/plan/plan.wxml — 排敏计划页 -->
+<view class="page-container">
+
+  <!-- ===== 分类 Tab（自动换行）===== -->
+  <view class="cat-tabs">
+    <view class="cat-tabs__inner">
+      <view class="cat-tab {{currentTab === item.id ? 'cat-tab--active' : ''}}" wx:for="{{tabList}}" wx:key="id" bindtap="switchTab" data-id="{{item.id}}">
+        <text class="cat-tab__name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 食物列表 ===== -->
+  <view class="food-list">
+    <view class="food-grid">
+      <view class="food-card {{food.status === 'allergy' ? 'food-card--allergy' : food.status === 'testing' ? 'food-card--testing' : food.status === 'passed' ? 'food-card--passed' : ''}}" wx:for="{{displayFoods}}" wx:key="id" wx:for-item="food" bindtap="showFoodDetail" data-id="{{food.id}}">
+        <image class="food-card__img" src="{{food.imageUrl}}" mode="aspectFill" />
+        <text class="food-card__name">{{food.name}}</text>
+        <!-- 进度点 -->
+        <view class="progress-dots">
+          <view class="progress-dot {{food.status === 'allergy' ? 'progress-dot--danger' : food.status === 'passed' ? 'progress-dot--filled' : food.dayIndex >= 1 ? 'progress-dot--filled' : ''}}"></view>
+          <view class="progress-dot {{food.status === 'allergy' ? 'progress-dot--danger' : food.status === 'passed' ? 'progress-dot--filled' : food.dayIndex >= 2 ? 'progress-dot--filled' : ''}}"></view>
+          <view class="progress-dot {{food.status === 'allergy' ? 'progress-dot--danger' : food.status === 'passed' ? 'progress-dot--filled' : food.dayIndex >= 3 ? 'progress-dot--filled' : ''}}"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 食物详情面板 ===== -->
+  <view class="detail-mask" wx:if="{{showFoodDetail}}" bindtap="closeFoodDetail"></view>
+  <view class="detail-panel {{showFoodDetail ? 'detail-panel--show' : ''}}">
+    <view class="detail-panel__header">
+      <view class="detail-panel__title-row">
+        <image class="detail-panel__food-img" src="{{detailFood.imageUrl}}" mode="aspectFill" />
+        <view class="detail-panel__title-info">
+          <text class="detail-panel__food-name">{{detailFood.name}}</text>
+          <view class="detail-panel__status detail-panel__status--{{detailFood.status}}">
+            <text wx:if="{{detailFood.status === 'allergy'}}">过敏</text>
+            <text wx:elif="{{detailFood.status === 'testing'}}">排敏中</text>
+            <text wx:elif="{{detailFood.status === 'passed'}}">安全</text>
+            <text wx:else>待开始</text>
+          </view>
+        </view>
+      </view>
+      <text class="detail-panel__close" bindtap="closeFoodDetail">x</text>
+    </view>
+
+    <view class="detail-panel__records">
+      <view class="detail-record" wx:for="{{detailRecords}}" wx:key="recordTime">
+        <view class="detail-record__date">{{item.dateStr}}</view>
+        <view class="detail-record__info">
+          <text class="detail-record__time">{{item.timeStr}}</text>
+        </view>
+        <view class="detail-record__reaction detail-record__reaction--{{item.reactionClass}}">
+          <text>{{item.reaction}}</text>
+        </view>
+      </view>
+      <view class="detail-empty" wx:if="{{detailRecords.length === 0}}">
+        <text>暂无记录</text>
+      </view>
+    </view>
+  </view>
+
+</view>

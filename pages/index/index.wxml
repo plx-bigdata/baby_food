@@ -1,0 +1,175 @@
+<!-- pages/index/index.wxml — 首页：今日辅食看板 -->
+<view class="page-container">
+
+  <!-- ===== 头部宝宝信息 ===== -->
+  <view class="header card" bindtap="showBabySwitcher">
+    <view class="header-left">
+      <image class="header-avatar" src="{{baby.avatarUrl || '/static/icons/baby-default.png'}}" mode="aspectFill" />
+      <view class="header-info">
+        <text class="header-name">{{baby.name || '点击设置宝宝信息'}}</text>
+        <text class="header-age">{{babyAge}}</text>
+      </view>
+    </view>
+    <view class="header-right">
+      <text class="header-date-text">{{todayText}}</text>
+      <text class="header-arrow">v</text>
+    </view>
+  </view>
+
+  <!-- ===== 宝宝切换弹窗 ===== -->
+  <view class="switcher-mask" wx:if="{{showBabySwitcher}}" bindtap="closeBabySwitcher"></view>
+  <view class="switcher-panel {{showBabySwitcher ? 'switcher-panel--show' : ''}}">
+    <view class="switcher-panel__header">
+      <text class="switcher-panel__title">切换宝宝</text>
+      <text class="switcher-panel__close" bindtap="closeBabySwitcher">x</text>
+    </view>
+    <view class="switcher-list">
+      <view
+        class="switcher-item {{item._id === currentBabyId ? 'switcher-item--active' : ''}}"
+        wx:for="{{babies}}"
+        wx:key="_id"
+        bindtap="selectBaby"
+        data-id="{{item._id}}"
+      >
+        <image class="switcher-item__avatar" src="{{item.avatarUrl || '/static/icons/baby-default.png'}}" mode="aspectFill" />
+        <view class="switcher-item__info">
+          <text class="switcher-item__name">{{item.name}}</text>
+          <text class="switcher-item__age">{{item.birthday ? item.birthday : '未设置生日'}}</text>
+        </view>
+        <text class="switcher-item__check" wx:if="{{item._id === currentBabyId}}">ok</text>
+      </view>
+    </view>
+    <view class="switcher-add" bindtap="goToAddBaby">
+      <text class="switcher-add__icon">+</text>
+      <text class="switcher-add__text">添加宝宝</text>
+    </view>
+  </view>
+
+  <!-- ===== 生长发育预览 ===== -->
+  <view class="growth-card card">
+    <view class="growth-row">
+      <!-- 身高 -->
+      <view class="growth-item">
+        <view class="growth-value-row" wx:if="{{!editingHeight}}" bindtap="startEditHeight">
+          <text class="growth-value">{{baby.height || '--'}} cm</text>
+          <text class="growth-edit-icon">✎</text>
+        </view>
+        <view class="growth-edit-row" wx:else>
+          <input class="growth-edit-input" type="digit" value="{{editHeightValue}}" bindinput="onHeightInput" focus="{{editingHeight}}" />
+          <text class="growth-edit-confirm" bindtap="confirmEditHeight">✓</text>
+        </view>
+        <text class="growth-label">身高</text>
+      </view>
+      <view class="growth-divider"></view>
+      <!-- 体重 -->
+      <view class="growth-item">
+        <view class="growth-value-row" wx:if="{{!editingWeight}}" bindtap="startEditWeight">
+          <text class="growth-value">{{baby.weight || '--'}} kg</text>
+          <text class="growth-edit-icon">✎</text>
+        </view>
+        <view class="growth-edit-row" wx:else>
+          <input class="growth-edit-input" type="digit" value="{{editWeightValue}}" bindinput="onWeightInput" focus="{{editingWeight}}" />
+          <text class="growth-edit-confirm" bindtap="confirmEditWeight">✓</text>
+        </view>
+        <text class="growth-label">体重</text>
+      </view>
+      <view class="growth-divider"></view>
+      <!-- 生长状态 -->
+      <view class="growth-item">
+        <text class="growth-value growth-status-{{growthStatusClass}}">{{growthStatus}}</text>
+        <text class="growth-label">生长状态</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 排敏进度 ===== -->
+  <view class="progress-card card">
+    <view class="progress-header">
+      <text class="section-title">排敏进度</text>
+      <text class="progress-count">{{planStats.tried}}/{{planStats.total}}种食物已排敏</text>
+    </view>
+    <view class="progress-bar-wrap">
+      <view class="progress-bar">
+        <view class="progress-fill" style="width: {{planStats.percent}}%;"></view>
+      </view>
+      <text class="progress-text">{{planStats.percent}}%</text>
+    </view>
+    <!-- 安全 / 排敏中 / 过敏 -->
+    <view class="safety-boxes">
+      <view class="safety-box safety-box--safe" bindtap="toggleSafeList">
+        <text class="safety-box__icon">✓</text>
+        <text class="safety-box__label">安全</text>
+        <text class="safety-box__count">{{planStats.passed}}种</text>
+      </view>
+      <view class="safety-box safety-box--testing">
+        <text class="safety-box__icon">↻</text>
+        <text class="safety-box__label">排敏中</text>
+        <text class="safety-box__count">{{planStats.testing}}种</text>
+      </view>
+      <view class="safety-box safety-box--danger" bindtap="toggleAllergyList">
+        <text class="safety-box__icon">!</text>
+        <text class="safety-box__label">过敏</text>
+        <text class="safety-box__count">{{planStats.allergy}}种</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 安全食物列表 ===== -->
+  <view class="food-list-panel" wx:if="{{showSafeList && passedFoods.length > 0}}">
+    <view class="food-list-panel__inner">
+      <view class="food-list-panel__header">
+        <text class="food-list-panel__title">安全食物</text>
+        <text class="food-list-panel__close" bindtap="toggleSafeList">×</text>
+      </view>
+      <view class="food-list-panel__grid">
+        <view class="food-list-item" wx:for="{{passedFoods}}" wx:key="foodId">
+          <image class="food-list-item__img" src="{{item.imageUrl}}" mode="aspectFill" />
+          <text class="food-list-item__name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 过敏食物列表 ===== -->
+  <view class="food-list-panel" wx:if="{{showAllergyList && allergyFoods.length > 0}}">
+    <view class="food-list-panel__inner">
+      <view class="food-list-panel__header">
+        <text class="food-list-panel__title">过敏食物</text>
+        <text class="food-list-panel__close" bindtap="toggleAllergyList">×</text>
+      </view>
+      <view class="food-list-panel__grid">
+        <view class="food-list-item food-list-item--allergy" wx:for="{{allergyFoods}}" wx:key="foodId">
+          <image class="food-list-item__img" src="{{item.imageUrl}}" mode="aspectFill" />
+          <text class="food-list-item__name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 今日食谱 ===== -->
+  <view class="records-section">
+    <view class="flex-between" style="padding: 0 30rpx; margin-bottom: 16rpx;">
+      <text class="section-title">今日食谱</text>
+    </view>
+
+    <view class="meal-list" wx:if="{{dayList.length > 0}}">
+      <view class="meal-item" wx:for="{{dayList}}" wx:key="date">
+        <view class="meal-header">
+          <text class="meal-label">{{item.dateText}}</text>
+          <text class="meal-count">{{item.foods.length}}种食物</text>
+        </view>
+        <view class="meal-foods-row">
+          <view class="meal-food-chip" wx:for="{{item.foods}}" wx:key="foodId" wx:for-item="food">
+            <image class="meal-food-img" src="{{food.imageUrl}}" mode="aspectFill" />
+            <text class="meal-food-name">{{food.foodName}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:else>
+      <text class="empty-state-text">今天还没有记录，快去记录吧</text>
+    </view>
+  </view>
+
+</view>

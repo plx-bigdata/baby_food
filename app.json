@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/plan/plan",
+    "pages/record/record",
+    "pages/trace/trace",
+    "pages/settings/settings"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF8C69",
+    "navigationBarTitleText": "宝宝今天吃什么",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F7F8FA"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF8C69",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/icons/home.png",
+        "selectedIconPath": "static/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/plan/plan",
+        "text": "排敏",
+        "iconPath": "static/icons/plan.png",
+        "selectedIconPath": "static/icons/plan-active.png"
+      },
+      {
+        "pagePath": "pages/record/record",
+        "text": "记录",
+        "iconPath": "static/icons/record.png",
+        "selectedIconPath": "static/icons/record-active.png"
+      },
+      {
+        "pagePath": "pages/trace/trace",
+        "text": "溯源",
+        "iconPath": "static/icons/trace.png",
+        "selectedIconPath": "static/icons/trace-active.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "我的",
+        "iconPath": "static/icons/mine.png",
+        "selectedIconPath": "static/icons/mine-active.png"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json",
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents"
+}
