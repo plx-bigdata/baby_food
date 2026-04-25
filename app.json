@@ -4,16 +4,20 @@
     "pages/plan/plan",
     "pages/record/record",
     "pages/trace/trace",
-    "pages/settings/settings"
+    "pages/settings/settings",
+    "pages/onboarding/onboarding",
+    "pages/allergy/allergy",
+    "pages/share-report/share-report"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FF8C69",
-    "navigationBarTitleText": "宝宝今天吃什么",
+    "navigationBarTitleText": "呀咪宝宝辅食",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#F7F8FA"
   },
   "tabBar": {
+    "custom": true,
     "color": "#999999",
     "selectedColor": "#FF8C69",
     "backgroundColor": "#FFFFFF",
@@ -27,19 +31,13 @@
       },
       {
         "pagePath": "pages/plan/plan",
-        "text": "排敏",
+        "text": "食物",
         "iconPath": "static/icons/plan.png",
         "selectedIconPath": "static/icons/plan-active.png"
       },
       {
-        "pagePath": "pages/record/record",
-        "text": "记录",
-        "iconPath": "static/icons/record.png",
-        "selectedIconPath": "static/icons/record-active.png"
-      },
-      {
         "pagePath": "pages/trace/trace",
-        "text": "溯源",
+        "text": "过敏",
         "iconPath": "static/icons/trace.png",
         "selectedIconPath": "static/icons/trace-active.png"
       },

@@ -2,6 +2,7 @@
 
 const app = getApp();
 const dateUtil = require('../../utils/date');
+const foodLibrary = require('../../data/food-library');
 
 Page({
   data: {
@@ -14,6 +15,17 @@ Page({
 
   onLoad() {
     this.updatePeriod();
+    this.loadRecords();
+  },
+
+  onShow() {
+    this.loadRecords();
+  },
+
+  /**
+   * 云同步完成后由 app.syncFromCloud 主动调用
+   */
+  refreshFromGlobal() {
     this.loadRecords();
   },
 
@@ -87,8 +99,8 @@ Page({
   /**
    * 加载记录
    */
-  async loadRecords() {
-    const babyId = app.getCurrentBabyId();
+  loadRecords() {
+    const babyId = app.globalData.currentBabyId;
     if (!babyId) return;
 
     const { viewMode, currentDate } = this.data;
@@ -100,23 +112,23 @@ Page({
       endTime = range.end;
     } else {
       const range = dateUtil.getWeekRange(currentDate);
-      startTime = range.start.toISOString();
-      endTime = range.end.toISOString();
+      startTime = range.start;
+      endTime = range.end;
     }
 
     try {
-      const result = await wx.cloud.callFunction({
-        name: 'getRecords',
-        data: { type: 'dayRecords', babyId, startTime, endTime },
+      const records = wx.getStorageSync(`allRecords_${babyId}`) || [];
+      app.globalData.allRecords = records;
+      const filteredRecords = records.filter(record => {
+        if (!record.recordTime) return false;
+        const recordTime = new Date(record.recordTime);
+        return recordTime >= startTime && recordTime <= endTime;
       });
-
-      if (result.result.code === 0) {
-        const records = result.result.data;
-        const grouped = this.groupRecordsByDate(records);
-        this.setData({ groupedRecords: grouped });
-      }
+      const grouped = this.groupRecordsByDate(filteredRecords);
+      this.setData({ groupedRecords: grouped });
     } catch (err) {
       console.error('[历史页] 加载失败:', err);
+      this.setData({ groupedRecords: [] });
     }
   },
 
@@ -126,11 +138,16 @@ Page({
   groupRecordsByDate(records) {
     const map = {};
     records.forEach(r => {
-      const date = r.recordTime.split('T')[0];
+      const date = dateUtil.getRecordDate(r);
+      if (!date) return;
       if (!map[date]) map[date] = [];
+      const food = foodLibrary.getFoodById(r.foodId);
+      const display = foodLibrary.getFoodDisplay(food, r);
       map[date].push({
         ...r,
+        ...display,
         timeText: dateUtil.formatTime(r.recordTime),
+        amountText: r.amount ? `${dateUtil.formatTime(r.recordTime)} · ${r.amount}` : dateUtil.formatTime(r.recordTime),
       });
     });
 

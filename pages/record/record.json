@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "记录辅食",
+  "navigationStyle": "custom",
+  "backgroundColor": "#00000000",
+  "backgroundColorContent": "#00000000",
+  "disableScroll": true,
   "usingComponents": {}
 }

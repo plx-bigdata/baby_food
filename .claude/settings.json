@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/pengliangixing/**)",
+      "Bash(mv custom-tabbar.js index.js)",
+      "Bash(mv custom-tabbar.json index.json)",
+      "Bash(mv custom-tabbar.wxml index.wxml)",
+      "Bash(mv custom-tabbar.wxss index.wxss)",
+      "Bash(find . -name custom-tabbar* -o -name custom-tab-bar -type d)",
+      "Bash(timeout 30 node -e \"console.log\\(''test''\\)\")",
+      "Bash(timeout 30 node -e \":*)"
+    ],
+    "additionalDirectories": [
+      "/Users/pengliangixing/宝宝今天吃什么/custom-tab-bar"
+    ]
+  }
+}

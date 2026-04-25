@@ -1,8 +1,15 @@
 {
+  "scripts": {
+    "check": "node check-js.js"
+  },
   "dependencies": {
     "dotenv": "^17.3.1",
     "jsonwebtoken": "^9.0.3",
     "node-fetch": "^3.3.2",
-    "replicate": "^1.4.0"
+    "replicate": "^1.4.0",
+    "tcb-admin-node": "^1.23.0"
+  },
+  "devDependencies": {
+    "jimp": "^0.22.12"
   }
 }

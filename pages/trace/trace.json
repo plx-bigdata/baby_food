@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "过敏溯源",
-  "usingComponents": {}
+  "navigationBarTitleText": "排敏日历",
+  "usingComponents": {
+    "record-sheet": "/components/record-sheet/record-sheet"
+  }
 }

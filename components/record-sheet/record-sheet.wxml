@@ -1,0 +1,142 @@
+<!-- components/record-sheet/record-sheet.wxml -->
+<view class="sheet-wrapper {{show ? 'sheet-wrapper--show' : ''}} {{closing ? 'sheet-wrapper--closing' : ''}}">
+  <!-- 遮罩 -->
+  <view class="sheet-mask" bindtap="closeSheet" catchtouchmove="noop"></view>
+
+  <!-- 底部面板 -->
+  <view class="sheet-body">
+    <!-- 拖拽手柄 + 日期 + 分类(均可下拉关闭) -->
+    <view class="sheet-drag-zone" bindtouchstart="onSheetDragStart" catchtouchmove="onSheetDragMove" bindtouchend="onSheetDragEnd">
+      <view class="sheet-handle-row">
+        <view class="sheet-handle"></view>
+      </view>
+
+      <!-- 日期 -->
+      <view class="sheet-topbar">
+        <picker mode="date" value="{{today}}" bindchange="onDateChange">
+          <view class="sheet-topbar__date">{{today}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 分类标签栏 -->
+    <view class="category-wrap" catchtouchmove="noop">
+      <scroll-view scroll-x="{{true}}" class="category-tabs-scroll">
+        <view class="category-tabs">
+          <view
+            class="category-tab {{currentCategory === item.id ? 'category-tab--active' : ''}}"
+            wx:for="{{categoryTabs}}"
+            wx:key="id"
+            catchtap="switchCategory"
+            data-id="{{item.id}}"
+          >
+            <text class="category-tab__name">{{item.name}}</text>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 搜索框 -->
+    <view class="search-bar" catchtouchmove="noop">
+      <text class="search-bar__icon">🔍</text>
+      <input
+        class="search-bar__input"
+        placeholder="搜索食物名称"
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        confirm-type="search"
+      />
+      <view class="search-bar__clear" wx:if="{{searchKeyword}}" bindtap="clearSearch">
+        <text>✕</text>
+      </view>
+    </view>
+
+    <!-- 食物网格(滚到顶部再下拉可关) -->
+    <scroll-view
+      scroll-y="{{true}}"
+      class="food-grid-scroll"
+      bindscroll="onFoodGridScroll"
+      bindscrolltoupper="onFoodGridScrollUpper"
+      bindtouchstart="onFoodGridDragStart"
+      bindtouchend="onFoodGridDragEnd"
+    >
+      <view class="food-grid">
+        <view
+          class="{{foodClassMap[item.id] || 'food-card'}}"
+          wx:for="{{displayFoods}}"
+          wx:key="id"
+          catchtap="selectFood"
+          data-id="{{item.id}}"
+        >
+          <image wx:if="{{item.localIconPath}}" class="food-card__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" class="food-card__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+          <text wx:else class="food-card__emoji">{{item.emoji}}</text>
+          <text class="food-card__name">{{item.name}}</text>
+        </view>
+        <view class="food-card food-card--add" catchtap="addCustomFood">
+          <text class="food-card__emoji food-card__emoji--add">＋</text>
+          <text class="food-card__name">自定义食物</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部已选栏 -->
+    <view class="selected-bar" wx:if="{{hasSelected}}" catchtouchmove="noop">
+      <scroll-view scroll-x="{{true}}" class="selected-bar__scroll">
+        <view class="selected-list">
+          <view class="selected-item" wx:for="{{selectedFoods}}" wx:key="id">
+            <image wx:if="{{item.localIconPath}}" class="selected-item__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+            <image wx:elif="{{item.iconUrl}}" class="selected-item__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+            <text wx:else class="selected-item__emoji">{{item.emoji}}</text>
+            <text class="selected-item__name">{{item.name}}</text>
+            <view class="selected-item__remove" catchtap="removeFood" data-id="{{item.id}}">×</view>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="selected-bar__btn" bindtap="openRecordPanel">
+        记录 {{selectedFoods.length}} 种食物
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 记录面板 -->
+<view class="panel-mask {{showRecordPanel ? 'panel-mask--show' : ''}}" wx:if="{{renderRecordPanel}}" bindtap="closeRecordPanel" catchtouchmove="noop"></view>
+<view class="record-panel {{showRecordPanel ? 'record-panel--show' : ''}}" wx:if="{{renderRecordPanel}}" bindtouchstart="onRecordPanelDragStart" bindtouchend="onRecordPanelDragEnd" catchtouchmove="noop">
+  <view class="record-panel__header">
+    <text class="record-panel__title">确认记录</text>
+  </view>
+
+  <scroll-view scroll-x="{{true}}" class="selected-summary-scroll" enhanced="{{true}}" show-scrollbar="{{false}}">
+    <view class="selected-summary">
+      <view class="selected-summary__item" wx:for="{{selectedFoods}}" wx:key="id">
+        <image wx:if="{{item.localIconPath}}" class="selected-summary__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+        <image wx:elif="{{item.iconUrl}}" class="selected-summary__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+        <text wx:else class="selected-summary__emoji">{{item.emoji}}</text>
+        <text class="selected-summary__name">{{item.name}}</text>
+        <view class="selected-summary__tag selected-summary__tag--{{foodDayLabelMap[item.id].type}}">
+          {{foodDayLabelMap[item.id].label}}
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="field-row">
+    <view class="field field--half">
+      <text class="field__label">日期</text>
+      <picker mode="date" value="{{today}}" bindchange="onDateChange">
+        <view class="field__picker">{{today}}</view>
+      </picker>
+    </view>
+    <view class="field field--half">
+      <text class="field__label">时间</text>
+      <picker mode="time" value="{{recordForm.time}}" bindchange="onTimeChange">
+        <view class="field__picker">{{recordForm.time}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="save-btn" bindtap="saveRecord">
+    {{saving ? '保存中...' : '保存记录'}}
+  </view>
+</view>

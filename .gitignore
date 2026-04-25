@@ -12,3 +12,13 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+
+# Local environment
+.env
+
+# Local caches and generated previews
+__pycache__/
+output/
+_preview*/
+_*.log
+.claude/settings.local.json

@@ -1,141 +1,636 @@
 /* pages/plan/plan.wxss — 排敏计划页样式 */
 
-/* ===== 分类 Tab（自动换行）===== */
-.cat-tabs {
-  margin-top: 24rpx;
-  padding: 0 24rpx;
-}
-
-.cat-tabs__inner {
+/* 截断页面级滚动，只让 scroll-view 内部滚动，防止弹性回弹盖住内容 */
+.page-container {
+  height: 100vh;
+  overflow: hidden;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
+  flex-direction: column;
 }
 
-.cat-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12rpx 24rpx;
-  border-radius: 100rpx;
-  background: var(--color-bg);
+/* ===== 视角切换 Tab ===== */
+.view-tabs {
+  display: flex;
+  background: var(--color-white);
+  border-bottom: 1rpx solid var(--color-border);
 }
 
-.cat-tab--active {
-  background: var(--color-primary);
-}
-
-.cat-tab__name {
-  font-size: 14px;
-  font-weight: 500;
+.view-tab {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 15px;
   color: var(--color-text-secondary);
+  position: relative;
 }
 
-.cat-tab--active .cat-tab__name {
-  color: #fff;
+.view-tab--active {
+  color: var(--color-primary);
+  font-weight: 600;
 }
 
-/* ===== 食物列表 ===== */
-.food-list {
-  margin-top: 24rpx;
+.view-tab--active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80rpx;
+  height: 4rpx;
+  background: var(--color-primary);
+  border-radius: 2rpx;
+}
+
+/* ===== swiper 容器（高度由 JS 写入）===== */
+.view-swiper {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.swiper-item-food,
+.swiper-item-calendar {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* ===== 筛选下拉栏 ===== */
+.filter-bar {
+  flex-shrink: 0;
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx 24rpx 16rpx;
+  position: relative;
+  z-index: 20;
+}
+
+.filter-dropdown {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+.filter-select {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 28rpx;
+  border-radius: 20rpx;
+  background: #FFF;
+  border: 2rpx solid #FFD5C3;
+  box-shadow: 0 2rpx 8rpx rgba(255, 140, 105, 0.08);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  gap: 10rpx;
+}
+
+.filter-select--open {
+  border-color: #FF8C69;
+  box-shadow: 0 4rpx 16rpx rgba(255, 140, 105, 0.2);
+}
+
+.filter-select__prefix {
+  font-size: 24rpx;
+  color: var(--color-text-hint, #9CA3AF);
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.filter-select__label {
+  flex: 1;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filter-select__arrow {
+  font-size: 28rpx;
+  color: #FF8C69;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+
+.filter-select__arrow--open {
+  transform: rotate(180deg);
+}
+
+.filter-select--passed {
+  background: #F6FFED;
+  border-color: #B7EB8F;
+}
+.filter-select--passed .filter-select__label { color: #389E0D; }
+
+.filter-select--testing {
+  background: #FFF7E6;
+  border-color: #FFD591;
+}
+.filter-select--testing .filter-select__label { color: #D46B08; }
+
+.filter-select--allergy {
+  background: #FFF1F0;
+  border-color: #FFA39E;
+}
+.filter-select--allergy .filter-select__label { color: #CF1322; }
+
+/* 下拉选项面板 */
+.filter-options {
+  position: absolute;
+  top: calc(100% + 6rpx);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.12);
+  border: 1rpx solid var(--color-border);
+  max-height: 540rpx;
+  overflow-y: auto;
+  z-index: 21;
+}
+
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  color: var(--color-text-primary);
+  border-bottom: 1rpx solid #F0F0F0;
+}
+
+.filter-option__dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.filter-option:last-child {
+  border-bottom: none;
+}
+
+.filter-option--active {
+  background: #FFF5F2;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.filter-option--passed.filter-option--active { background: #F6FFED; color: #389E0D; }
+.filter-option--testing.filter-option--active { background: #FFF7E6; color: #D46B08; }
+.filter-option--allergy.filter-option--active { background: #FFF1F0; color: #CF1322; }
+
+/* 点击外部关闭的透明遮罩 */
+.filter-outside-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 15;
+  background: transparent;
+}
+
+/* ===== 食物网格 ===== */
+.food-scroll {
+  /* 高度由 JS 动态写入 style="height:Xpx"，此处只设边距 */
   padding: 0 24rpx;
+  padding-top: 16rpx;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .food-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16rpx;
+  padding: 20rpx 0 0;
+  width: 100%;
+  box-sizing: border-box;
+  align-items: stretch;
+  min-width: 0;
+}
+
+/* iOS scroll-view 内 padding-bottom 无效，用实体块撑开底部 */
+.scroll-bottom-spacer {
+  height: calc(240rpx + env(safe-area-inset-bottom));
 }
 
 /* ===== 食物卡片 ===== */
 .food-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  background: var(--color-white);
-  border-radius: var(--border-radius-base);
-  padding: 16rpx 8rpx 12rpx;
-  box-shadow: var(--shadow-sm);
-  border: 2rpx solid transparent;
+  border-radius: 20rpx;
+  border: 1rpx solid rgba(255,255,255,0.9);
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1rpx 0 rgba(255,255,255,0.85),
+    0 4rpx 0 rgba(0,0,0,0.12),
+    0 6rpx 16rpx rgba(0,0,0,0.08);
 }
 
-.food-card--passed { border-color: var(--color-success); background: #F6FFED; }
-.food-card--testing { border-color: var(--color-warning); background: #FFFBE6; }
-.food-card--allergy { border-color: var(--color-danger); background: #FFF1F0; }
+.food-card--add {
+  background: #FFFBF9 !important;
+  border: 2rpx dashed #FFB49A;
+  box-shadow: none;
+}
 
-.food-card__img {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 12rpx;
-  margin-bottom: 8rpx;
+.food-card__emoji--add {
+  color: #FF8C69;
+  font-weight: 300;
+}
+
+/* 上半部分：图标 + 名称 + 进度点（背景色继承卡片 catColor）*/
+.food-card__top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 8rpx 14rpx;
+  gap: 8rpx;
+}
+
+.food-card__emoji {
+  font-size: 88rpx;
+  line-height: 1;
+  display: block;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.food-card__icon {
+  width: 88rpx;
+  height: 88rpx;
+  display: block;
+  flex-shrink: 0;
 }
 
 .food-card__name {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--color-text-primary);
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #1A1A1A;
   text-align: center;
-  margin-bottom: 8rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+  padding: 0 6rpx;
+  box-sizing: border-box;
 }
 
-/* ===== 进度点 ===== */
+/* ===== 进度点（固定在白色区域底部）===== */
 .progress-dots {
   display: flex;
-  gap: 6rpx;
+  gap: 8rpx;
+  justify-content: center;
+  height: 18rpx;        /* 固定高度，保证所有卡片对齐 */
+  align-items: center;
+  flex-shrink: 0;
 }
 
 .progress-dot {
-  width: 18rpx;
-  height: 18rpx;
+  width: 16rpx;
+  height: 16rpx;
   border-radius: 50%;
-  background: var(--color-bg);
-  border: 2rpx solid var(--color-border);
+  background: #E0E0E0;
+  flex-shrink: 0;
 }
 
 .progress-dot--filled {
-  background: var(--color-success);
-  border-color: var(--color-success);
+  background: #52C41A;
 }
 
 .progress-dot--danger {
-  background: var(--color-danger);
-  border-color: var(--color-danger);
+  background: #FF4D4F;
 }
+
+.progress-dot--safe {
+  background: #52C41A;
+}
+
+/* ===== 底部灰色区域（过敏级别 · 特性标签）===== */
+.food-card__bottom {
+  background: #EFEFEF;
+  padding: 4rpx 8rpx;
+  min-height: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.food-card__bottom-text {
+  font-size: 18rpx;
+  font-weight: 600;
+  color: #E87C00;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.4;
+  word-break: break-all;
+}
+
+/* ===== 日历容器 ===== */
+.calendar-container {
+  background: var(--color-white);
+  padding: 24rpx;
+  flex: 1;
+  /* 去掉 overflow:hidden，否则会截断 scroll-view 的内容区 */
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-scroll {
+  /* 高度由 JS 动态写入 style="height:Xpx" */
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.calendar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.calendar-nav__btn {
+  font-size: 14px;
+  color: var(--color-primary);
+  padding: 8rpx 16rpx;
+}
+
+.calendar-nav__today {
+  font-size: 13px;
+  color: var(--color-primary);
+  padding: 6rpx 16rpx;
+  border: 1rpx solid var(--color-primary);
+  border-radius: 100rpx;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 16rpx;
+}
+
+.calendar-weekday {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  text-align: center;
+  padding: 8rpx 0;
+}
+
+/* ===== 日历网格 ===== */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12rpx;
+  align-items: start;
+}
+
+.calendar-day {
+  min-height: 0;
+  height: 160rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8rpx 4rpx;
+  border-radius: 16rpx;
+  position: relative;
+  background: var(--color-bg);
+  border: 2rpx solid transparent;
+}
+
+.calendar-day--other {
+  opacity: 0.35;
+}
+
+.calendar-day--has-record {
+  background: #FFF8F5;
+}
+
+.calendar-day__num {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 4rpx;
+}
+
+.calendar-day__num--today {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.calendar-day__empty {
+  font-size: 11px;
+  color: var(--color-text-hint);
+}
+
+.calendar-day__foods {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+  width: 100%;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.calendar-day__food {
+  display: flex;
+  align-items: center;
+  gap: 3rpx;
+  width: 100%;
+}
+
+.calendar-day__food-emoji {
+  font-size: 16rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.calendar-day__food-name {
+  font-size: 10px;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.calendar-day__more {
+  font-size: 10px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ===== 日期详情弹窗 ===== */
+.day-modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+}
+
+.day-modal {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 0;
+  background: #FFF;
+  border-radius: 24rpx 24rpx 0 0;
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-modal--show {
+  transform: translateY(0);
+}
+
+.day-modal__handle {
+  width: 80rpx;
+  height: 8rpx;
+  background: #DDD;
+  border-radius: 4rpx;
+  margin: 16rpx auto 0;
+}
+
+.day-modal__header {
+  padding: 16rpx 32rpx;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.day-modal__title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.day-modal__body {
+  flex: 1;
+  min-height: 0;
+}
+
+.day-modal__list {
+  padding: 16rpx 32rpx 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.day-modal__item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  background: var(--color-bg);
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+}
+
+.day-modal__emoji {
+  font-size: 44rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.day-modal__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.day-modal__name {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.day-modal__time {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+.day-modal__reaction {
+  font-size: 12px;
+  padding: 4rpx 14rpx;
+  border-radius: 100rpx;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.day-modal__reaction--normal { background: var(--color-success-light); color: var(--color-success); }
+.day-modal__reaction--warning { background: var(--color-warning-light); color: var(--color-warning); }
+.day-modal__reaction--danger { background: var(--color-danger-light); color: var(--color-danger); }
 
 /* ===== 食物详情面板 ===== */
 .detail-mask {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
-  z-index: 100;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.detail-mask--show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .detail-panel {
   position: fixed;
-  left: 0; right: 0; bottom: 0;
+  left: 0; right: 0;
+  bottom: 0;
   background: var(--color-white);
   border-radius: 24rpx 24rpx 0 0;
-  padding: 32rpx 30rpx;
-  padding-bottom: calc(32rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
-  z-index: 101;
+  /* 去掉 overflow-y:auto，避免整个面板捕获触摸，让内部 scroll-view 接管 */
+  display: flex;
+  flex-direction: column;
+  z-index: 1001;
   transform: translateY(100%);
-  transition: transform 0.3s ease;
+  transition: transform 0.28s ease;
+  max-height: 80vh;
+  pointer-events: none;
 }
 
 .detail-panel--show {
   transform: translateY(0);
+  pointer-events: auto;
+}
+
+.detail-panel__top {
+  padding: 0 30rpx;
+  flex-shrink: 0;
 }
 
 .detail-panel__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 24rpx;
+  flex-shrink: 0;
 }
 
 .detail-panel__title-row {
@@ -144,10 +639,17 @@
   gap: 16rpx;
 }
 
-.detail-panel__food-img {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 16rpx;
+.detail-panel__food-emoji {
+  font-size: 72rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.detail-panel__food-icon {
+  width: 72rpx;
+  height: 72rpx;
+  display: block;
+  flex-shrink: 0;
 }
 
 .detail-panel__title-info {
@@ -176,17 +678,26 @@
 .detail-panel__status--pending { background: var(--color-bg); color: var(--color-text-hint); }
 
 .detail-panel__close {
-  font-size: 24px;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-bg);
+  flex-shrink: 0;
+}
+
+.detail-panel__close text {
+  font-size: 28rpx;
   color: var(--color-text-hint);
-  padding: 8rpx;
+  line-height: 1;
 }
 
 .detail-panel__records {
-  display: flex;
-  flex-direction: column;
-  gap: 12rpx;
-  max-height: 50vh;
-  overflow-y: auto;
+  /* 高度由 JS 动态写入 style="height:Xpx" */
+  flex: 1;
+  min-height: 0;
 }
 
 .detail-record {
@@ -196,6 +707,29 @@
   padding: 16rpx;
   background: var(--color-bg);
   border-radius: var(--border-radius-base);
+  margin-bottom: 12rpx;
+}
+
+.detail-record__main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-width: 0;
+}
+
+.detail-record__delete {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.detail-record__delete-icon {
+  width: 36rpx;
+  height: 36rpx;
 }
 
 .detail-record__date {

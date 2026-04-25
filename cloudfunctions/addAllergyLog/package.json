@@ -1,0 +1,9 @@
+{
+  "name": "addAllergyLog",
+  "version": "1.0.0",
+  "description": "新增过敏记录到 allergy_log 集合",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

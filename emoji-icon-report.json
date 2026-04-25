@@ -1,0 +1,301 @@
+{
+  "style": "sticker",
+  "success": [
+    {
+      "id": "food_grain_rice_cereal",
+      "name": "米粉",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_grain_rice_cereal.png"
+    },
+    {
+      "id": "food_grain_oat_cereal",
+      "name": "燕麦糊",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_grain_oat_cereal.png"
+    },
+    {
+      "id": "food_grain_wheat_cereal",
+      "name": "小麦糊",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_grain_wheat_cereal.png"
+    },
+    {
+      "id": "food_grain_corn_porridge",
+      "name": "玉米糊",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_grain_corn_porridge.png"
+    },
+    {
+      "id": "food_veg_carrot",
+      "name": "胡萝卜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_carrot.png"
+    },
+    {
+      "id": "food_veg_pumpkin",
+      "name": "南瓜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_pumpkin.png"
+    },
+    {
+      "id": "food_veg_sweet_potato",
+      "name": "红薯",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_sweet_potato.png"
+    },
+    {
+      "id": "food_veg_potato",
+      "name": "土豆",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_potato.png"
+    },
+    {
+      "id": "food_veg_broccoli",
+      "name": "西兰花",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_broccoli.png"
+    },
+    {
+      "id": "food_veg_spinach",
+      "name": "菠菜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_spinach.png"
+    },
+    {
+      "id": "food_veg_pea",
+      "name": "豌豆",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_pea.png"
+    },
+    {
+      "id": "food_veg_corn",
+      "name": "玉米",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_corn.png"
+    },
+    {
+      "id": "food_veg_tomato",
+      "name": "西红柿",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_tomato.png"
+    },
+    {
+      "id": "food_veg_eggplant",
+      "name": "茄子",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_eggplant.png"
+    },
+    {
+      "id": "food_veg_cauliflower",
+      "name": "花椰菜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_cauliflower.png"
+    },
+    {
+      "id": "food_veg_cucumber",
+      "name": "黄瓜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_cucumber.png"
+    },
+    {
+      "id": "food_veg_chinese_cabbage",
+      "name": "白菜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_chinese_cabbage.png"
+    },
+    {
+      "id": "food_veg_yam",
+      "name": "山药",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_yam.png"
+    },
+    {
+      "id": "food_veg_mushroom",
+      "name": "蘑菇",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_veg_mushroom.png"
+    },
+    {
+      "id": "food_fruit_apple",
+      "name": "苹果",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_apple.png"
+    },
+    {
+      "id": "food_fruit_pear",
+      "name": "梨",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_pear.png"
+    },
+    {
+      "id": "food_fruit_banana",
+      "name": "香蕉",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_banana.png"
+    },
+    {
+      "id": "food_fruit_avocado",
+      "name": "牛油果",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_avocado.png"
+    },
+    {
+      "id": "food_fruit_watermelon",
+      "name": "西瓜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_watermelon.png"
+    },
+    {
+      "id": "food_fruit_blueberry",
+      "name": "蓝莓",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_blueberry.png"
+    },
+    {
+      "id": "food_fruit_mango",
+      "name": "芒果",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_mango.png"
+    },
+    {
+      "id": "food_fruit_strawberry",
+      "name": "草莓",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_strawberry.png"
+    },
+    {
+      "id": "food_fruit_grape",
+      "name": "葡萄",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_grape.png"
+    },
+    {
+      "id": "food_fruit_peach",
+      "name": "桃",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_peach.png"
+    },
+    {
+      "id": "food_fruit_kiwi",
+      "name": "猕猴桃",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_kiwi.png"
+    },
+    {
+      "id": "food_fruit_orange",
+      "name": "橙子",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_orange.png"
+    },
+    {
+      "id": "food_fruit_cherry",
+      "name": "樱桃",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_cherry.png"
+    },
+    {
+      "id": "food_fruit_papaya",
+      "name": "木瓜",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_fruit_papaya.png"
+    },
+    {
+      "id": "food_meat_pork_lean",
+      "name": "猪里脊",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_meat_pork_lean.png"
+    },
+    {
+      "id": "food_meat_beef",
+      "name": "牛肉",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_meat_beef.png"
+    },
+    {
+      "id": "food_meat_chicken",
+      "name": "鸡肉",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_meat_chicken.png"
+    },
+    {
+      "id": "food_meat_lamb",
+      "name": "羊肉",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_meat_lamb.png"
+    },
+    {
+      "id": "food_meat_duck",
+      "name": "鸭肉",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_meat_duck.png"
+    },
+    {
+      "id": "food_sea_white_fish",
+      "name": "白肉鱼",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_white_fish.png"
+    },
+    {
+      "id": "food_sea_salmon",
+      "name": "三文鱼",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_salmon.png"
+    },
+    {
+      "id": "food_sea_crucian",
+      "name": "鲫鱼",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_crucian.png"
+    },
+    {
+      "id": "food_sea_tilapia",
+      "name": "罗非鱼",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_tilapia.png"
+    },
+    {
+      "id": "food_sea_shrimp",
+      "name": "虾",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_shrimp.png"
+    },
+    {
+      "id": "food_sea_crab",
+      "name": "螃蟹",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_crab.png"
+    },
+    {
+      "id": "food_sea_oyster",
+      "name": "牡蛎",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_oyster.png"
+    },
+    {
+      "id": "food_sea_clam",
+      "name": "蛤蜊",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_clam.png"
+    },
+    {
+      "id": "food_sea_grass_carp",
+      "name": "草鱼",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_sea_grass_carp.png"
+    },
+    {
+      "id": "food_egg_whole_egg",
+      "name": "全蛋",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_egg_whole_egg.png"
+    },
+    {
+      "id": "food_egg_quail_egg",
+      "name": "鹌鹑蛋",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_egg_quail_egg.png"
+    },
+    {
+      "id": "food_legume_edamame",
+      "name": "毛豆",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_legume_edamame.png"
+    },
+    {
+      "id": "food_dairy_formula",
+      "name": "配方奶",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_dairy_formula.png"
+    },
+    {
+      "id": "food_dairy_yogurt",
+      "name": "原味酸奶",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_dairy_yogurt.png"
+    },
+    {
+      "id": "food_dairy_cheese",
+      "name": "奶酪",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_dairy_cheese.png"
+    },
+    {
+      "id": "food_dairy_cows_milk",
+      "name": "纯牛奶",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_dairy_cows_milk.png"
+    },
+    {
+      "id": "food_dairy_butter",
+      "name": "黄油",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_dairy_butter.png"
+    },
+    {
+      "id": "food_nut_peanut_paste",
+      "name": "花生酱",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_nut_peanut_paste.png"
+    },
+    {
+      "id": "food_oil_olive_oil",
+      "name": "橄榄油",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_oil_olive_oil.png"
+    },
+    {
+      "id": "food_oil_coconut_oil",
+      "name": "椰子油",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_oil_coconut_oil.png"
+    },
+    {
+      "id": "food_oil_rapeseed_oil",
+      "name": "菜籽油",
+      "previewPath": "/Users/pengliangxing/宝宝辅食排敏/_preview_icons/food_oil_rapeseed_oil.png"
+    }
+  ],
+  "failed": []
+}

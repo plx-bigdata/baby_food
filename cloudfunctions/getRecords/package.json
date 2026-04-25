@@ -1,0 +1,9 @@
+{
+  "name": "getRecords",
+  "version": "1.0.0",
+  "description": "拉取当前用户的辅食记录(支持增量)",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

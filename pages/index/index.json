@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "宝宝今天吃什么",
-  "usingComponents": {}
+  "navigationBarTitleText": "呀咪宝宝辅食",
+  "usingComponents": {
+    "record-sheet": "/components/record-sheet/record-sheet",
+    "share-report": "/components/share-report/share-report"
+  }
 }

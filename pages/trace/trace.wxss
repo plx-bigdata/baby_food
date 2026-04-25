@@ -1,457 +1,316 @@
-/* pages/trace/trace.wxss — 过敏溯源页样式 */
+/* pages/trace/trace.wxss — 日历页样式 */
 
-/* ===== 入口卡片 ===== */
-.alert-card {
-  margin: 24rpx;
+.page-container {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 日历容器 ===== */
+.calendar-container {
+  background: var(--color-white);
+  padding: 32rpx 24rpx;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(135deg, #FFF1F0 0%, #FFE4E4 100%);
-  border: 1rpx solid #FFCCC7;
-  padding: 28rpx 24rpx;
-  gap: 16rpx;
+  margin-bottom: 32rpx;
 }
 
-.alert-card__left {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  flex: 1;
+.calendar-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text-primary);
 }
 
-.alert-card__icon {
-  width: 64rpx;
-  height: 64rpx;
-  background: var(--color-danger);
-  color: #fff;
-  border-radius: 16rpx;
+.calendar-nav {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: 24px;
+  gap: 20rpx;
+}
+
+.calendar-nav__btn {
+  font-size: 14px;
+  color: var(--color-primary);
+  padding: 8rpx 16rpx;
+}
+
+.calendar-nav__today {
+  font-size: 13px;
+  color: var(--color-primary);
+  padding: 6rpx 16rpx;
+  border: 1rpx solid var(--color-primary);
+  border-radius: 100rpx;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 24rpx;
+}
+
+.calendar-weekday {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  text-align: center;
+  padding: 8rpx 0;
+}
+
+/* ===== 日历网格 ===== */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6rpx;
+}
+
+.calendar-day {
+  height: 200rpx;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 6rpx 4rpx 4rpx;
+  border-radius: 14rpx;
+  position: relative;
+  background: var(--color-bg);
+  border: 2rpx solid transparent;
+  overflow: hidden;
+}
+
+.calendar-day--other {
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+.calendar-day--other .calendar-day__num,
+.calendar-day--other .calendar-day__empty,
+.calendar-day--other .calendar-day__foods {
+  display: none;
+}
+
+.calendar-day--has-record {
+  background: #FFF8F5;
+}
+
+.calendar-day__num {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  line-height: 1;
+  margin-bottom: 8rpx;
+  text-align: center;
+}
+
+.calendar-day__num--today {
+  color: var(--color-primary);
   font-weight: 700;
+}
+
+.calendar-day__empty {
+  font-size: 11px;
+  color: var(--color-text-hint);
+}
+
+.calendar-day__foods {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+  width: 100%;
+  align-items: flex-start;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.calendar-day__food {
+  display: flex;
+  align-items: center;
+  gap: 3rpx;
+  width: 100%;
+  line-height: 1.15;
   flex-shrink: 0;
 }
 
-.alert-card__info {
-  display: flex;
-  flex-direction: column;
-  gap: 4rpx;
-}
-
-.alert-card__title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--color-danger);
+.calendar-day__food-icon {
+  width: 22rpx;
+  height: 22rpx;
+  flex-shrink: 0;
   display: block;
 }
 
-.alert-card__desc {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  display: block;
+.calendar-day__food-emoji {
+  font-size: 22rpx;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
-.alert-card__arrow {
-  font-size: 24px;
-  color: var(--color-danger);
+.calendar-day__food-name {
+  font-size: 18rpx;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
-/* ===== 表单弹窗 ===== */
-.form-mask {
+.calendar-day__more {
+  font-size: 18rpx;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ===== 日期详情弹窗 ===== */
+.day-modal-mask {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
-  z-index: 100;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
 }
 
-.form-panel {
+.day-modal-mask--show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.day-modal {
   position: fixed;
-  left: 0; right: 0; bottom: 0;
-  background: var(--color-white);
+  left: 0; right: 0;
+  bottom: 0;
+  background: #FFF;
   border-radius: 24rpx 24rpx 0 0;
-  padding: 32rpx 30rpx;
-  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
-  z-index: 101;
+  z-index: 1001;
   transform: translateY(100%);
-  transition: transform 0.3s ease;
-  max-height: 88vh;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.form-panel--show {
-  transform: translateY(0);
-}
-
-.form-panel__header {
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  height: 70vh;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24rpx;
+  flex-direction: column;
 }
 
-.form-panel__title {
-  font-size: 18px;
+.day-modal--show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.day-modal__handle {
+  width: 80rpx;
+  height: 8rpx;
+  background: #DDD;
+  border-radius: 4rpx;
+  margin: 16rpx auto 0;
+}
+
+.day-modal__header {
+  padding: 16rpx 32rpx;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.day-modal__title {
+  font-size: 17px;
   font-weight: 600;
   color: var(--color-text-primary);
-}
-
-.form-panel__close {
-  font-size: 18px;
-  color: var(--color-text-hint);
-  padding: 8rpx;
-}
-
-.form-row {
-  display: flex;
-  gap: 16rpx;
-}
-
-.form-field {
-  margin-bottom: 24rpx;
-}
-
-.form-field__label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  display: block;
-  margin-bottom: 10rpx;
-}
-
-.form-field__picker {
-  background: var(--color-bg);
-  border-radius: var(--border-radius-base);
-  padding: 14rpx 18rpx;
-  font-size: 14px;
-  color: var(--color-text-primary);
-}
-
-.form-field__textarea {
-  background: var(--color-bg);
-  border-radius: var(--border-radius-base);
-  padding: 14rpx 18rpx;
-  font-size: 14px;
-  color: var(--color-text-primary);
-  width: 100%;
-  min-height: 100rpx;
-  line-height: 1.5;
-}
-
-/* ===== 症状多选 ===== */
-.symptom-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
-}
-
-.symptom-chip {
-  padding: 10rpx 22rpx;
-  background: var(--color-bg);
-  border: 2rpx solid transparent;
-  border-radius: 100rpx;
-  font-size: 13px;
-  color: var(--color-text-secondary);
-}
-
-.symptom-chip--default {
-  background: var(--color-bg);
-  border-color: transparent;
-  color: var(--color-text-secondary);
-}
-
-.symptom-chip--selected {
-  background: var(--color-danger-light);
-  border-color: var(--color-danger);
-  color: var(--color-danger);
-}
-
-/* ===== 严重程度 ===== */
-.severity-row {
-  display: flex;
-  gap: 16rpx;
-}
-
-.severity-btn {
-  flex: 1;
   text-align: center;
-  padding: 14rpx;
-  border-radius: var(--border-radius-base);
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  background: var(--color-bg);
-  border: 2rpx solid transparent;
 }
 
-.severity-btn--active {
-  color: var(--color-danger);
-  background: var(--color-danger-light);
-  border-color: var(--color-danger);
+.day-modal__body {
+  flex: 1;
+  min-height: 0;
 }
 
-.form-submit-btn {
-  width: 100%;
-  background: var(--color-primary);
-  color: #fff;
-  border-radius: 100rpx;
-  font-size: 16px;
-  padding: 24rpx;
-  margin-top: 8rpx;
-}
-
-.form-submit-btn::after {
-  border: none;
-}
-
-/* ===== 可疑食物分析 ===== */
-.suspect-section {
-  margin: 0 24rpx 20rpx;
-}
-
-.suspect-hint {
-  font-size: 13px;
-  color: var(--color-text-hint);
-  display: block;
-  margin-bottom: 16rpx;
-}
-
-.suspect-list {
+.day-modal__list {
+  padding: 16rpx 32rpx 16rpx;
   display: flex;
   flex-direction: column;
   gap: 12rpx;
 }
 
-.suspect-item {
+.day-modal__item {
   display: flex;
   align-items: center;
-  padding: 16rpx;
-  border-radius: var(--border-radius-base);
+  gap: 16rpx;
   background: var(--color-bg);
-  gap: 14rpx;
-  border: 2rpx solid transparent;
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
 }
 
-.suspect-item--high {
-  background: var(--color-danger-light);
-  border-color: var(--color-danger);
-}
-
-.suspect-item--mid {
-  background: var(--color-warning-light);
-  border-color: var(--color-warning);
-}
-
-.suspect-rank {
-  width: 40rpx;
-  height: 40rpx;
-  border-radius: 50%;
+.day-modal__icon-box {
+  width: 72rpx;
+  height: 72rpx;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  flex-shrink: 0;
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
 }
 
-.rank-1 { background: #FFD700; color: #333; }
-.rank-2 { background: #C0C0C0; color: #333; }
-.rank-3 { background: #CD7F32; color: #fff; }
-.rank-other { background: var(--color-bg); color: var(--color-text-hint); }
-
-.suspect-img {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 10rpx;
-  flex-shrink: 0;
+.day-modal__food-icon {
+  width: 100%;
+  height: 100%;
 }
 
-.suspect-info {
+.day-modal__emoji {
+  font-size: 60rpx;
+  line-height: 1;
+}
+
+.day-modal__info {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4rpx;
 }
 
-.suspect-name {
+.day-modal__name {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--color-text-primary);
-  display: block;
 }
 
-.suspect-tags {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-  flex-wrap: wrap;
-}
-
-.suspect-tag {
-  padding: 2rpx 10rpx;
-  border-radius: 100rpx;
-  font-size: 11px;
-}
-
-.suspect-time {
-  font-size: 11px;
+.day-modal__time {
+  font-size: 12px;
   color: var(--color-text-hint);
 }
 
-.suspect-confidence {
-  padding: 6rpx 16rpx;
-  border-radius: 100rpx;
+.day-modal__reaction {
   font-size: 12px;
+  padding: 4rpx 14rpx;
+  border-radius: 100rpx;
+  font-weight: 500;
   flex-shrink: 0;
 }
 
-.suspect-confidence--high { background: var(--color-danger-light); color: var(--color-danger); }
-.suspect-confidence--mid { background: var(--color-warning-light); color: var(--color-warning); }
-.suspect-confidence--low { background: var(--color-bg); color: var(--color-text-hint); }
+.day-modal__reaction--normal { background: var(--color-success-light); color: var(--color-success); }
+.day-modal__reaction--warning { background: var(--color-warning-light); color: var(--color-warning); }
+.day-modal__reaction--danger { background: var(--color-danger-light); color: var(--color-danger); }
 
-/* ===== 确认区 ===== */
-.confirm-section {
-  margin-top: 24rpx;
-  padding-top: 20rpx;
-  border-top: 1rpx solid var(--color-border);
-}
-
-.confirm-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  display: block;
-  margin-bottom: 14rpx;
-}
-
-.confirm-btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12rpx;
-  margin-bottom: 16rpx;
-}
-
-.confirm-btn {
-  padding: 10rpx 22rpx;
-  border-radius: 100rpx;
-  font-size: 13px;
-  background: var(--color-bg);
-  color: var(--color-text-secondary);
-}
-
-.confirm-btn--selected {
-  background: var(--color-danger-light);
-  color: var(--color-danger);
-}
-
-.save-allergy-btn {
-  width: 100%;
-  background: var(--color-danger);
-  color: #fff;
-  border-radius: 100rpx;
-  font-size: 15px;
-  padding: 20rpx;
-}
-
-.save-allergy-btn::after {
-  border: none;
-}
-
-/* ===== 过敏历史时间线 ===== */
-.history-section {
-  margin-top: 24rpx;
-  padding-bottom: 40rpx;
-}
-
-.empty-state__text {
-  font-size: 14px;
-  color: var(--color-text-hint);
-  display: block;
-  text-align: center;
-  padding: 60rpx 0;
-}
-
-.timeline {
-  padding: 0 24rpx;
-}
-
-.timeline-item {
-  position: relative;
-  padding-left: 36rpx;
-  margin-bottom: 24rpx;
-}
-
-.timeline-dot {
-  position: absolute;
-  left: 0;
-  top: 16rpx;
-  width: 18rpx;
-  height: 18rpx;
-  background: var(--color-danger);
-  border-radius: 50%;
-}
-
-.timeline-line {
-  position: absolute;
-  left: 8rpx;
-  top: 34rpx;
-  width: 2rpx;
-  bottom: -24rpx;
-  background: var(--color-border);
-}
-
-.timeline-content {
-  margin: 0;
-}
-
-.timeline-header {
+.day-modal__delete {
+  width: 64rpx;
+  height: 64rpx;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8rpx;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: 8rpx;
 }
 
-.timeline-date {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-}
-
-.timeline-symptom {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  display: block;
-  margin-bottom: 8rpx;
-}
-
-.timeline-food {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  margin-bottom: 8rpx;
-}
-
-.timeline-food-img {
+.day-modal__delete-icon {
   width: 36rpx;
   height: 36rpx;
-  border-radius: 8rpx;
 }
 
-.timeline-food-name {
-  font-size: 13px;
-  color: var(--color-danger);
-  font-weight: 500;
-}
-
-.timeline-notes {
-  font-size: 13px;
-  color: var(--color-text-hint);
-  display: block;
-  margin-bottom: 4rpx;
-}
-
-.timeline-retest {
-  font-size: 12px;
-  color: var(--color-warning);
-  display: block;
-  margin-top: 4rpx;
+.scroll-bottom-spacer {
+  height: calc(240rpx + env(safe-area-inset-bottom));
 }

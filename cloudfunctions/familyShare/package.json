@@ -1,0 +1,9 @@
+{
+  "name": "familyShare",
+  "version": "1.0.0",
+  "description": "家庭邀请创建、预览和加入",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

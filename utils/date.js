@@ -36,6 +36,36 @@ function getTodayDateStr() {
 }
 
 /**
+ * 任意输入(ISO 字符串 / Date / 时间戳) → 本地 YYYY-MM-DD。
+ * 所有业务日期判断统一走这里,避免 toISOString().split('T')[0] 的时区偏移。
+ */
+function getLocalDateStr(input) {
+  if (!input) return '';
+  const d = input instanceof Date ? input : new Date(input);
+  if (isNaN(d.getTime())) return '';
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+/**
+ * 辅食记录 → 本地 YYYY-MM-DD。优先用记录里显式写的 recordDate(新字段),
+ * 老数据没有时从 recordTime 按本地时区推算。
+ */
+function getRecordDate(record) {
+  if (!record) return '';
+  if (record.recordDate) return record.recordDate;
+  return getLocalDateStr(record.recordTime);
+}
+
+/**
+ * 过敏日志 → 本地 YYYY-MM-DD。优先用 occurredDate(新字段),老数据用 occurredAt 推算。
+ */
+function getOccurredDate(log) {
+  if (!log) return '';
+  if (log.occurredDate) return log.occurredDate;
+  return getLocalDateStr(log.occurredAt);
+}
+
+/**
  * 获取今天的起止时间 ISO 字符串
  */
 function getTodayRange() {
@@ -47,14 +77,16 @@ function getTodayRange() {
 }
 
 /**
- * 获取指定日期的起止时间
+ * 获取指定日期的起止时间（返回 Date 对象）
  */
 function getDayRange(date) {
   const d = new Date(date);
-  const str = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const year = d.getFullYear();
+  const month = d.getMonth();
+  const day = d.getDate();
   return {
-    start: `${str}T00:00:00.000Z`,
-    end: `${str}T23:59:59.999Z`,
+    start: new Date(year, month, day, 0, 0, 0, 0),
+    end: new Date(year, month, day, 23, 59, 59, 999),
   };
 }
 
@@ -77,20 +109,42 @@ function getWeekRange(date) {
 /**
  * 计算宝宝月龄描述
  * @param {string} birthday YYYY-MM-DD
+ * @returns {string} 格式：X月XX天 或 X岁X月
  */
 function calcBabyAge(birthday) {
   if (!birthday) return '';
   const birth = new Date(birthday);
   const now = new Date();
+  const totalDays = Math.floor((now - birth) / (1000 * 60 * 60 * 24));
   const months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
-  if (months < 1) {
-    const days = Math.floor((now - birth) / (1000 * 60 * 60 * 24));
-    return `${days}天`;
+
+  if (totalDays < 30) {
+    return `${totalDays}天`;
   }
-  if (months < 24) return `${months}个月`;
-  const years = Math.floor(months / 12);
-  const remainMonths = months % 12;
-  return remainMonths > 0 ? `${years}岁${remainMonths}个月` : `${years}岁`;
+
+  // 计算准确的月龄（X月XX天）
+  const birthMonth = birth.getMonth();
+  const birthDay = birth.getDate();
+  const currentMonth = now.getMonth();
+  const currentDay = now.getDate();
+
+  let monthAge = months;
+  let dayAge = currentDay - birthDay;
+  if (dayAge < 0) {
+    monthAge--;
+    // 上个月有多少天
+    const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+    dayAge += lastMonth.getDate();
+  }
+
+  if (monthAge < 12) {
+    return `${monthAge}个月${dayAge}天`;
+  }
+
+  // 超过12个月显示岁
+  const years = Math.floor(monthAge / 12);
+  const remainMonths = monthAge % 12;
+  return remainMonths > 0 ? `${years}岁${remainMonths}月` : `${years}岁`;
 }
 
 /**
@@ -165,6 +219,9 @@ module.exports = {
   formatDate,
   formatTime,
   getTodayDateStr,
+  getLocalDateStr,
+  getRecordDate,
+  getOccurredDate,
   getTodayRange,
   getDayRange,
   getWeekRange,

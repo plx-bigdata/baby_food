@@ -1,288 +1,255 @@
-// pages/trace/trace.js — 过敏溯源页逻辑
+// pages/trace/trace.js — 日历页逻辑
 
 const app = getApp();
 const dateUtil = require('../../utils/date');
 const foodLibrary = require('../../data/food-library');
-const planCategories = require('../../data/plan-categories');
+const SHEET_ANIMATION_DURATION = 280;
 
 Page({
   data: {
-    // 过敏表单是否显示
-    showForm: false,
-    allergyForm: {
-      date: '',
-      time: '',
-      notes: '',
-    },
-    // 症状多选（对象形式，方便 WXML 判断）
-    selectedSymptomMap: {},
-    symptomTypes: [
-      { label: '皮疹', value: 'rash' },
-      { label: '腹泻', value: 'diarrhea' },
-      { label: '呕吐', value: 'vomit' },
-      { label: '湿疹加重', value: 'eczema' },
-      { label: '鼻塞', value: 'nasal' },
-      { label: '哭闹不安', value: 'fussy' },
-      { label: '其他', value: 'other' },
-    ],
-    severityOptions: [
-      { label: '轻度', value: '轻度' },
-      { label: '中度', value: '中度' },
-      { label: '重度', value: '重度' },
-    ],
-    severity: '轻度',
-    // 可疑食物分析结果
-    suspectList: [],
-    confirmedFoodId: '',
-    confirmedFoodName: '',
-    // 过敏历史时间线
-    allergyHistory: [],
-    // 状态映射
-    confidenceMap: { high: '高', mid: '中', low: '低' },
+    calendarYear: new Date().getFullYear(),
+    calendarMonth: new Date().getMonth() + 1,
+    calendarDays: [],
+    selectedDay: null,
+    showDayModal: false,
+    renderSelectedDay: false,
+    calendarScrollHeight: 400,
+    dayModalScrollHeight: 300,
+    showRecordSheet: false,
+  },
+
+  // ===== 记录辅食覆盖层 =====
+  handleShowRecordSheet() {
+    this.setData({ showRecordSheet: true });
+  },
+  onRecordSheetClose() {
+    this.setData({ showRecordSheet: false });
+  },
+  onRecordSaved() {
+    this.setData({ showRecordSheet: false });
+    this.buildCalendar();
   },
 
   onLoad() {
-    const today = dateUtil.getTodayDateStr();
-    const now = new Date();
-    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    this.setData({
-      'allergyForm.date': today,
-      'allergyForm.time': timeStr,
-    });
-    this.loadAllergyHistory();
+    this._computeScrollHeights();
+    this.buildCalendar();
   },
 
   onShow() {
-    this.loadAllergyHistory();
+    const tabBar = this.getTabBar();
+    if (tabBar) tabBar.setData({ currentSelected: 3 });
+    this.refreshFromGlobal();
   },
 
   /**
-   * 加载过敏历史
+   * 云同步完成后由 app.syncFromCloud 主动调用;onShow 也复用
    */
-  loadAllergyHistory() {
-    const logs = app.globalData.allergyLogs || [];
-    const history = logs
-      .sort((a, b) => new Date(b.occurredAt) - new Date(a.occurredAt))
-      .map(log => {
-        const food = log.confirmedFood ? foodLibrary.getFoodById(log.confirmedFood) : null;
-        const cat = food ? planCategories.getCategoryByFoodId(food.id) : null;
-        return {
-          ...log,
-          dateText: dateUtil.formatDate(new Date(log.occurredAt), 'YYYY年M月D日'),
-          confirmedFoodName: food ? food.name : '未确认',
-          confirmedFoodImageUrl: food ? food.imageUrl : '',
-          confirmedCatName: cat ? cat.name : '',
-        };
-      });
-    this.setData({ allergyHistory: history });
+  refreshFromGlobal() {
+    const babyId = app.globalData.currentBabyId;
+    if (babyId) {
+      const records = wx.getStorageSync('allRecords_' + babyId) || [];
+      app.globalData.allRecords = records;
+    }
+    this.buildCalendar();
   },
 
-  /**
-   * 打开过敏记录表单
-   */
-  openAllergyForm() {
+  _computeScrollHeights() {
+    const info = wx.getWindowInfo ? wx.getWindowInfo() : wx.getSystemInfoSync();
+    const winH = info.windowHeight;
+    const safeBottom = info.safeArea ? (winH - info.safeArea.bottom) : 0;
+    const tabbarH = 50 + safeBottom;
+
+    // 日历 scroll-view：扣除 container-padding(24px) + header(~48px) + weekdays(~36px) + 余量(10px)
+    const calendarScrollHeight = winH - tabbarH - 24 - 48 - 36 - 10;
+    // 日期弹窗内 scroll-view：弹窗 70vh，扣除 handle+header ~44px
+    const dayModalScrollHeight = winH * 0.7 - 44;
+
     this.setData({
-      showForm: true,
-      suspectList: [],
-      confirmedFoodId: '',
-      confirmedFoodName: '',
-      'allergyForm.notes': '',
-      selectedSymptomMap: {},
-      severity: '轻度',
+      calendarScrollHeight: Math.max(calendarScrollHeight, 200),
+      dayModalScrollHeight: Math.max(dayModalScrollHeight, 200),
     });
   },
 
-  closeAllergyForm() {
-    this.setData({ showForm: false });
-  },
+  buildCalendar() {
+    const { calendarYear, calendarMonth } = this.data;
+    const days = dateUtil.buildMonthCalendar(calendarYear, calendarMonth);
+    const records = app.globalData.allRecords || [];
 
-  /**
-   * 切换症状多选
-   */
-  toggleSymptom(e) {
-    const val = e.currentTarget.dataset.value;
-    const { selectedSymptomMap } = this.data;
-    const newMap = { ...selectedSymptomMap };
-    if (newMap[val]) {
-      delete newMap[val];
-    } else {
-      newMap[val] = true;
-    }
-    this.setData({ selectedSymptomMap: newMap });
-  },
-
-  selectSeverity(e) {
-    this.setData({ severity: e.currentTarget.dataset.value });
-  },
-
-  onDateChange(e) {
-    this.setData({ 'allergyForm.date': e.detail.value });
-  },
-
-  onTimeChange(e) {
-    this.setData({ 'allergyForm.time': e.detail.value });
-  },
-
-  onNotesInput(e) {
-    this.setData({ 'allergyForm.notes': e.detail.value });
-  },
-
-  /**
-   * 开始溯源分析
-   */
-  analyzeAllergy() {
-    const { allergyForm, severity, selectedSymptomMap } = this.data;
-    const selectedSymptoms = Object.keys(selectedSymptomMap);
-    if (selectedSymptoms.length === 0) {
-      wx.showToast({ title: '请至少选择一个症状', icon: 'none' });
-      return;
-    }
-
-    wx.showLoading({ title: '分析中...' });
-
-    try {
-      const { date, time, notes } = allergyForm;
-      const occurredAt = new Date(`${date}T${time}:00`).toISOString();
-
-      // 查询过去7天内的所有辅食记录
-      const records = app.globalData.allRecords || [];
-      const windowStart = new Date(new Date(occurredAt).getTime() - 7 * 24 * 60 * 60 * 1000);
-      const windowRecords = records.filter(r => {
+    const recordsByDate = {};
+    days.forEach(day => {
+      const { start, end } = dateUtil.getDayRange(day.date);
+      const startMs = start.getTime();
+      const endMs = end.getTime();
+      const dayRecords = records.filter(r => {
         if (!r.recordTime) return false;
-        const rt = new Date(r.recordTime);
-        return rt >= windowStart && rt <= new Date(occurredAt);
+        const recordMs = new Date(r.recordTime).getTime();
+        return recordMs >= startMs && recordMs <= endMs;
       });
-
-      // 按时间/过敏风险/是否首次综合排序
-      const suspects = this.rankSuspects(windowRecords, occurredAt);
-
-      this.setData({
-        suspectList: suspects,
-        showForm: false,
-      });
-
-      wx.hideLoading();
-    } catch (err) {
-      console.error('[溯源页] 分析失败:', err);
-      wx.hideLoading();
-      wx.showToast({ title: '分析失败', icon: 'none' });
-    }
-  },
-
-  /**
-   * 综合排序可疑食物
-   * 规则：
-   * 1. 首次吃 > 非首次
-   * 2. 高过敏风险 > 中 > 低
-   * 3. 时间越近 > 时间越远
-   */
-  rankSuspects(records, occurredAt) {
-    const scored = records.map(r => {
-      const food = foodLibrary.getFoodById(r.foodId);
-      const cat = food ? planCategories.getCategoryByFoodId(r.foodId) : null;
-      const hoursAgo = (new Date(occurredAt) - new Date(r.recordTime)) / (1000 * 60 * 60);
-      const allergyRiskScore = cat
-        ? { '低': 1, '中': 2, '高': 3 }[cat.allergyRisk] || 1
-        : 1;
-      const isFirstScore = r.isFirstTime ? 2 : 0;
-      const timeScore = Math.max(0, 1 - hoursAgo / (7 * 24)); // 越近分越高
-      const totalScore = isFirstScore + allergyRiskScore + timeScore * 0.5;
-
-      let confidence = '低';
-      if (totalScore >= 4) confidence = '高';
-      else if (totalScore >= 2.5) confidence = '中';
-
-      return {
-        foodId: r.foodId,
-        foodName: food ? food.name : r.foodName,
-        imageUrl: food ? food.imageUrl : r.imageUrl,
-        isFirstTime: r.isFirstTime,
-        hoursAgo: Math.round(hoursAgo),
-        timeAgoText: this.formatTimeAgo(hoursAgo),
-        allergyRisk: cat ? cat.allergyRisk : '低',
-        confidence,
-        totalScore,
-      };
-    });
-
-    // 去重，保留最高分
-    const deduped = {};
-    scored.forEach(s => {
-      if (!deduped[s.foodId] || s.totalScore > deduped[s.foodId].totalScore) {
-        deduped[s.foodId] = s;
+      if (dayRecords.length > 0) {
+        recordsByDate[day.date] = dayRecords;
       }
     });
 
-    return Object.values(deduped)
-      .sort((a, b) => b.totalScore - a.totalScore);
+    const today = dateUtil.getTodayDateStr();
+    const filledDays = days.map(day => {
+      const dayRecs = recordsByDate[day.date] || [];
+      const seenFoodIds = new Set();
+      const dayFoods = [];
+      dayRecs.forEach(r => {
+        if (seenFoodIds.has(r.foodId)) return;
+        seenFoodIds.add(r.foodId);
+        const food = foodLibrary.getFoodById(r.foodId);
+        const display = foodLibrary.getFoodDisplay(food, r);
+        dayFoods.push({
+          ...r,
+          ...display,
+        });
+      });
+      return {
+        ...day,
+        hasRecord: dayRecs.length > 0,
+        recordCount: dayRecs.length,
+        dayFoods,
+        isToday: day.date === today,
+      };
+    });
+
+    this.setData({ calendarDays: filledDays });
   },
 
-  formatTimeAgo(hours) {
-    if (hours < 1) return '刚刚';
-    if (hours < 24) return `${Math.round(hours)}小时`;
-    const days = Math.round(hours / 24);
-    return `${days}天`;
+  prevMonth() {
+    let { calendarYear, calendarMonth } = this.data;
+    calendarMonth--;
+    if (calendarMonth < 1) { calendarMonth = 12; calendarYear--; }
+    this.setData({ calendarYear, calendarMonth });
+    this.buildCalendar();
   },
 
-  /**
-   * 确认过敏食物
-   */
-  confirmFood(e) {
-    const id = e.currentTarget.dataset.id;
-    const name = e.currentTarget.dataset.name;
-    this.setData({ confirmedFoodId: id, confirmedFoodName: name });
+  nextMonth() {
+    let { calendarYear, calendarMonth } = this.data;
+    calendarMonth++;
+    if (calendarMonth > 12) { calendarMonth = 1; calendarYear++; }
+    this.setData({ calendarYear, calendarMonth });
+    this.buildCalendar();
   },
 
-  /**
-   * 保存过敏记录
-   */
-  saveAllergyRecord() {
-    const { allergyForm, severity, suspectList, confirmedFoodId, confirmedFoodName, selectedSymptomMap } = this.data;
-    const selectedSymptoms = Object.keys(selectedSymptomMap);
-    if (!confirmedFoodId) {
-      wx.showToast({ title: '请选择过敏食物', icon: 'none' });
-      return;
+  goToToday() {
+    const now = new Date();
+    this.setData({ calendarYear: now.getFullYear(), calendarMonth: now.getMonth() + 1 });
+    this.buildCalendar();
+  },
+
+  selectCalendarDay(e) {
+    const date = e.currentTarget.dataset.date;
+    const day = this.data.calendarDays.find(d => d.date === date);
+    if (!day || !day.hasRecord) return;
+
+    const records = app.globalData.allRecords || [];
+    const { start, end } = dateUtil.getDayRange(date);
+    const startMs = start.getTime();
+    const endMs = end.getTime();
+    const rawRecords = records.filter(r => {
+      if (!r.recordTime) return false;
+      const ms = new Date(r.recordTime).getTime();
+      return ms >= startMs && ms <= endMs;
+    });
+
+    const foodMap = {};
+    rawRecords.forEach(r => {
+      const food = foodLibrary.getFoodById(r.foodId);
+      const key = r.foodId;
+      if (!foodMap[key]) {
+        const display = foodLibrary.getFoodDisplay(food, r);
+        foodMap[key] = {
+          ...display,
+          times: [],
+          reaction: '',
+          reactionClass: 'normal',
+        };
+      }
+      const d = new Date(r.recordTime);
+      const t = `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      foodMap[key].times.push(t);
+      if (r.reaction === '过敏') {
+        foodMap[key].reaction = '过敏'; foodMap[key].reactionClass = 'danger';
+      } else if (r.reaction === '疑似过敏' && foodMap[key].reactionClass !== 'danger') {
+        foodMap[key].reaction = '疑似过敏'; foodMap[key].reactionClass = 'warning';
+      }
+    });
+
+    const dayRecords = Object.values(foodMap).map(item => ({
+      ...item,
+      timesStr: item.times.sort().join('  '),
+    }));
+
+    const dateText = `${date.split('-')[1]}月${date.split('-')[2]}日`;
+    this.setData({
+      renderSelectedDay: true,
+      showDayModal: false,
+      selectedDay: { date, dateText, foods: dayRecords },
+    }, () => {
+      setTimeout(() => this.setData({ showDayModal: true }), 16);
+    });
+  },
+
+  closeDayModal() {
+    if (!this.data.selectedDay && !this.data.renderSelectedDay) return;
+    this.setData({ showDayModal: false }, () => {
+      clearTimeout(this._dayModalTimer);
+      this._dayModalTimer = setTimeout(() => {
+        this.setData({ renderSelectedDay: false, selectedDay: null });
+      }, SHEET_ANIMATION_DURATION);
+    });
+  },
+
+  _modalDragY: -9999,
+  onModalDragStart(e) {
+    const touchY = e.touches[0].clientY;
+    const screenHeight = wx.getSystemInfoSync().windowHeight;
+    const modalTop = screenHeight * 0.3;
+    if (touchY >= modalTop && touchY < modalTop + 200) {
+      this._modalDragY = touchY;
+    } else {
+      this._modalDragY = -9999;
     }
-
-    const occurredAt = new Date(`${allergyForm.date}T${allergyForm.time}:00`).toISOString();
-
-    // 症状文字化
-    const symptomLabelMap = {
-      rash: '皮疹', diarrhea: '腹泻', vomit: '呕吐',
-      eczema: '湿疹加重', nasal: '鼻塞', fussy: '哭闹不安', other: '其他',
-    };
-    const symptomText = selectedSymptoms.map(s => symptomLabelMap[s] || s).join('、');
-
-    const log = {
-      occurredAt,
-      symptoms: selectedSymptoms,
-      symptomText,
-      severity,
-      notes: allergyForm.notes,
-      confirmedFood: confirmedFoodId,
-      confirmedFoodName,
-      retestDate: this.calcRetestDate(occurredAt),
-      createdAt: new Date().toISOString(),
-    };
-
-    // 存入全局
-    app.saveAllergyLog(log);
-
-    wx.showToast({ title: '已记录过敏', icon: 'success' });
-    this.setData({ suspectList: [], confirmedFoodId: '', confirmedFoodName: '' });
-    this.loadAllergyHistory();
   },
-
-  calcRetestDate(occurredAt) {
-    const d = new Date(occurredAt);
-    d.setMonth(d.getMonth() + 3);
-    return dateUtil.formatDate(d, 'YYYY-MM-DD');
+  onModalDragEnd(e) {
+    if (this._modalDragY < 0) return;
+    const delta = e.changedTouches[0].clientY - this._modalDragY;
+    if (delta > 120) this.closeDayModal();
   },
 
   /**
-   * 跳转到首页（快速记录入口）
+   * 删除某天某食物的所有记录
    */
-  goToRecord() {
-    wx.switchTab({ url: '/pages/record/record' });
+  onDeleteDayRecord(e) {
+    const { foodid, name, count } = e.currentTarget.dataset;
+    const date = this.data.selectedDay && this.data.selectedDay.date;
+    if (!foodid || !date) return;
+    const n = parseInt(count, 10) || 1;
+    wx.showModal({
+      title: '删除食用记录',
+      content: `将删除 ${date} 的 ${name || ''} ${n} 次记录,确定继续?`,
+      confirmColor: '#FF4757',
+      success: (res) => {
+        if (!res.confirm) return;
+        const removed = app.deleteFoodRecordsByDay(foodid, date);
+        if (!removed) {
+          wx.showToast({ title: '未找到记录', icon: 'none' });
+          return;
+        }
+        wx.showToast({ title: '已删除', icon: 'success' });
+        // 刷新当前日期弹窗 + 日历
+        const newFoods = (this.data.selectedDay.foods || []).filter(f => f.id !== foodid);
+        if (newFoods.length === 0) {
+          this.closeDayModal();
+        } else {
+          this.setData({ 'selectedDay.foods': newFoods });
+        }
+        this.buildCalendar();
+      },
+    });
   },
+
+  noop() {},
 });

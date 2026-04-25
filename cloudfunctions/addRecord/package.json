@@ -1,0 +1,9 @@
+{
+  "name": "addRecord",
+  "version": "1.0.0",
+  "description": "新增辅食记录到 food_records 集合，支持批量和幂等",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -6,33 +6,42 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24rpx;
+  padding: 28rpx 28rpx;
 }
 
 .header-left {
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .header-avatar {
-  width: 80rpx;
-  height: 80rpx;
+  width: 110rpx;
+  height: 110rpx;
   border-radius: 50%;
-  margin-right: 20rpx;
-  border: 3rpx solid var(--color-primary-light);
+  margin-right: 24rpx;
+  border: 4rpx solid var(--color-primary-light);
+  flex-shrink: 0;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
 }
 
 .header-name {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: var(--color-text-primary);
   display: block;
 }
 
-.header-age {
+.header-birthday {
   font-size: 13px;
-  color: var(--color-text-hint);
-  margin-top: 4rpx;
+  color: var(--color-text-secondary);
   display: block;
 }
 
@@ -45,11 +54,15 @@
   display: flex;
   align-items: center;
   gap: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
 }
 
-.header-arrow {
-  font-size: 12px;
-  color: var(--color-text-hint);
+.header-age {
+  font-size: 15px;
+  color: var(--color-primary);
+  font-weight: 600;
+  display: block;
 }
 
 /* ===== 宝宝切换弹窗 ===== */
@@ -58,6 +71,14 @@
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
   z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.switcher-mask--show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .switcher-panel {
@@ -66,15 +87,17 @@
   background: var(--color-white);
   border-radius: 24rpx 24rpx 0 0;
   padding: 32rpx 30rpx;
-  padding-bottom: calc(32rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
-  z-index: 101;
+  padding-bottom: calc(160rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+  z-index: 1001;
   transform: translateY(100%);
   transition: transform 0.3s ease;
+  pointer-events: none;
 }
 
 .switcher-panel--show {
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .switcher-panel__header {
@@ -171,93 +194,6 @@
   font-weight: 500;
 }
 
-/* ===== 生长发育卡片 ===== */
-.growth-card {
-  margin: 20rpx 24rpx 0;
-}
-
-.growth-row {
-  display: flex;
-  align-items: center;
-}
-
-.growth-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.growth-value {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--color-text-primary);
-  display: block;
-}
-
-.growth-value.risk-low { color: var(--color-success); }
-.growth-value.risk-mid { color: var(--color-warning); }
-.growth-value.risk-high { color: var(--color-danger); }
-
-.growth-status-normal { color: var(--color-success); }
-.growth-status-high { color: var(--color-warning); }
-.growth-status-low { color: var(--color-danger); }
-
-.growth-value-row {
-  display: flex;
-  align-items: center;
-  gap: 4rpx;
-}
-
-.growth-edit-icon {
-  font-size: 12px;
-  color: var(--color-text-hint);
-}
-
-.growth-edit-row {
-  display: flex;
-  align-items: center;
-  gap: 6rpx;
-}
-
-.growth-edit-input {
-  width: 100rpx;
-  font-size: 18px;
-  font-weight: 700;
-  text-align: center;
-  border-bottom: 2rpx solid var(--color-primary);
-  padding: 0 4rpx;
-}
-
-.growth-edit-confirm {
-  font-size: 16px;
-  color: var(--color-success);
-  font-weight: 700;
-}
-
-.growth-label {
-  font-size: 12px;
-  color: var(--color-text-hint);
-  margin-top: 4rpx;
-  display: block;
-}
-
-.growth-divider {
-  width: 1rpx;
-  height: 40rpx;
-  background: var(--color-border);
-}
-
-.growth-hint {
-  font-size: 12px;
-  color: var(--color-warning);
-  display: block;
-  text-align: center;
-  margin-top: 12rpx;
-  padding-top: 12rpx;
-  border-top: 1rpx solid var(--color-border);
-}
-
 /* ===== 快捷入口 ===== */
 .quick-entries {
   display: flex;
@@ -300,9 +236,32 @@
   margin-bottom: 12rpx;
 }
 
+.progress-header__right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
 .progress-count {
   font-size: 13px;
   color: var(--color-text-hint);
+}
+
+.share-report-btn {
+  width: 72rpx;
+  height: 72rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.share-report-btn--hover {
+  opacity: 0.7;
+}
+
+.share-report-btn__icon {
+  width: 44rpx;
+  height: 44rpx;
 }
 
 .progress-bar-wrap {
@@ -361,6 +320,11 @@
   border: 2rpx solid var(--color-warning);
 }
 
+.safety-box--preliminary {
+  background: var(--color-warning-light);
+  border: 2rpx solid var(--color-warning);
+}
+
 .safety-box--danger {
   background: var(--color-danger-light);
   border: 2rpx solid var(--color-danger);
@@ -372,6 +336,7 @@
 }
 
 .safety-box--safe .safety-box__icon { color: var(--color-success); }
+.safety-box--preliminary .safety-box__icon { color: var(--color-warning); }
 .safety-box--testing .safety-box__icon { color: var(--color-warning); }
 .safety-box--danger .safety-box__icon { color: var(--color-danger); }
 
@@ -386,25 +351,253 @@
   color: var(--color-text-hint);
 }
 
+/* ===== 状态说明入口 ===== */
+.status-explain-btn {
+  margin-top: 16rpx;
+  text-align: center;
+}
+
+.status-explain-btn text {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  text-decoration: underline;
+}
+
+/* ===== 过敏排查入口 ===== */
+.allergy-trace-entry {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: #FFF2F0;
+  border: 2rpx solid #FFCCC7;
+  border-radius: 20rpx;
+  padding: 28rpx 28rpx;
+  margin: 16rpx 24rpx 20rpx;
+}
+
+.allergy-trace-entry__icon {
+  font-size: 44rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.allergy-trace-entry__text {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.allergy-trace-entry__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #CF1322;
+}
+
+.allergy-trace-entry__sub {
+  font-size: 13px;
+  color: #FF7875;
+}
+
+/* ===== 状态说明列表 ===== */
+.status-explain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  padding-top: 8rpx;
+}
+
+.status-explain-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.status-explain-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6rpx;
+}
+
+.status-explain-dot--passed { background: var(--color-success); }
+.status-explain-dot--preliminary { background: var(--color-warning); }
+.status-explain-dot--testing { background: var(--color-warning); }
+.status-explain-dot--allergy { background: var(--color-danger); }
+
+.status-explain-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  flex: 1;
+}
+
+.status-explain-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.status-explain-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== 今天可以吃什么 ===== */
+.suggestion-card {
+  margin: 20rpx 24rpx 0;
+}
+
+.suggestion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.suggestion-hint {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  background: var(--color-bg);
+  padding: 4rpx 12rpx;
+  border-radius: 100rpx;
+}
+
+.suggestion-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.suggestion-group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.suggestion-group__label {
+  font-size: 12px;
+  color: var(--color-text-hint);
+  min-width: 60rpx;
+  flex-shrink: 0;
+}
+
+.suggestion-group__foods {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+/* 排敏任务 / 今日搭配 / 新食物 — 区块背景色区分 */
+.suggestion-group--testing .suggestion-group__foods {
+  background: #FFF7E6;
+  border-radius: 12rpx;
+  padding: 16rpx;
+}
+.suggestion-group--next_try .suggestion-group__foods {
+  background: #F0FFF4;
+  border-radius: 12rpx;
+  padding: 16rpx;
+}
+
+/* 每个食物条目：横向布局 */
+.suggestion-food {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.suggestion-food__left {
+  flex-shrink: 0;
+}
+
+.suggestion-food__emoji {
+  font-size: 52rpx;
+  line-height: 1;
+}
+
+.suggestion-food__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.suggestion-food__top {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  flex-wrap: wrap;
+}
+
+.suggestion-food__name {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.suggestion-food__desc {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.suggestion-food__badge {
+  padding: 2rpx 10rpx;
+  border-radius: 100rpx;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.suggestion-food__badge--testing {
+  background: var(--color-warning);
+  color: #fff;
+}
+
+.suggestion-food__badge--new {
+  background: #52C41A;
+  color: #fff;
+}
+
 /* ===== 安全/过敏食物列表面板 ===== */
 .food-list-panel {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.4);
-  z-index: 100;
+  z-index: 1001;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.food-list-panel--show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .food-list-panel__inner {
   width: 100%;
+  height: 85vh;
   background: var(--color-white);
   border-radius: 24rpx 24rpx 0 0;
   padding: 32rpx 30rpx;
-  padding-bottom: calc(32rpx + constant(safe-area-inset-bottom));
-  padding-bottom: calc(32rpx + env(safe-area-inset-bottom));
-  max-height: 75vh;
+  padding-bottom: calc(200rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
   overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.28s ease;
+}
+
+.food-list-panel__inner--show {
+  transform: translateY(0);
 }
 
 .food-list-panel__header {
@@ -421,9 +614,20 @@
 }
 
 .food-list-panel__close {
-  font-size: 24px;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--color-bg);
+  flex-shrink: 0;
+}
+
+.food-list-panel__close text {
+  font-size: 28rpx;
   color: var(--color-text-hint);
-  padding: 8rpx;
+  line-height: 1;
 }
 
 .food-list-panel__grid {
@@ -439,10 +643,15 @@
   gap: 6rpx;
 }
 
-.food-list-item__img {
-  width: 80rpx;
-  height: 80rpx;
-  border-radius: 12rpx;
+.food-list-item__emoji {
+  font-size: 56rpx;
+  line-height: 1;
+}
+
+.food-list-item__icon {
+  width: 56rpx;
+  height: 56rpx;
+  display: block;
 }
 
 .food-list-item__name {
@@ -453,6 +662,10 @@
 
 .food-list-item--allergy .food-list-item__name {
   color: var(--color-danger);
+}
+
+.food-list-item--preliminary .food-list-item__name {
+  color: var(--color-warning);
 }
 
 /* ===== 当前排敏中 ===== */
@@ -603,70 +816,391 @@
   border-radius: 100rpx;
 }
 
-/* ===== 今日食谱 ===== */
-.records-section {
-  margin-top: 32rpx;
+/* ===== 切换面板中的圆点 ===== */
+.switcher-item__dot {
+  width: 16rpx;
+  height: 16rpx;
+  background: var(--color-primary);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.meal-list {
-  padding: 0 24rpx;
+.switcher-item__right {
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 16rpx;
+  margin-left: auto;
 }
 
-.meal-item {
-  display: flex;
-  flex-direction: column;
+.switcher-item__edit {
+  font-size: 13px;
+  color: var(--color-primary, #FF9A56);
+  padding: 8rpx 16rpx;
+}
+
+.switcher-item__delete {
+  font-size: 13px;
+  color: var(--color-danger);
+  padding: 8rpx 16rpx;
+}
+
+/* ===== 编辑面板（添加宝宝） ===== */
+.edit-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.edit-mask--show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.edit-panel {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
   background: var(--color-white);
-  border-radius: var(--border-radius-lg);
-  padding: 20rpx 24rpx;
-  box-shadow: var(--shadow-sm);
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 32rpx 30rpx;
+  padding-bottom: calc(160rpx + env(safe-area-inset-bottom));
+  z-index: 1002;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  max-height: 85vh;
+  overflow-y: auto;
+  pointer-events: none;
 }
 
-.meal-header {
-  margin-bottom: 12rpx;
+.edit-panel--show {
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
-.meal-label {
-  font-size: 14px;
+.edit-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.edit-panel__title {
+  font-size: 18px;
   font-weight: 600;
   color: var(--color-text-primary);
 }
 
-.meal-count {
-  font-size: 12px;
+.edit-panel__close {
+  font-size: 18px;
   color: var(--color-text-hint);
+  padding: 8rpx;
 }
 
-.meal-foods-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-}
-
-.meal-food-chip {
+.avatar-field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6rpx;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
 }
 
-.meal-food-img {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 12rpx;
+.avatar-preview {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  border: 4rpx solid var(--color-primary-light);
 }
 
-.meal-food-name {
-  font-size: 12px;
+.avatar-btn {
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.edit-field {
+  margin-bottom: 20rpx;
+}
+
+.edit-field__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.edit-field__input {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  padding: 24rpx 24rpx;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  width: 100%;
+  height: 80rpx;
+  box-sizing: border-box;
+}
+
+.edit-field__picker {
+  background: var(--color-bg);
+  border-radius: var(--border-radius-base);
+  padding: 16rpx 20rpx;
+  font-size: 14px;
   color: var(--color-text-primary);
 }
 
-.empty-state-text {
-  font-size: 14px;
-  color: var(--color-text-hint);
-  display: block;
+.save-btn {
+  width: 100%;
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 100rpx;
+  font-size: 16px;
+  padding: 24rpx;
+  margin-top: 8rpx;
+  border: none;
+}
+
+.save-btn::after {
+  border: none;
+}
+
+/* ===== 家庭邀请加入弹窗 ===== */
+.join-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.join-mask--show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.join-modal {
+  position: fixed;
+  left: 32rpx;
+  right: 32rpx;
+  bottom: calc(150rpx + env(safe-area-inset-bottom));
+  background: var(--color-white);
+  border-radius: 32rpx;
+  padding: 0 36rpx 36rpx;
+  z-index: 1002;
+  transform: translateY(calc(100% + 160rpx));
+  pointer-events: none;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  padding: 40rpx;
+  opacity: 0;
+  box-sizing: border-box;
+  max-height: 86vh;
+  overflow: hidden;
+}
+
+.join-modal--show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.join-modal__emoji {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+  line-height: 1;
+  margin-top: 8rpx;
+  flex-shrink: 0;
+}
+
+.join-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 12rpx;
+  display: block;
+  flex-shrink: 0;
+}
+
+.join-modal__desc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: 28rpx;
+  display: block;
+  flex-shrink: 0;
+}
+
+.join-modal__btns {
+  display: flex;
+  gap: 20rpx;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.join-modal__cancel {
+  flex: 1;
+  padding: 24rpx;
+  border-radius: 100rpx;
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.join-modal__confirm {
+  flex: 1.5;
+  padding: 24rpx;
+  border-radius: 100rpx;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ===== 添加/编辑宝宝表单里的性别 / 喂养方式按钮 ===== */
+.baby-pill-row {
+  display: flex;
+  gap: 16rpx;
+}
+.baby-pill {
+  flex: 1;
+  min-height: 92rpx;
+  border-radius: 18rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #EDE3DC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 16rpx 8rpx;
+  transition: all 0.18s;
+}
+.baby-pill__emoji {
+  font-size: 40rpx;
+  line-height: 1;
+}
+.baby-pill__text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #5A4A42;
+}
+.baby-pill--active-boy {
+  background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 100%);
+  border-color: #42A5F5;
+  box-shadow: 0 4rpx 14rpx rgba(66, 165, 245, 0.25);
+}
+.baby-pill--active-boy .baby-pill__text {
+  color: #1565C0;
+  font-weight: 600;
+}
+.baby-pill--active-girl {
+  background: linear-gradient(135deg, #FCE4EC 0%, #F48FB1 100%);
+  border-color: #EC407A;
+  box-shadow: 0 4rpx 14rpx rgba(236, 64, 122, 0.22);
+}
+.baby-pill--active-girl .baby-pill__text {
+  color: #AD1457;
+  font-weight: 600;
+}
+.baby-pill--active-feed {
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFCC80 100%);
+  border-color: #FF8C69;
+  box-shadow: 0 4rpx 14rpx rgba(255, 140, 105, 0.25);
+}
+.baby-pill--active-feed .baby-pill__text {
+  color: #D84315;
+  font-weight: 600;
+}
+
+/* ===== 今日推荐（紧凑版） ===== */
+.reco-card {
+  margin: 16rpx 24rpx 0;
+  padding: 20rpx;
+}
+.reco-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+.reco-title {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+.reco-adopt {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 6rpx 16rpx;
+  background: var(--color-primary);
+  border-radius: 100rpx;
+}
+.reco-adopt--hover { opacity: 0.75; }
+.reco-adopt__icon {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+.reco-adopt__text {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+.reco-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+.reco-group {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.reco-group__label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  width: 96rpx;
+  padding: 4rpx 0;
+}
+.reco-group__label--testing { color: var(--color-warning); font-weight: 600; }
+.reco-group__label--safe_combo { color: var(--color-success); font-weight: 600; }
+.reco-group__label--next_try { color: var(--color-primary); font-weight: 600; }
+.reco-chips {
+  display: flex;
+  gap: 8rpx;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.reco-chip {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 6rpx 14rpx 6rpx 8rpx;
+  background: var(--color-bg);
+  border-radius: 100rpx;
+}
+.reco-chip--testing { background: var(--color-warning-light); }
+.reco-chip--safe_combo { background: var(--color-success-light); }
+.reco-chip--next_try { background: var(--color-primary-light); }
+.reco-chip__icon {
+  width: 32rpx;
+  height: 32rpx;
+  flex-shrink: 0;
+}
+.reco-chip__emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+.reco-chip__name {
+  font-size: 12px;
+  color: var(--color-text-primary);
 }

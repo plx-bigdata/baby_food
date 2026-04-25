@@ -1,0 +1,120 @@
+<!-- components/share-report/share-report.wxml -->
+<view class="sheet-wrapper {{show ? 'sheet-wrapper--show' : ''}} {{closing ? 'sheet-wrapper--closing' : ''}}" catchtouchmove="noop">
+  <!-- 遮罩 -->
+  <view class="sheet-mask" bindtap="closeSheet" catchtouchmove="noop"></view>
+
+  <!-- 底部面板 -->
+  <view class="sheet-body" bindtouchstart="onSheetDragStart" bindtouchend="onSheetDragEnd">
+    <view class="sheet-handle-row">
+      <view class="sheet-handle"></view>
+    </view>
+
+    <!-- 海报预览 -->
+    <scroll-view scroll-y enhanced show-scrollbar="{{false}}" class="poster-scroll" bindscroll="onPosterScroll">
+      <!-- 头部 -->
+      <view class="poster-hero">
+        <text class="poster-hero__title">{{babyName || '宝宝'}}的美食探险日记</text>
+        <view class="poster-hero__badge">
+          <text class="poster-hero__badge-text">{{passedCount}} / {{totalCount}} 种已探索</text>
+        </view>
+      </view>
+
+      <!-- 排敏进度统计(与首页样式一致) -->
+      <view class="poster-stats">
+        <view class="poster-stat poster-stat--safe">
+          <text class="poster-stat__icon">✓</text>
+          <text class="poster-stat__label">未过敏</text>
+          <text class="poster-stat__count">{{passedCount}}种</text>
+        </view>
+        <view class="poster-stat poster-stat--testing">
+          <text class="poster-stat__icon">↻</text>
+          <text class="poster-stat__label">排敏中</text>
+          <text class="poster-stat__count">{{testingCount}}种</text>
+        </view>
+        <view class="poster-stat poster-stat--danger">
+          <text class="poster-stat__icon">!</text>
+          <text class="poster-stat__label">过敏</text>
+          <text class="poster-stat__count">{{allergyCount}}种</text>
+        </view>
+      </view>
+
+      <!-- 分类网格 -->
+      <view class="poster-categories">
+        <view class="poster-cat" wx:for="{{categoryStats}}" wx:key="id">
+          <view class="poster-cat__icon-wrap" style="background: {{item.bgColor}};">
+            <text class="poster-cat__icon">{{item.icon}}</text>
+          </view>
+          <text class="poster-cat__name">{{item.name}}</text>
+          <text class="poster-cat__count">{{item.passed}}/{{item.total}}</text>
+        </view>
+      </view>
+
+      <!-- 底部 -->
+      <view class="poster-bottom">
+        <view class="poster-bottom__left">
+          <text class="poster-bottom__quote">{{quote}}</text>
+          <text class="poster-bottom__app">【呀咪宝宝辅食】</text>
+        </view>
+        <view class="poster-bottom__qr">
+          <image class="poster-bottom__qr-img" src="/static/images/qrcode.jpg" mode="aspectFit"></image>
+          <text class="poster-bottom__qr-text">扫码体验</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="action-bar">
+      <view class="action-btn action-btn--save" bindtap="saveToAlbum">
+        <text>保存到相册</text>
+      </view>
+      <view class="action-btn action-btn--share" bindtap="sharePoster">
+        <text>分享</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 隐藏 Canvas -->
+<canvas type="2d" id="poster-canvas" class="poster-canvas"></canvas>
+
+<!-- 分享浮层 -->
+<view class="share-mask {{showShare ? 'share-mask--show' : ''}}" wx:if="{{renderShare}}" bindtap="closeShare"></view>
+<view class="share-sheet {{showShare ? 'share-sheet--show' : ''}}" wx:if="{{renderShare}}" catchtouchmove="noop" bindtap="closeShare">
+  <view class="share-sheet__poster" catchtap="noop">
+    <image src="{{posterImagePath}}" class="share-sheet__image" mode="widthFix" show-menu-by-longpress></image>
+  </view>
+
+  <view class="share-actions" catchtap="noop">
+    <button class="share-action-item" open-type="share" hover-class="share-action-item--hover">
+      <view class="share-action-icon">
+        <image src="/static/icons/share-forward.svg" class="share-action-icon__img" mode="aspectFit"></image>
+      </view>
+      <text class="share-action-label">发送给朋友</text>
+    </button>
+    <button class="share-action-item" bindtap="shareToTimeline" hover-class="share-action-item--hover">
+      <view class="share-action-icon">
+        <image src="/static/icons/share-moments.svg" class="share-action-icon__img" mode="aspectFit"></image>
+      </view>
+      <text class="share-action-label">分享到朋友圈</text>
+    </button>
+    <button class="share-action-item" bindtap="collectPoster" hover-class="share-action-item--hover">
+      <view class="share-action-icon">
+        <image src="/static/icons/share-collect.svg" class="share-action-icon__img" mode="aspectFit"></image>
+      </view>
+      <text class="share-action-label">收藏</text>
+    </button>
+    <button class="share-action-item" bindtap="saveShareImage" hover-class="share-action-item--hover">
+      <view class="share-action-icon">
+        <image src="/static/icons/share-save.svg" class="share-action-icon__img" mode="aspectFit"></image>
+      </view>
+      <text class="share-action-label">保存图片</text>
+    </button>
+  </view>
+</view>
+
+<!-- Loading -->
+<view class="loading-mask" wx:if="{{generating}}">
+  <view class="loading-content">
+    <text class="loading-text">海报生成中...</text>
+  </view>
+</view>

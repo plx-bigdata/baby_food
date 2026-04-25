@@ -1,0 +1,342 @@
+<!-- pages/onboarding/onboarding.wxml — 首次使用引导 -->
+<view class="ob-container">
+
+  <!-- ===== 进度条（welcome之外显示） ===== -->
+  <view class="ob-progress-wrap" wx:if="{{step !== 'welcome' && step !== 'done'}}" style="padding-top: {{statusBarHeight + 20}}px;">
+    <view class="ob-back" bindtap="goBack">
+      <text class="ob-back__text">上一步</text>
+    </view>
+    <view class="ob-progress-bar">
+      <view class="ob-progress-fill" style="width: {{progressPercent}}%"></view>
+    </view>
+  </view>
+
+  <!-- ============================= -->
+  <!-- Step: welcome                 -->
+  <!-- ============================= -->
+  <view class="ob-page ob-page-welcome" wx:if="{{step === 'welcome'}}">
+    <view class="ob-welcome-body">
+      <text class="ob-welcome-emoji">🥣</text>
+      <text class="ob-welcome-title">呀咪宝宝辅食</text>
+      <text class="ob-welcome-sub">专注婴儿辅食记录与排敏管理</text>
+      <view class="ob-welcome-feats">
+        <view class="ob-feat-item">
+          <text class="ob-feat-icon">📋</text>
+          <text class="ob-feat-text">记录每次辅食</text>
+        </view>
+        <view class="ob-feat-item">
+          <text class="ob-feat-icon">🔍</text>
+          <text class="ob-feat-text">追踪过敏食物</text>
+        </view>
+        <view class="ob-feat-item">
+          <text class="ob-feat-icon">✅</text>
+          <text class="ob-feat-text">排敏进度一目了然</text>
+        </view>
+      </view>
+      <text class="ob-welcome-disclaimer">本工具仅供家庭辅食记录,不能替代医生诊断。如宝宝出现过敏反应,请及时就医。</text>
+    </view>
+
+    <view class="ob-welcome-footer">
+      <view class="ob-agree-row" bindtap="toggleAgree">
+        <view class="ob-agree-box {{agreed ? 'ob-agree-box--checked' : ''}}">
+          <text wx:if="{{agreed}}" class="ob-agree-check">✓</text>
+        </view>
+        <text class="ob-agree-text">我已阅读并同意<text class="ob-agree-link" catchtap="openUserAgreement">《用户协议》</text>和<text class="ob-agree-link" catchtap="openPrivacyPolicy">《隐私政策》</text></text>
+      </view>
+      <view class="ob-btn ob-btn-primary {{agreed ? '' : 'ob-btn--disabled'}}" bindtap="onStart">开始使用</view>
+    </view>
+  </view>
+
+  <!-- ============================= -->
+  <!-- Step: babyInfo                -->
+  <!-- ============================= -->
+  <view class="ob-page ob-page-form" wx:elif="{{step === 'babyInfo'}}">
+    <text class="ob-step-title">告诉我宝宝的信息</text>
+
+    <!-- 头像 -->
+    <view class="ob-avatar-area" bindtap="chooseBabyAvatar">
+      <view class="ob-avatar-ring">
+        <image
+          wx:if="{{babyForm.avatarUrl}}"
+          class="ob-avatar-img"
+          src="{{babyForm.avatarUrl}}"
+          mode="aspectFill"
+        />
+        <view wx:else class="ob-avatar-placeholder">
+          <text class="ob-avatar-placeholder__emoji">👶</text>
+        </view>
+      </view>
+      <text class="ob-avatar-hint">宝宝头像<text class="ob-avatar-hint__optional">（非必须）</text></text>
+    </view>
+
+    <!-- 昵称 -->
+    <view class="ob-field">
+      <text class="ob-field__label">宝宝昵称</text>
+      <input
+        class="ob-field__input"
+        placeholder="给宝宝起个昵称吧"
+        value="{{babyForm.name}}"
+        bindinput="onNameInput"
+        maxlength="20"
+        confirm-type="done"
+      />
+    </view>
+
+    <!-- 生日 -->
+    <view class="ob-field">
+      <text class="ob-field__label">出生日期</text>
+      <picker mode="date" value="{{babyForm.birthday}}" bindchange="onBirthdayChange">
+        <view class="ob-field__picker {{babyForm.birthday ? '' : 'ob-field__picker--placeholder'}}">
+          {{babyForm.birthday || '请选择出生日期'}}
+        </view>
+      </picker>
+    </view>
+
+    <!-- 性别 -->
+    <view class="ob-field">
+      <text class="ob-field__label">性别</text>
+      <view class="ob-pill-row">
+        <view
+          class="ob-pill ob-pill--gender-boy {{babyForm.gender === 'boy' ? 'ob-pill--active-boy' : ''}}"
+          data-gender="boy"
+          bindtap="selectGender"
+        >
+          <text class="ob-pill__emoji">👦</text>
+          <text class="ob-pill__text">男宝宝</text>
+        </view>
+        <view
+          class="ob-pill ob-pill--gender-girl {{babyForm.gender === 'girl' ? 'ob-pill--active-girl' : ''}}"
+          data-gender="girl"
+          bindtap="selectGender"
+        >
+          <text class="ob-pill__emoji">👧</text>
+          <text class="ob-pill__text">女宝宝</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 喂养方式 -->
+    <view class="ob-field">
+      <text class="ob-field__label">喂养方式</text>
+      <view class="ob-pill-row">
+        <view
+          class="ob-pill ob-pill--feed {{babyForm.feedingType === 'breast' ? 'ob-pill--active-feed' : ''}}"
+          data-feeding="breast"
+          bindtap="selectFeedingType"
+        >
+          <text class="ob-pill__emoji">🤱</text>
+          <text class="ob-pill__text">母乳</text>
+        </view>
+        <view
+          class="ob-pill ob-pill--feed {{babyForm.feedingType === 'formula' ? 'ob-pill--active-feed' : ''}}"
+          data-feeding="formula"
+          bindtap="selectFeedingType"
+        >
+          <text class="ob-pill__emoji">🍼</text>
+          <text class="ob-pill__text">奶粉</text>
+        </view>
+        <view
+          class="ob-pill ob-pill--feed {{babyForm.feedingType === 'mixed' ? 'ob-pill--active-feed' : ''}}"
+          data-feeding="mixed"
+          bindtap="selectFeedingType"
+        >
+          <text class="ob-pill__emoji">🥛</text>
+          <text class="ob-pill__text">混合</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="ob-btn ob-btn-primary ob-btn-bottom" bindtap="saveBabyAndNext">下一步</view>
+  </view>
+
+  <!-- ============================= -->
+  <!-- Step: choice                  -->
+  <!-- ============================= -->
+  <view class="ob-page ob-page-choice" wx:elif="{{step === 'choice'}}">
+    <text class="ob-step-title">宝宝的辅食进展如何？</text>
+    <text class="ob-step-desc">根据实际情况选择，帮助我初始化排敏状态</text>
+
+    <view class="ob-choice-card" bindtap="chooseNew">
+      <text class="ob-choice-emoji">🌱</text>
+      <view class="ob-choice-content">
+        <text class="ob-choice-title">刚开始吃辅食</text>
+        <text class="ob-choice-sub">宝宝还没接触过辅食，从零开始记录</text>
+      </view>
+      <text class="ob-choice-arrow">›</text>
+    </view>
+
+    <view class="ob-choice-card ob-choice-card--alt" bindtap="chooseExisting">
+      <text class="ob-choice-emoji">🥣</text>
+      <view class="ob-choice-content">
+        <text class="ob-choice-title">已经吃了一段时间</text>
+        <text class="ob-choice-sub">帮我导入已有辅食经验，标记未过敏 / 过敏 / 排敏中</text>
+      </view>
+      <text class="ob-choice-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- ============================= -->
+  <!-- Step: 食物选择（3个步骤共用） -->
+  <!-- ============================= -->
+  <view class="ob-page ob-page-food" wx:elif="{{step === 'safeSelect' || step === 'allergySelect' || step === 'testingSelect'}}">
+
+    <!-- 标题区 -->
+    <view class="ob-food-header">
+
+      <!-- 子步骤进度指示器 -->
+      <view class="ob-substep-row">
+        <view class="ob-substep-item {{step === 'safeSelect' ? 'ob-substep-item--active' : 'ob-substep-item--done'}}">
+          <view class="ob-substep-circle">✓</view>
+          <text class="ob-substep-label">未过敏</text>
+        </view>
+        <view class="ob-substep-line {{step !== 'safeSelect' ? 'ob-substep-line--active' : ''}}"></view>
+        <view class="ob-substep-item {{step === 'allergySelect' ? 'ob-substep-item--allergy-active' : (step === 'testingSelect' ? 'ob-substep-item--done' : '')}}">
+          <view class="ob-substep-circle">✗</view>
+          <text class="ob-substep-label">过敏</text>
+        </view>
+        <view class="ob-substep-line {{step === 'testingSelect' ? 'ob-substep-line--active' : ''}}"></view>
+        <view class="ob-substep-item {{step === 'testingSelect' ? 'ob-substep-item--testing-active' : ''}}">
+          <view class="ob-substep-circle">~</view>
+          <text class="ob-substep-label">排敏中</text>
+        </view>
+      </view>
+
+      <text class="ob-step-title ob-step-title--food">{{stepTitle}}</text>
+      <text class="ob-step-desc">{{stepDesc}}</text>
+
+      <!-- 已选状态条 -->
+      <view class="ob-sel-bar">
+        <view class="ob-sel-chip ob-sel-chip--safe" wx:if="{{safeCount > 0}}">
+          <text>✓ 未过敏 {{safeCount}}</text>
+        </view>
+        <view class="ob-sel-chip ob-sel-chip--allergy" wx:if="{{allergyCount > 0}}">
+          <text>✗ 过敏 {{allergyCount}}</text>
+        </view>
+        <view class="ob-sel-chip ob-sel-chip--testing" wx:if="{{testingCount > 0}}">
+          <text>~ 排敏中 {{testingCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分类标签 -->
+    <scroll-view scroll-x class="ob-cat-scroll" enhanced="{{true}}">
+      <view class="ob-cat-tabs">
+        <view
+          class="ob-cat-tab {{currentCategory === item.id ? 'ob-cat-tab--active' : ''}}"
+          wx:for="{{categoryTabs}}"
+          wx:key="id"
+          bindtap="switchCategory"
+          data-id="{{item.id}}"
+        >{{item.name}}</view>
+      </view>
+    </scroll-view>
+
+    <!-- 食物网格 -->
+    <scroll-view scroll-y class="ob-food-scroll" scroll-top="{{foodScrollTop}}" scroll-with-animation="{{false}}">
+      <view class="ob-food-grid">
+        <view
+          class="{{foodClassMap[item.id] || 'food-card'}}"
+          wx:for="{{displayFoods}}"
+          wx:key="id"
+          bindtap="onFoodTap"
+          data-id="{{item.id}}"
+        >
+          <!-- 状态角标 -->
+          <view class="food-card__badge food-card__badge--{{foodBadgeMap[item.id]}}" wx:if="{{foodBadgeMap[item.id]}}">
+            <text wx:if="{{foodBadgeMap[item.id] === 'safe'}}">✓</text>
+            <text wx:elif="{{foodBadgeMap[item.id] === 'allergy'}}">✗</text>
+            <text wx:elif="{{foodBadgeMap[item.id] === 'testing'}}">{{foodDaysMap[item.id]}}天</text>
+          </view>
+          <image wx:if="{{item.localIconPath}}" class="food-card__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" class="food-card__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+          <text wx:else class="food-card__emoji">{{item.emoji}}</text>
+          <text class="food-card__name">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="ob-food-bottom">
+      <view class="ob-food-count" wx:if="{{step === 'safeSelect'}}">
+        <text>已选 {{safeCount}} 种未过敏食物</text>
+      </view>
+      <view class="ob-food-count" wx:elif="{{step === 'allergySelect'}}">
+        <text>已标记 {{allergyCount}} 种过敏食物</text>
+      </view>
+      <view class="ob-food-count" wx:elif="{{step === 'testingSelect'}}">
+        <text>已选 {{testingCount}} 种排敏中食物</text>
+      </view>
+      <view class="ob-btn ob-btn-primary ob-btn-food" bindtap="onNextStep">{{stepBtnText}}</view>
+    </view>
+  </view>
+
+  <!-- ============================= -->
+  <!-- Step: done                    -->
+  <!-- ============================= -->
+  <view class="ob-page ob-page-done" wx:elif="{{step === 'done'}}">
+    <text class="ob-done-emoji">🎉</text>
+    <text class="ob-done-title">设置完成！</text>
+    <text class="ob-done-sub">正在进入首页…</text>
+    <view class="ob-done-stats">
+      <view class="ob-done-stat" wx:if="{{safeCount > 0}}">
+        <text class="ob-done-stat__num ob-done-stat__num--safe">{{safeCount}}</text>
+        <text class="ob-done-stat__label">未过敏食物</text>
+      </view>
+      <view class="ob-done-stat" wx:if="{{allergyCount > 0}}">
+        <text class="ob-done-stat__num ob-done-stat__num--allergy">{{allergyCount}}</text>
+        <text class="ob-done-stat__label">过敏食物</text>
+      </view>
+      <view class="ob-done-stat" wx:if="{{testingCount > 0}}">
+        <text class="ob-done-stat__num ob-done-stat__num--testing">{{testingCount}}</text>
+        <text class="ob-done-stat__label">排敏中</text>
+      </view>
+    </view>
+  </view>
+
+</view>
+
+<!-- ===== 协议弹窗 ===== -->
+<view class="legal-modal-mask {{showLegalModal ? 'legal-modal-mask--show' : ''}}" wx:if="{{renderLegalModal}}" bindtap="closeLegalModal" catchtouchmove="noop"></view>
+<view class="legal-modal {{showLegalModal ? 'legal-modal--show' : ''}}" wx:if="{{renderLegalModal}}" catchtouchmove="noop" bindtouchstart="onLegalModalDragStart" bindtouchend="onLegalModalDragEnd">
+  <view class="legal-modal__handle"></view>
+  <view class="legal-modal__header">
+    <text class="legal-modal__title">{{legalTitle}}</text>
+  </view>
+  <scroll-view scroll-y class="legal-modal__content">
+    <text class="legal-modal__intro">{{legalIntro}}</text>
+    <view class="legal-section" wx:for="{{legalSections}}" wx:key="title">
+      <text class="legal-section__title">{{index + 1}}. {{item.title}}</text>
+      <view class="legal-section__item" wx:for="{{item.items}}" wx:for-item="line" wx:for-index="lineIndex" wx:key="*this">
+        <text class="legal-section__dot">{{lineIndex + 1}}</text>
+        <text class="legal-section__text">{{line}}</text>
+      </view>
+    </view>
+  </scroll-view>
+  <view class="legal-modal__footer">
+    <view class="legal-modal__btn ob-btn ob-btn-primary" bindtap="closeLegalModal">我已了解</view>
+  </view>
+</view>
+
+<!-- ===== 天数选择弹窗 ===== -->
+<view class="day-modal-mask {{showDayModal ? 'day-modal-mask--show' : ''}}" wx:if="{{renderDayModal}}" bindtap="closeDayModal" catchtouchmove="noop"></view>
+<view class="day-modal {{showDayModal ? 'day-modal--show' : ''}}" wx:if="{{renderDayModal}}" catchtouchmove="noop" bindtouchstart="onDayModalDragStart" bindtouchend="onDayModalDragEnd">
+  <view class="day-modal__handle"></view>
+  <view class="day-modal__food" wx:if="{{dayModalFood}}">
+    <image wx:if="{{dayModalFood.localIconPath}}" class="day-modal__food-icon" src="{{dayModalFood.localIconPath}}" mode="aspectFit"></image>
+    <image wx:elif="{{dayModalFood.iconUrl}}" class="day-modal__food-icon" src="{{dayModalFood.iconUrl}}" mode="aspectFit"></image>
+    <text wx:else class="day-modal__emoji">{{dayModalFood.emoji}}</text>
+    <text class="day-modal__name">{{dayModalFood.name}}</text>
+  </view>
+  <text class="day-modal__q">宝宝已经吃了几天了？</text>
+  <view class="day-modal__options">
+    <view
+      class="day-option {{dayModalSelected === item ? 'day-option--active' : ''}}"
+      wx:for="{{[1,2]}}"
+      wx:key="*this"
+      wx:for-item="item"
+      bindtap="selectDay"
+      data-days="{{item}}"
+    >{{item}}天</view>
+  </view>
+  <view class="day-modal__confirm ob-btn ob-btn-primary" bindtap="confirmDay">确认</view>
+</view>

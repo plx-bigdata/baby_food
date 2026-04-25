@@ -1,0 +1,9 @@
+{
+  "name": "syncBabies",
+  "version": "1.0.0",
+  "description": "宝宝档案的增改删和拉取",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

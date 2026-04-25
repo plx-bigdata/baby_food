@@ -1,0 +1,9 @@
+{
+  "name": "deleteAccount",
+  "version": "1.0.0",
+  "description": "注销账号:删除当前 openid 下的全部业务数据",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

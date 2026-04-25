@@ -1,7 +1,260 @@
 {
     "description": "宝宝辅食记录与排敏管理小程序",
     "packOptions": {
-        "ignore": [],
+        "ignore": [
+            {
+                "value": "_*.js",
+                "type": "glob"
+            },
+            {
+                "value": "_*.py",
+                "type": "glob"
+            },
+            {
+                "value": "_*.json",
+                "type": "glob"
+            },
+            {
+                "value": "_*.log",
+                "type": "glob"
+            },
+            {
+                "value": "_*.md",
+                "type": "glob"
+            },
+            {
+                "value": "generate*.js",
+                "type": "glob"
+            },
+            {
+                "value": "*.md",
+                "type": "glob"
+            },
+            {
+                "value": "*.py",
+                "type": "glob"
+            },
+            {
+                "value": "pages/history",
+                "type": "folder"
+            },
+            {
+                "value": "static/food-images/emoji-icons",
+                "type": "folder"
+            },
+            {
+                "value": ".DS_Store",
+                "type": "file"
+            },
+            {
+                "value": "**/.DS_Store",
+                "type": "glob"
+            },
+            {
+                "value": "static/icons/food-*.svg",
+                "type": "glob"
+            },
+            {
+                "value": "static/icons/food-*.svg.png",
+                "type": "glob"
+            },
+            {
+                "value": "static/icons/record.png",
+                "type": "file"
+            },
+            {
+                "value": "static/icons/record-active.png",
+                "type": "file"
+            },
+            {
+                "value": "static/food-images/emoji-icons/_tmp_test_okra.png",
+                "type": "file"
+            },
+            {
+                "value": "openspec",
+                "type": "folder"
+            },
+            {
+                "value": ".claude",
+                "type": "folder"
+            },
+            {
+                "value": "CLAUDE.md",
+                "type": "file"
+            },
+            {
+                "value": "AGENTS.md",
+                "type": "file"
+            },
+            {
+                "value": "食物素材替换清单.md",
+                "type": "file"
+            },
+            {
+                "value": "食物种类大全 (1).md",
+                "type": "file"
+            },
+            {
+                "value": "generate-icons.js",
+                "type": "file"
+            },
+            {
+                "value": "generateFoodImages.js",
+                "type": "file"
+            },
+            {
+                "value": "generateMismatchIcons.js",
+                "type": "file"
+            },
+            {
+                "value": "generateWrongImageIcons.js",
+                "type": "file"
+            },
+            {
+                "value": "generateRetryIcons.js",
+                "type": "file"
+            },
+            {
+                "value": "generateIconFixes.js",
+                "type": "file"
+            },
+            {
+                "value": "generateIconFixesRound2.js",
+                "type": "file"
+            },
+            {
+                "value": "compressFoodIcons.py",
+                "type": "file"
+            },
+            {
+                "value": "generate-food-icon-variants.js",
+                "type": "file"
+            },
+            {
+                "value": "output",
+                "type": "folder"
+            },
+            {
+                "value": "_preview_icons",
+                "type": "folder"
+            },
+            {
+                "value": "_preview_icons_flat",
+                "type": "folder"
+            },
+            {
+                "value": "_preview_icons_illustration",
+                "type": "folder"
+            },
+            {
+                "value": "_preview_icons_realistic",
+                "type": "folder"
+            },
+            {
+                "value": "_gen_icons.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_test.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_flat_test.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_flat_batch.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_illust_test.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_illust_test2.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_realistic.js",
+                "type": "file"
+            },
+            {
+                "value": "_compress_icons.py",
+                "type": "file"
+            },
+            {
+                "value": "_repad_icons.py",
+                "type": "file"
+            },
+            {
+                "value": "emoji-icon-report.json",
+                "type": "file"
+            },
+            {
+                "value": "_gen_okra.js",
+                "type": "file"
+            },
+            {
+                "value": "_flat_batch.log",
+                "type": "file"
+            },
+            {
+                "value": "growthChart.js",
+                "type": "file"
+            },
+            {
+                "value": ".env",
+                "type": "file"
+            },
+            {
+                "value": "package-lock.json",
+                "type": "file"
+            },
+            {
+                "value": "allergyFoods.json",
+                "type": "file"
+            },
+            {
+                "value": "food_image_map.json",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_fix.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_fix2.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_fix3.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_fix4.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_fix5.js",
+                "type": "file"
+            },
+            {
+                "value": "_gen_icons_fix6.js",
+                "type": "file"
+            },
+            {
+                "value": "_fix_bg.py",
+                "type": "file"
+            },
+            {
+                "value": "node_modules",
+                "type": "folder"
+            },
+            {
+                "value": "package.json",
+                "type": "file"
+            }
+        ],
         "include": []
     },
     "setting": {
@@ -48,10 +301,12 @@
     },
     "compileType": "miniprogram",
     "libVersion": "3.4.10",
-    "appid": "wxa9f8f700c4697a6f",
-    "projectname": "baby-food-tracker",
+    "appid": "wxaa3b7e4a3678356a",
+    "cloudfunctionRoot": "cloudfunctions/",
+    "projectname": "呀咪宝宝辅食",
     "isGameTourist": false,
     "condition": {},
     "simulatorPluginLibVersion": {},
-    "editorSetting": {}
+    "editorSetting": {},
+    "testRoot": "minitest/"
 }

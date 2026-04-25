@@ -1,4 +1,5 @@
 <!-- pages/index/index.wxml — 首页：今日辅食看板 -->
+<page-meta page-style="{{showShareReport ? 'overflow: hidden;' : ''}}"></page-meta>
 <view class="page-container">
 
   <!-- ===== 头部宝宝信息 ===== -->
@@ -7,86 +8,147 @@
       <image class="header-avatar" src="{{baby.avatarUrl || '/static/icons/baby-default.png'}}" mode="aspectFill" />
       <view class="header-info">
         <text class="header-name">{{baby.name || '点击设置宝宝信息'}}</text>
-        <text class="header-age">{{babyAge}}</text>
+        <text class="header-birthday" wx:if="{{baby.birthday}}">🎂 {{baby.birthday}}</text>
       </view>
     </view>
     <view class="header-right">
-      <text class="header-date-text">{{todayText}}</text>
-      <text class="header-arrow">v</text>
+      <text class="header-age" wx:if="{{babyAge}}">{{babyAge}}</text>
     </view>
   </view>
 
   <!-- ===== 宝宝切换弹窗 ===== -->
-  <view class="switcher-mask" wx:if="{{showBabySwitcher}}" bindtap="closeBabySwitcher"></view>
-  <view class="switcher-panel {{showBabySwitcher ? 'switcher-panel--show' : ''}}">
-    <view class="switcher-panel__header">
+  <view class="switcher-mask {{showBabySwitcher ? 'switcher-mask--show' : ''}}" wx:if="{{renderBabySwitcher}}" bindtap="closeBabySwitcher"></view>
+  <view class="switcher-panel {{showBabySwitcher ? 'switcher-panel--show' : ''}}" wx:if="{{renderBabySwitcher}}" catchtouchmove="noop">
+    <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onSwitcherDragEnd"></view>
+    <view class="switcher-panel__header" catchtouchstart="onPanelDragStart" catchtouchend="onSwitcherDragEnd">
       <text class="switcher-panel__title">切换宝宝</text>
-      <text class="switcher-panel__close" bindtap="closeBabySwitcher">x</text>
     </view>
     <view class="switcher-list">
       <view
         class="switcher-item {{item._id === currentBabyId ? 'switcher-item--active' : ''}}"
         wx:for="{{babies}}"
         wx:key="_id"
-        bindtap="selectBaby"
-        data-id="{{item._id}}"
       >
         <image class="switcher-item__avatar" src="{{item.avatarUrl || '/static/icons/baby-default.png'}}" mode="aspectFill" />
-        <view class="switcher-item__info">
+        <view class="switcher-item__info" bindtap="selectBaby" data-id="{{item._id}}">
           <text class="switcher-item__name">{{item.name}}</text>
           <text class="switcher-item__age">{{item.birthday ? item.birthday : '未设置生日'}}</text>
         </view>
-        <text class="switcher-item__check" wx:if="{{item._id === currentBabyId}}">ok</text>
+        <view class="switcher-item__right">
+          <view class="switcher-item__dot" wx:if="{{item._id === currentBabyId}}"></view>
+          <text class="switcher-item__edit" catchtap="openEditBabyForm" data-id="{{item._id}}">编辑</text>
+          <text class="switcher-item__delete" catchtap="deleteBaby" data-id="{{item._id}}">删除</text>
+        </view>
       </view>
     </view>
-    <view class="switcher-add" bindtap="goToAddBaby">
+    <view class="switcher-add" bindtap="openAddBabyForm">
       <text class="switcher-add__icon">+</text>
       <text class="switcher-add__text">添加宝宝</text>
     </view>
   </view>
 
-  <!-- ===== 生长发育预览 ===== -->
-  <view class="growth-card card">
-    <view class="growth-row">
-      <!-- 身高 -->
-      <view class="growth-item">
-        <view class="growth-value-row" wx:if="{{!editingHeight}}" bindtap="startEditHeight">
-          <text class="growth-value">{{baby.height || '--'}} cm</text>
-          <text class="growth-edit-icon">✎</text>
+  <!-- ===== 添加宝宝弹窗 ===== -->
+  <view class="edit-mask {{showAddBabyForm ? 'edit-mask--show' : ''}}" wx:if="{{renderAddBabyForm}}" bindtap="closeAddBabyForm"></view>
+  <view class="edit-panel {{showAddBabyForm ? 'edit-panel--show' : ''}}" wx:if="{{renderAddBabyForm}}" catchtouchmove="noop">
+    <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onEditDragEnd"></view>
+    <view class="edit-panel__header" catchtouchstart="onPanelDragStart" catchtouchend="onEditDragEnd">
+      <text class="edit-panel__title">{{editingBabyId ? '编辑宝宝' : '添加宝宝'}}</text>
+    </view>
+
+    <view class="avatar-field">
+      <image
+        class="avatar-preview"
+        src="{{babyForm.avatarUrl || '/static/icons/baby-default.png'}}"
+        mode="aspectFill"
+      />
+      <view class="avatar-btn" bindtap="chooseBabyAvatar">更换头像</view>
+    </view>
+
+    <view class="edit-field">
+      <text class="edit-field__label">宝宝昵称</text>
+      <input
+        class="edit-field__input"
+        placeholder="输入宝宝昵称"
+        value="{{babyForm.name}}"
+        bindinput="onBabyNameInput"
+        maxlength="20"
+      />
+    </view>
+
+    <view class="edit-field">
+      <text class="edit-field__label">出生日期</text>
+      <picker mode="date" value="{{babyForm.birthday}}" bindchange="onBabyBirthdayChange">
+        <view class="edit-field__picker">
+          {{babyForm.birthday || '请选择出生日期'}}
         </view>
-        <view class="growth-edit-row" wx:else>
-          <input class="growth-edit-input" type="digit" value="{{editHeightValue}}" bindinput="onHeightInput" focus="{{editingHeight}}" />
-          <text class="growth-edit-confirm" bindtap="confirmEditHeight">✓</text>
+      </picker>
+    </view>
+
+    <view class="edit-field">
+      <text class="edit-field__label">性别</text>
+      <view class="baby-pill-row">
+        <view
+          class="baby-pill baby-pill--boy {{babyForm.gender === 'boy' ? 'baby-pill--active-boy' : ''}}"
+          data-gender="boy"
+          bindtap="onBabyGenderSelect"
+        >
+          <text class="baby-pill__emoji">👦</text>
+          <text class="baby-pill__text">男宝宝</text>
         </view>
-        <text class="growth-label">身高</text>
-      </view>
-      <view class="growth-divider"></view>
-      <!-- 体重 -->
-      <view class="growth-item">
-        <view class="growth-value-row" wx:if="{{!editingWeight}}" bindtap="startEditWeight">
-          <text class="growth-value">{{baby.weight || '--'}} kg</text>
-          <text class="growth-edit-icon">✎</text>
+        <view
+          class="baby-pill baby-pill--girl {{babyForm.gender === 'girl' ? 'baby-pill--active-girl' : ''}}"
+          data-gender="girl"
+          bindtap="onBabyGenderSelect"
+        >
+          <text class="baby-pill__emoji">👧</text>
+          <text class="baby-pill__text">女宝宝</text>
         </view>
-        <view class="growth-edit-row" wx:else>
-          <input class="growth-edit-input" type="digit" value="{{editWeightValue}}" bindinput="onWeightInput" focus="{{editingWeight}}" />
-          <text class="growth-edit-confirm" bindtap="confirmEditWeight">✓</text>
-        </view>
-        <text class="growth-label">体重</text>
-      </view>
-      <view class="growth-divider"></view>
-      <!-- 生长状态 -->
-      <view class="growth-item">
-        <text class="growth-value growth-status-{{growthStatusClass}}">{{growthStatus}}</text>
-        <text class="growth-label">生长状态</text>
       </view>
     </view>
+
+    <view class="edit-field">
+      <text class="edit-field__label">喂养方式</text>
+      <view class="baby-pill-row">
+        <view
+          class="baby-pill {{babyForm.feedingType === 'breast' ? 'baby-pill--active-feed' : ''}}"
+          data-feeding="breast"
+          bindtap="onBabyFeedingSelect"
+        >
+          <text class="baby-pill__emoji">🤱</text>
+          <text class="baby-pill__text">母乳</text>
+        </view>
+        <view
+          class="baby-pill {{babyForm.feedingType === 'formula' ? 'baby-pill--active-feed' : ''}}"
+          data-feeding="formula"
+          bindtap="onBabyFeedingSelect"
+        >
+          <text class="baby-pill__emoji">🍼</text>
+          <text class="baby-pill__text">奶粉</text>
+        </view>
+        <view
+          class="baby-pill {{babyForm.feedingType === 'mixed' ? 'baby-pill--active-feed' : ''}}"
+          data-feeding="mixed"
+          bindtap="onBabyFeedingSelect"
+        >
+          <text class="baby-pill__emoji">🥛</text>
+          <text class="baby-pill__text">混合</text>
+        </view>
+      </view>
+    </view>
+
+    <button class="save-btn" bindtap="saveBaby">{{editingBabyId ? '保存修改' : '保存'}}</button>
   </view>
 
   <!-- ===== 排敏进度 ===== -->
   <view class="progress-card card">
     <view class="progress-header">
       <text class="section-title">排敏进度</text>
-      <text class="progress-count">{{planStats.tried}}/{{planStats.total}}种食物已排敏</text>
+      <view class="progress-header__right">
+        <text class="progress-count">{{planStats.tried}}/{{planStats.total}}种食物已排敏</text>
+        <view class="share-report-btn" bindtap="goToShareReport" hover-class="share-report-btn--hover">
+          <image src="/static/icons/share-report.svg" class="share-report-btn__icon" mode="aspectFit"></image>
+        </view>
+      </view>
     </view>
     <view class="progress-bar-wrap">
       <view class="progress-bar">
@@ -94,14 +156,14 @@
       </view>
       <text class="progress-text">{{planStats.percent}}%</text>
     </view>
-    <!-- 安全 / 排敏中 / 过敏 -->
+    <!-- 未过敏 / 排敏中 / 过敏 -->
     <view class="safety-boxes">
       <view class="safety-box safety-box--safe" bindtap="toggleSafeList">
         <text class="safety-box__icon">✓</text>
-        <text class="safety-box__label">安全</text>
+        <text class="safety-box__label">未过敏</text>
         <text class="safety-box__count">{{planStats.passed}}种</text>
       </view>
-      <view class="safety-box safety-box--testing">
+      <view class="safety-box safety-box--testing" bindtap="toggleTestingList">
         <text class="safety-box__icon">↻</text>
         <text class="safety-box__label">排敏中</text>
         <text class="safety-box__count">{{planStats.testing}}种</text>
@@ -112,64 +174,163 @@
         <text class="safety-box__count">{{planStats.allergy}}种</text>
       </view>
     </view>
-  </view>
-
-  <!-- ===== 安全食物列表 ===== -->
-  <view class="food-list-panel" wx:if="{{showSafeList && passedFoods.length > 0}}">
-    <view class="food-list-panel__inner">
-      <view class="food-list-panel__header">
-        <text class="food-list-panel__title">安全食物</text>
-        <text class="food-list-panel__close" bindtap="toggleSafeList">×</text>
-      </view>
-      <view class="food-list-panel__grid">
-        <view class="food-list-item" wx:for="{{passedFoods}}" wx:key="foodId">
-          <image class="food-list-item__img" src="{{item.imageUrl}}" mode="aspectFill" />
-          <text class="food-list-item__name">{{item.name}}</text>
-        </view>
-      </view>
+    <!-- 状态说明入口 -->
+    <view class="status-explain-btn" bindtap="toggleStatusExplain">
+      <text>这些状态是什么意思？</text>
     </view>
   </view>
 
-  <!-- ===== 过敏食物列表 ===== -->
-  <view class="food-list-panel" wx:if="{{showAllergyList && allergyFoods.length > 0}}">
-    <view class="food-list-panel__inner">
-      <view class="food-list-panel__header">
-        <text class="food-list-panel__title">过敏食物</text>
-        <text class="food-list-panel__close" bindtap="toggleAllergyList">×</text>
-      </view>
-      <view class="food-list-panel__grid">
-        <view class="food-list-item food-list-item--allergy" wx:for="{{allergyFoods}}" wx:key="foodId">
-          <image class="food-list-item__img" src="{{item.imageUrl}}" mode="aspectFill" />
-          <text class="food-list-item__name">{{item.name}}</text>
-        </view>
+  <!-- ===== 今日推荐（紧凑版） ===== -->
+  <view class="reco-card card" wx:if="{{todaySuggestions.length > 0}}">
+    <view class="reco-head">
+      <text class="reco-title">今日推荐</text>
+      <view class="reco-adopt" bindtap="onAdoptRecommend" hover-class="reco-adopt--hover">
+        <text class="reco-adopt__icon">✓</text>
+        <text class="reco-adopt__text">一键采纳</text>
       </view>
     </view>
-  </view>
-
-  <!-- ===== 今日食谱 ===== -->
-  <view class="records-section">
-    <view class="flex-between" style="padding: 0 30rpx; margin-bottom: 16rpx;">
-      <text class="section-title">今日食谱</text>
-    </view>
-
-    <view class="meal-list" wx:if="{{dayList.length > 0}}">
-      <view class="meal-item" wx:for="{{dayList}}" wx:key="date">
-        <view class="meal-header">
-          <text class="meal-label">{{item.dateText}}</text>
-          <text class="meal-count">{{item.foods.length}}种食物</text>
-        </view>
-        <view class="meal-foods-row">
-          <view class="meal-food-chip" wx:for="{{item.foods}}" wx:key="foodId" wx:for-item="food">
-            <image class="meal-food-img" src="{{food.imageUrl}}" mode="aspectFill" />
-            <text class="meal-food-name">{{food.foodName}}</text>
+    <view class="reco-groups">
+      <view class="reco-group" wx:for="{{todaySuggestions}}" wx:for-item="group" wx:key="groupKey">
+        <text class="reco-group__label reco-group__label--{{group.groupKey}}">{{group.groupLabel}}</text>
+        <view class="reco-chips">
+          <view class="reco-chip reco-chip--{{group.groupKey}}" wx:for="{{group.foods}}" wx:for-item="food" wx:key="foodId">
+            <image wx:if="{{food.localIconPath}}" class="reco-chip__icon" src="{{food.localIconPath}}" mode="aspectFit"></image>
+            <image wx:elif="{{food.iconUrl}}" class="reco-chip__icon" src="{{food.iconUrl}}" mode="aspectFit"></image>
+            <text wx:else class="reco-chip__emoji">{{food.emoji}}</text>
+            <text class="reco-chip__name">{{food.name}}</text>
           </view>
         </view>
       </view>
     </view>
+  </view>
 
-    <view class="empty-state" wx:else>
-      <text class="empty-state-text">今天还没有记录，快去记录吧</text>
+  <!-- 过敏排查入口（独立卡片） -->
+  <view class="allergy-trace-entry" bindtap="goToTrace">
+    <text class="allergy-trace-entry__icon">🔍</text>
+    <view class="allergy-trace-entry__text">
+      <text class="allergy-trace-entry__title">宝宝有过敏反应？</text>
+      <text class="allergy-trace-entry__sub">点击进行过敏溯源排查</text>
     </view>
   </view>
 
+  <!-- ===== 状态说明弹窗 ===== -->
+  <view class="food-list-panel {{showStatusExplain ? 'food-list-panel--show' : ''}}" wx:if="{{renderStatusExplain}}" bindtap="toggleStatusExplain" bindtouchstart="onFoodListDragStart" bindtouchend="onFoodListDragEnd" data-type="status">
+    <scroll-view scroll-y class="food-list-panel__inner {{showStatusExplain ? 'food-list-panel__inner--show' : ''}}" catchtap="noop" enhanced="{{true}}" bounces="{{true}}" show-scrollbar="{{false}}" bindscrolltoupper="onFoodListScrollUpper" data-type="status">
+      <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="status"></view>
+      <view class="food-list-panel__header" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="status">
+        <text class="food-list-panel__title">状态说明</text>
+      </view>
+      <view class="status-explain-list">
+        <view class="status-explain-item">
+          <view class="status-explain-dot status-explain-dot--passed"></view>
+          <view class="status-explain-text">
+            <text class="status-explain-name">未过敏</text>
+            <text class="status-explain-desc">累计吃满{{planStats.testDays || 3}}天，期间无过敏反应。</text>
+          </view>
+        </view>
+        <view class="status-explain-item">
+          <view class="status-explain-dot status-explain-dot--testing"></view>
+          <view class="status-explain-text">
+            <text class="status-explain-name">排敏中</text>
+            <text class="status-explain-desc">正在进行排敏观察，累计记录天数还未达到{{planStats.testDays || 3}}天。</text>
+          </view>
+        </view>
+        <view class="status-explain-item">
+          <view class="status-explain-dot status-explain-dot--allergy"></view>
+          <view class="status-explain-text">
+            <text class="status-explain-name">过敏</text>
+            <text class="status-explain-desc">已确认对该食物过敏，暂时回避，可在医生建议下择期复测。</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 未过敏食物列表 ===== -->
+  <view class="food-list-panel {{showSafeList ? 'food-list-panel--show' : ''}}" wx:if="{{renderSafeList}}" bindtap="toggleSafeList" bindtouchstart="onFoodListDragStart" bindtouchend="onFoodListDragEnd" data-type="safe">
+    <scroll-view scroll-y class="food-list-panel__inner {{showSafeList ? 'food-list-panel__inner--show' : ''}}" catchtap="noop" enhanced="{{true}}" bounces="{{true}}" show-scrollbar="{{false}}" bindscrolltoupper="onFoodListScrollUpper" data-type="safe">
+      <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="safe"></view>
+      <view class="food-list-panel__header" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="safe">
+        <text class="food-list-panel__title">未过敏食物</text>
+      </view>
+      <view class="food-list-panel__grid" wx:if="{{passedFoods.length > 0}}">
+        <view class="food-list-item" wx:for="{{passedFoods}}" wx:key="foodId">
+          <image wx:if="{{item.localIconPath}}" class="food-list-item__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" class="food-list-item__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+          <text wx:else class="food-list-item__emoji">{{item.emoji}}</text>
+          <text class="food-list-item__name">{{item.name}}</text>
+        </view>
+      </view>
+      <view class="empty-state" wx:else>
+        <text class="empty-state__text">暂无未过敏食物</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 排敏中食物列表 ===== -->
+  <view class="food-list-panel {{showTestingList ? 'food-list-panel--show' : ''}}" wx:if="{{renderTestingList}}" bindtap="toggleTestingList" bindtouchstart="onFoodListDragStart" bindtouchend="onFoodListDragEnd" data-type="testing">
+    <scroll-view scroll-y class="food-list-panel__inner {{showTestingList ? 'food-list-panel__inner--show' : ''}}" catchtap="noop" enhanced="{{true}}" bounces="{{true}}" show-scrollbar="{{false}}" bindscrolltoupper="onFoodListScrollUpper" data-type="testing">
+      <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="testing"></view>
+      <view class="food-list-panel__header" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="testing">
+        <text class="food-list-panel__title">排敏中</text>
+      </view>
+      <view class="food-list-panel__grid" wx:if="{{testingFoods.length > 0}}">
+        <view class="food-list-item" wx:for="{{testingFoods}}" wx:key="foodId">
+          <image wx:if="{{item.localIconPath}}" class="food-list-item__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" class="food-list-item__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+          <text wx:else class="food-list-item__emoji">{{item.emoji}}</text>
+          <text class="food-list-item__name">{{item.name}}</text>
+        </view>
+      </view>
+      <view class="empty-state" wx:else>
+        <text class="empty-state__text">暂无排敏中的食物</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 过敏食物列表 ===== -->
+  <view class="food-list-panel {{showAllergyList ? 'food-list-panel--show' : ''}}" wx:if="{{renderAllergyList}}" bindtap="toggleAllergyList" bindtouchstart="onFoodListDragStart" bindtouchend="onFoodListDragEnd" data-type="allergy">
+    <scroll-view scroll-y class="food-list-panel__inner {{showAllergyList ? 'food-list-panel__inner--show' : ''}}" catchtap="noop" enhanced="{{true}}" bounces="{{true}}" show-scrollbar="{{false}}" bindscrolltoupper="onFoodListScrollUpper" data-type="allergy">
+      <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="allergy"></view>
+      <view class="food-list-panel__header" catchtouchstart="onPanelDragStart" catchtouchend="onFoodListDragEnd" data-type="allergy">
+        <text class="food-list-panel__title">过敏食物</text>
+      </view>
+      <view class="food-list-panel__grid" wx:if="{{allergyFoods.length > 0}}">
+        <view class="food-list-item food-list-item--allergy" wx:for="{{allergyFoods}}" wx:key="foodId">
+          <image wx:if="{{item.localIconPath}}" class="food-list-item__icon" src="{{item.localIconPath}}" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" class="food-list-item__icon" src="{{item.iconUrl}}" mode="aspectFit"></image>
+          <text wx:else class="food-list-item__emoji">{{item.emoji}}</text>
+          <text class="food-list-item__name">{{item.name}}</text>
+        </view>
+      </view>
+      <view class="empty-state" wx:else>
+        <text class="empty-state__text">暂无过敏食物</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ===== 记录辅食覆盖层 ===== -->
+  <record-sheet
+    id="recordSheet"
+    show="{{showRecordSheet}}"
+    bind:close="onRecordSheetClose"
+    bind:saved="onRecordSaved"
+  />
+
 </view>
+
+<!-- ===== 家庭邀请加入弹窗 ===== -->
+<view class="join-mask {{showJoinModal ? 'join-mask--show' : ''}}" wx:if="{{renderJoinModal}}" bindtap="cancelJoin"></view>
+<view class="join-modal {{showJoinModal ? 'join-modal--show' : ''}}" wx:if="{{renderJoinModal}}" catchtouchmove="noop" bindtouchstart="onPanelDragStart" bindtouchend="onJoinDragEnd">
+  <view class="panel-handle" catchtouchstart="onPanelDragStart" catchtouchend="onJoinDragEnd"></view>
+  <text class="join-modal__emoji">👨‍👩‍👦</text>
+  <text class="join-modal__title">加入家庭记录</text>
+  <text class="join-modal__desc">有人邀请你加入 {{joinBabyName}} 的辅食记录，加入后可查看宝宝数据并协同记录。</text>
+  <view class="join-modal__btns">
+    <view class="join-modal__cancel" bindtap="cancelJoin">取消</view>
+    <view class="join-modal__confirm" bindtap="confirmJoin">{{joining ? '加入中...' : '立即加入'}}</view>
+  </view>
+</view>
+
+<!-- 分享报告弹窗 -->
+<share-report id="shareReport" show="{{showShareReport}}" bind:close="onShareReportClose" />

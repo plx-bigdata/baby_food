@@ -1,0 +1,1060 @@
+/* pages/onboarding/onboarding.wxss — 首次引导样式 */
+
+/* ===== 容器 ===== */
+.ob-container {
+  height: 100vh;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ===== 进度条 ===== */
+.ob-progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  /* padding-top 由 wxml 内联 style 动态设置(statusBarHeight + 16) */
+  padding: 16px 24rpx 16rpx;
+  background: var(--color-white);
+  flex-shrink: 0;
+}
+
+.ob-back {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  color: var(--color-primary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 12rpx 20rpx;
+  border-radius: 100rpx;
+  background: var(--color-primary-light);
+}
+
+.ob-back__icon {
+  font-size: 20px;
+  line-height: 1;
+  color: var(--color-primary);
+}
+
+.ob-back__text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.ob-progress-bar {
+  flex: 1;
+  height: 8rpx;
+  background: var(--color-bg);
+  border-radius: 100rpx;
+  overflow: hidden;
+}
+
+.ob-progress-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 100rpx;
+  transition: width 0.4s ease;
+}
+
+/* ===== 通用页面容器 ===== */
+.ob-page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 需要内容滚动的步骤允许 overflow */
+.ob-page-welcome,
+.ob-page-form,
+.ob-page-choice {
+  overflow-y: auto;
+}
+
+/* ===== 通用文字 ===== */
+.ob-step-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.ob-step-desc {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  display: block;
+}
+
+/* ===== 通用按钮 ===== */
+.ob-btn {
+  border-radius: 100rpx;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  padding: 32rpx;
+}
+
+.ob-btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.ob-btn-bottom {
+  margin: 32rpx 0 0;
+}
+
+/* ============================= */
+/* Welcome                       */
+/* ============================= */
+.ob-page-welcome {
+  padding: 0 40rpx;
+  justify-content: space-between;
+  padding-bottom: calc(60rpx + env(safe-area-inset-bottom));
+  padding-top: 80rpx;
+}
+
+.ob-welcome-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.ob-welcome-emoji {
+  font-size: 120rpx;
+  line-height: 1;
+  margin-bottom: 32rpx;
+}
+
+.ob-welcome-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 12rpx;
+  text-align: center;
+}
+
+.ob-welcome-sub {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  display: block;
+  text-align: center;
+  margin-bottom: 60rpx;
+}
+
+.ob-welcome-feats {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  width: 100%;
+  max-width: 600rpx;
+}
+
+.ob-feat-item {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  background: var(--color-white);
+  border-radius: 20rpx;
+  padding: 24rpx 28rpx;
+}
+
+.ob-feat-icon {
+  font-size: 28px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ob-feat-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* ===== 免责声明 + 隐私协议 ===== */
+.ob-welcome-disclaimer {
+  display: block;
+  margin-top: 40rpx;
+  padding: 16rpx 24rpx;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  text-align: center;
+  max-width: 600rpx;
+}
+
+.ob-welcome-footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding-top: 20rpx;
+}
+
+.ob-agree-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 0;
+}
+
+.ob-agree-box {
+  width: 32rpx;
+  height: 32rpx;
+  border: 2rpx solid #D0D5DD;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.ob-agree-box--checked {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ob-agree-check {
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ob-agree-text {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 32rpx;
+}
+
+.ob-agree-link {
+  color: var(--color-primary);
+}
+
+.ob-btn--disabled {
+  opacity: 0.5;
+}
+
+/* ===== 协议弹窗 ===== */
+.legal-modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.42);
+  z-index: 1001;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.legal-modal-mask--show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.legal-modal {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 1002;
+  max-height: 82vh;
+  background: var(--color-white);
+  border-radius: 28rpx 28rpx 0 0;
+  padding: 16rpx 32rpx 0;
+  padding-bottom: calc(28rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.28s ease;
+}
+
+.legal-modal--show {
+  transform: translateY(0);
+}
+
+.legal-modal__handle {
+  width: 72rpx;
+  height: 8rpx;
+  border-radius: 100rpx;
+  background: #E4E7EC;
+  align-self: center;
+  margin: 0 0 24rpx;
+}
+
+.legal-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid var(--color-border);
+}
+
+.legal-modal__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  text-align: center;
+}
+
+.legal-modal__content {
+  flex: 1;
+  min-height: 0;
+  max-height: 56vh;
+  padding: 24rpx 0;
+  box-sizing: border-box;
+}
+
+.legal-modal__intro {
+  display: block;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin-bottom: 28rpx;
+}
+
+.legal-section {
+  margin-bottom: 30rpx;
+}
+
+.legal-section__title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 14rpx;
+}
+
+.legal-section__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-bottom: 12rpx;
+}
+
+.legal-section__dot {
+  width: 34rpx;
+  height: 34rpx;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 34rpx;
+  text-align: center;
+  flex-shrink: 0;
+  margin-top: 3rpx;
+}
+
+.legal-section__text {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+
+.legal-modal__footer {
+  padding-top: 16rpx;
+  border-top: 1rpx solid var(--color-border);
+}
+
+.legal-modal__btn {
+  padding: 24rpx;
+}
+
+/* ============================= */
+/* Baby Info                     */
+/* ============================= */
+.ob-page-form {
+  padding: 32rpx 32rpx 0;
+  padding-bottom: calc(60rpx + env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+
+.ob-avatar-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 28rpx 0 32rpx;
+  position: relative;
+  align-self: center;
+  width: 144rpx;
+}
+
+.ob-avatar-ring {
+  width: 144rpx;
+  height: 144rpx;
+  border-radius: 50%;
+  padding: 5rpx;
+  background: linear-gradient(135deg, #FFD8C7 0%, #FF8C69 100%);
+  box-shadow:
+    0 6rpx 18rpx rgba(255, 140, 105, 0.26),
+    0 2rpx 6rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ob-avatar-img {
+  width: 134rpx;
+  height: 134rpx;
+  border-radius: 50%;
+  background: #FFF6F0;
+  display: block;
+}
+
+.ob-avatar-placeholder {
+  width: 134rpx;
+  height: 134rpx;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #FFF6F0 0%, #FFEADD 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2rpx 8rpx rgba(255, 140, 105, 0.12);
+}
+
+.ob-avatar-placeholder__emoji {
+  font-size: 84rpx;
+  line-height: 1;
+  filter: drop-shadow(0 2rpx 4rpx rgba(255, 140, 105, 0.25));
+}
+
+.ob-avatar-edit {
+  position: absolute;
+  bottom: 28rpx;
+  right: 0;
+  background: linear-gradient(135deg, #FF8C69 0%, #FF6B48 100%);
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3rpx solid #FFFFFF;
+  box-shadow: 0 3rpx 10rpx rgba(255, 107, 72, 0.35);
+}
+
+.ob-avatar-edit__icon {
+  font-size: 22rpx;
+  line-height: 1;
+}
+
+.ob-avatar-hint {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: #B0A199;
+  letter-spacing: 1rpx;
+  white-space: nowrap;
+}
+.ob-avatar-hint__optional {
+  color: #D8C9BF;
+  margin-left: 4rpx;
+}
+
+/* ===== 选择行（性别 / 喂养方式） ===== */
+.ob-pill-row {
+  display: flex;
+  gap: 16rpx;
+}
+.ob-pill {
+  flex: 1;
+  min-height: 92rpx;
+  border-radius: 18rpx;
+  background: #FFFFFF;
+  border: 2rpx solid #EDE3DC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 16rpx 8rpx;
+  transition: all 0.18s;
+}
+.ob-pill__emoji {
+  font-size: 40rpx;
+  line-height: 1;
+}
+.ob-pill__text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #5A4A42;
+}
+
+/* 男宝选中 */
+.ob-pill--active-boy {
+  background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 100%);
+  border-color: #42A5F5;
+  box-shadow: 0 4rpx 14rpx rgba(66, 165, 245, 0.25);
+}
+.ob-pill--active-boy .ob-pill__text {
+  color: #1565C0;
+  font-weight: 600;
+}
+
+/* 女宝选中 */
+.ob-pill--active-girl {
+  background: linear-gradient(135deg, #FCE4EC 0%, #F48FB1 100%);
+  border-color: #EC407A;
+  box-shadow: 0 4rpx 14rpx rgba(236, 64, 122, 0.22);
+}
+.ob-pill--active-girl .ob-pill__text {
+  color: #AD1457;
+  font-weight: 600;
+}
+
+/* 喂养方式选中 */
+.ob-pill--active-feed {
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFCC80 100%);
+  border-color: #FF8C69;
+  box-shadow: 0 4rpx 14rpx rgba(255, 140, 105, 0.25);
+}
+.ob-pill--active-feed .ob-pill__text {
+  color: #D84315;
+  font-weight: 600;
+}
+
+.ob-field {
+  margin-bottom: 28rpx;
+}
+
+.ob-field__label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.ob-field__input {
+  background: var(--color-white);
+  border-radius: var(--border-radius-base);
+  padding: 0 28rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-sm);
+  display: block;
+}
+
+.ob-field__picker {
+  background: var(--color-white);
+  border-radius: var(--border-radius-base);
+  padding: 24rpx 28rpx;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.ob-field__picker--placeholder {
+  color: var(--color-text-hint);
+}
+
+/* ============================= */
+/* Choice                        */
+/* ============================= */
+.ob-page-choice {
+  padding: 32rpx 32rpx 0;
+  padding-bottom: calc(60rpx + env(safe-area-inset-bottom));
+}
+
+.ob-choice-card {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: var(--color-white);
+  border-radius: 24rpx;
+  padding: 32rpx 28rpx;
+  margin-top: 28rpx;
+  box-shadow: var(--shadow-sm);
+  border: 3rpx solid transparent;
+}
+
+.ob-choice-card--alt {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.ob-choice-emoji {
+  font-size: 60rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.ob-choice-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.ob-choice-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.ob-choice-sub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: block;
+}
+
+.ob-choice-arrow {
+  font-size: 22px;
+  color: var(--color-text-hint);
+  flex-shrink: 0;
+}
+
+/* ============================= */
+/* Food Select                   */
+/* ============================= */
+.ob-page-food {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== 子步骤进度条（安全→过敏→测试） ===== */
+.ob-substep-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.ob-substep-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+}
+
+.ob-substep-circle {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: var(--color-bg);
+  color: var(--color-text-hint);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid var(--color-border);
+}
+
+.ob-substep-label {
+  font-size: 11px;
+  color: var(--color-text-hint);
+}
+
+/* 当前激活步骤 */
+.ob-substep-item--active .ob-substep-circle {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+.ob-substep-item--active .ob-substep-label {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* 已完成步骤 */
+.ob-substep-item--done .ob-substep-circle {
+  background: #F6FFED;
+  color: #52C41A;
+  border-color: #52C41A;
+}
+.ob-substep-item--done .ob-substep-label {
+  color: #52C41A;
+}
+
+/* 过敏步骤激活 */
+.ob-substep-item--allergy-active .ob-substep-circle {
+  background: #FF4D4F;
+  color: #fff;
+  border-color: #FF4D4F;
+}
+.ob-substep-item--allergy-active .ob-substep-label {
+  color: #FF4D4F;
+  font-weight: 600;
+}
+
+/* 测试步骤激活 */
+.ob-substep-item--testing-active .ob-substep-circle {
+  background: #FA8C16;
+  color: #fff;
+  border-color: #FA8C16;
+}
+.ob-substep-item--testing-active .ob-substep-label {
+  color: #FA8C16;
+  font-weight: 600;
+}
+
+.ob-substep-line {
+  flex: 1;
+  height: 2rpx;
+  background: var(--color-border);
+  margin: 0 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.ob-substep-line--active {
+  background: #52C41A;
+}
+
+.ob-food-header {
+  padding: 16rpx 24rpx 12rpx;
+  background: var(--color-white);
+  flex-shrink: 0;
+}
+
+.ob-step-title--food {
+  font-size: 20px;
+  margin-bottom: 6rpx;
+}
+
+/* 已选状态条 */
+.ob-sel-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+  min-height: 44rpx;
+}
+
+.ob-sel-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 100rpx;
+  padding: 6rpx 18rpx;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ob-sel-chip--safe    { background: #F6FFED; color: #52C41A; }
+.ob-sel-chip--allergy { background: #FFF2F0; color: #FF4D4F; }
+.ob-sel-chip--testing { background: #FFF7E6; color: #FA8C16; }
+
+/* 分类 tabs */
+.ob-cat-scroll {
+  background: var(--color-white);
+  border-bottom: 1rpx solid var(--color-border);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.ob-cat-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 16rpx;
+  overflow: visible;
+}
+
+.ob-cat-tab {
+  display: inline-flex;
+  padding: 16rpx 20rpx;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  border-bottom: 4rpx solid transparent;
+  flex-shrink: 0;
+}
+
+.ob-cat-tab--active {
+  color: var(--color-primary);
+  font-weight: 600;
+  border-bottom-color: var(--color-primary);
+}
+
+/* 食物网格 */
+.ob-food-scroll {
+  flex: 1;
+  min-height: 0;
+}
+
+.ob-food-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12rpx;
+  padding: 16rpx;
+}
+
+/* 选中状态（用边框+背景色区分，不用角标） */
+.food-card--ob-safe    { border-color: #52C41A !important; background: #F6FFED !important; }
+.food-card--ob-allergy { border-color: #FF4D4F !important; background: #FFF2F0 !important; }
+.food-card--ob-testing { border-color: #FA8C16 !important; background: #FFF7E6 !important; }
+.food-card--ob-dim     { opacity: 0.35; }
+
+/* 底部操作栏 */
+.ob-food-bottom {
+  background: var(--color-white);
+  border-top: 1rpx solid var(--color-border);
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex-shrink: 0;
+}
+
+.ob-food-count {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.ob-btn-food {
+  flex-shrink: 0;
+  padding: 20rpx 32rpx;
+  font-size: 15px;
+  border-radius: 100rpx;
+}
+
+/* ============================= */
+/* Done                          */
+/* ============================= */
+.ob-page-done {
+  justify-content: center;
+  align-items: center;
+  padding: 40rpx;
+}
+
+.ob-done-emoji {
+  font-size: 120rpx;
+  line-height: 1;
+  margin-bottom: 32rpx;
+}
+
+.ob-done-title {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: 12rpx;
+}
+
+.ob-done-sub {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 48rpx;
+}
+
+.ob-done-stats {
+  display: flex;
+  gap: 32rpx;
+}
+
+.ob-done-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.ob-done-stat__num {
+  font-size: 32px;
+  font-weight: 800;
+  display: block;
+}
+
+.ob-done-stat__num--safe    { color: #52C41A; }
+.ob-done-stat__num--allergy { color: #FF4D4F; }
+.ob-done-stat__num--testing { color: #FA8C16; }
+
+.ob-done-stat__label {
+  font-size: 12px;
+  color: var(--color-text-hint);
+}
+
+/* ===== food-card 基础样式（与 record 页保持一致） ===== */
+.food-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-white);
+  border-radius: 24rpx;
+  padding: 12rpx 8rpx;
+  border: 2rpx solid transparent;
+  position: relative;
+  min-height: 140rpx;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1rpx 0 rgba(255,255,255,0.85),
+    0 4rpx 0 rgba(0,0,0,0.12),
+    0 6rpx 16rpx rgba(0,0,0,0.08);
+}
+
+.food-card__emoji {
+  font-size: 60rpx;
+  line-height: 1;
+  text-align: center;
+  flex-shrink: 0;
+  margin-bottom: 6rpx;
+}
+
+.food-card__icon {
+  width: 60rpx;
+  height: 60rpx;
+  display: block;
+  flex-shrink: 0;
+  margin-bottom: 6rpx;
+}
+
+.food-card__name {
+  font-size: 22rpx;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+/* 状态角标（右上角） */
+.food-card__badge {
+  position: absolute;
+  top: 6rpx;
+  right: 6rpx;
+  border-radius: 100rpx;
+  padding: 2rpx 10rpx;
+  font-size: 18rpx;
+  font-weight: 700;
+  line-height: 1.5;
+  z-index: 1;
+}
+
+.food-card__badge--safe    { background: #52C41A; color: #fff; }
+.food-card__badge--allergy { background: #FF4D4F; color: #fff; }
+.food-card__badge--testing { background: #FA8C16; color: #fff; }
+
+/* ============================= */
+/* 天数选择弹窗                  */
+/* ============================= */
+.day-modal-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.day-modal-mask--show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.day-modal {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  background: var(--color-white);
+  border-radius: 32rpx 32rpx 0 0;
+  padding: 0 32rpx;
+  padding-bottom: calc(40rpx + env(safe-area-inset-bottom));
+  z-index: 9001;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.day-modal--show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.day-modal__handle {
+  width: 80rpx;
+  height: 8rpx;
+  background: #E0E0E0;
+  border-radius: 100rpx;
+  margin: 20rpx auto 28rpx;
+}
+
+.day-modal__food {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  margin-bottom: 24rpx;
+}
+
+.day-modal__emoji {
+  font-size: 52rpx;
+  line-height: 1;
+}
+
+.day-modal__food-icon {
+  width: 52rpx;
+  height: 52rpx;
+  display: block;
+  flex-shrink: 0;
+}
+
+.day-modal__name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.day-modal__q {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 24rpx;
+}
+
+.day-modal__options {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+  margin-bottom: 36rpx;
+}
+
+.day-option {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 20rpx 0;
+  background: var(--color-bg);
+  border-radius: 100rpx;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  border: 2rpx solid transparent;
+}
+
+.day-option--active {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.day-modal__confirm {
+  margin-top: 0;
+}

@@ -1,168 +1,81 @@
-<!-- pages/trace/trace.wxml — 过敏溯源页 -->
+<!-- pages/trace/trace.wxml — 日历 -->
 <view class="page-container">
-
-  <!-- ===== 顶部入口卡片 ===== -->
-  <view class="alert-card card" bindtap="openAllergyForm">
-    <view class="alert-card__left">
-      <text class="alert-card__icon">src</text>
-      <view class="alert-card__info">
-        <text class="alert-card__title">记录过敏症状</text>
-        <text class="alert-card__desc">宝宝出现不适，系统帮你分析可疑食物</text>
-      </view>
-    </view>
-    <text class="alert-card__arrow">›</text>
-  </view>
-
-  <!-- ===== 过敏表单弹窗 ===== -->
-  <view class="form-mask" wx:if="{{showForm}}" bindtap="closeAllergyForm"></view>
-  <view class="form-panel {{showForm ? 'form-panel--show' : ''}}">
-    <view class="form-panel__header">
-      <text class="form-panel__title">记录过敏症状</text>
-      <text class="form-panel__close" bindtap="closeAllergyForm">x</text>
-    </view>
-
-    <!-- 日期 + 时间 -->
-    <view class="form-row">
-      <view class="form-field flex-1">
-        <text class="form-field__label">日期</text>
-        <picker mode="date" value="{{allergyForm.date}}" bindchange="onDateChange">
-          <view class="form-field__picker">{{allergyForm.date}}</view>
-        </picker>
-      </view>
-      <view class="form-field flex-1">
-        <text class="form-field__label">时间</text>
-        <picker mode="time" value="{{allergyForm.time}}" bindchange="onTimeChange">
-          <view class="form-field__picker">{{allergyForm.time}}</view>
-        </picker>
+  <view class="calendar-container">
+    <!-- 日历头部 -->
+    <view class="calendar-header">
+      <text class="calendar-title">{{calendarYear}}年{{calendarMonth}}月</text>
+      <view class="calendar-nav">
+        <text class="calendar-nav__btn" bindtap="prevMonth">上月</text>
+        <text class="calendar-nav__today" bindtap="goToToday">今天</text>
+        <text class="calendar-nav__btn" bindtap="nextMonth">下月</text>
       </view>
     </view>
 
-    <!-- 症状类型（多选） -->
-    <view class="form-field">
-      <text class="form-field__label">症状类型（可多选）</text>
-      <view class="symptom-grid">
+    <!-- 星期标题 -->
+    <view class="calendar-weekdays">
+      <text class="calendar-weekday" wx:for="日一二三四五六" wx:key="*this">{{item}}</text>
+    </view>
+
+    <!-- 日历网格 -->
+    <scroll-view scroll-y class="calendar-scroll" style="height:{{calendarScrollHeight}}px">
+      <view class="calendar-grid">
         <view
-          class="symptom-chip symptom-chip--{{selectedSymptomMap[item.value] ? 'selected' : 'default'}}"
-          wx:for="{{symptomTypes}}"
-          wx:key="value"
-          catchtap="toggleSymptom"
-          data-value="{{item.value}}"
-        >{{item.label}}</view>
-      </view>
-    </view>
-
-    <!-- 严重程度 -->
-    <view class="form-field">
-      <text class="form-field__label">严重程度</text>
-      <view class="severity-row">
-        <view
-          class="severity-btn {{severity === item.value ? 'severity-btn--active' : ''}}"
-          wx:for="{{severityOptions}}"
-          wx:key="value"
-          bindtap="selectSeverity"
-          data-value="{{item.value}}"
-        >{{item.label}}</view>
-      </view>
-    </view>
-
-    <!-- 备注 -->
-    <view class="form-field">
-      <text class="form-field__label">备注（可选）</text>
-      <textarea
-        class="form-field__textarea"
-        placeholder="描述症状详情，如面部出现红疹..."
-        value="{{allergyForm.notes}}"
-        bindinput="onNotesInput"
-        maxlength="300"
-      />
-    </view>
-
-    <button class="form-submit-btn" bindtap="analyzeAllergy">
-      开始溯源分析
-    </button>
-  </view>
-
-  <!-- ===== 可疑食物分析结果 ===== -->
-  <view class="suspect-section card" wx:if="{{suspectList.length > 0}}">
-    <text class="section-title">可疑食物分析</text>
-    <text class="suspect-hint">过去7天内记录，首次食用优先可疑</text>
-
-    <view class="suspect-list">
-      <view
-        class="suspect-item {{item.confidence === '高' ? 'suspect-item--high' : item.confidence === '中' ? 'suspect-item--mid' : ''}}"
-        wx:for="{{suspectList}}"
-        wx:key="foodId"
-      >
-        <view class="suspect-rank rank-{{index + 1 <= 3 ? index + 1 : 'other'}}">{{index + 1}}</view>
-        <image class="suspect-img" src="{{item.imageUrl}}" mode="aspectFill" />
-        <view class="suspect-info flex-1">
-          <text class="suspect-name">{{item.foodName}}</text>
-          <view class="suspect-tags">
-            <text class="suspect-tag tag-primary" wx:if="{{item.isFirstTime}}">首次</text>
-            <text class="suspect-tag tag-{{item.allergyRisk === '高' ? 'danger' : item.allergyRisk === '中' ? 'warning' : 'primary'}}">{{item.allergyRisk}}风险</text>
-            <text class="suspect-time">{{item.timeAgoText}}前食用</text>
-          </view>
-        </view>
-        <view class="suspect-confidence suspect-confidence--{{item.confidence === '高' ? 'high' : item.confidence === '中' ? 'mid' : 'low'}}">
-          {{item.confidence}}可疑
-        </view>
-      </view>
-    </view>
-
-    <!-- 确认区 -->
-    <view class="confirm-section">
-      <text class="confirm-title">确认是哪种食物过敏？</text>
-      <view class="confirm-btns">
-        <view
-          class="confirm-btn {{confirmedFoodId === item.foodId ? 'confirm-btn--selected' : ''}}"
-          wx:for="{{suspectList}}"
-          wx:key="foodId"
-          bindtap="confirmFood"
-          data-id="{{item.foodId}}"
-          data-name="{{item.foodName}}"
-        >{{item.foodName}}</view>
-      </view>
-      <button
-        class="save-allergy-btn"
-        wx:if="{{confirmedFoodId}}"
-        bindtap="saveAllergyRecord"
-      >
-        确认并加入过敏黑名单
-      </button>
-    </view>
-  </view>
-
-  <!-- ===== 过敏历史时间线 ===== -->
-  <view class="history-section">
-    <text class="section-title" style="padding: 0 30rpx; margin-bottom: 16rpx;">过敏历史</text>
-
-    <view class="empty-state" wx:if="{{allergyHistory.length === 0}}">
-      <text class="empty-state__text">暂无过敏记录</text>
-    </view>
-
-    <view class="timeline" wx:else>
-      <view class="timeline-item" wx:for="{{allergyHistory}}" wx:key="occurredAt">
-        <view class="timeline-dot"></view>
-        <view class="timeline-line" wx:if="{{index < allergyHistory.length - 1}}"></view>
-        <view class="timeline-content card">
-          <view class="timeline-header">
-            <text class="timeline-date">{{item.dateText}}</text>
-            <view class="tag tag-{{item.severity === '重度' ? 'danger' : item.severity === '中度' ? 'warning' : 'primary'}}">
-              {{item.severity}}
+          class="calendar-day {{item.isCurrentMonth ? '' : 'calendar-day--other'}} {{item.hasRecord ? 'calendar-day--has-record' : ''}}"
+          wx:for="{{calendarDays}}"
+          wx:key="date"
+          bindtap="selectCalendarDay"
+          data-date="{{item.date}}"
+        >
+          <text class="calendar-day__num {{item.isToday ? 'calendar-day__num--today' : ''}}">{{item.day}}</text>
+          <view class="calendar-day__foods" wx:if="{{item.dayFoods.length > 0}}">
+            <view class="calendar-day__food" wx:for="{{item.dayFoods}}" wx:for-item="food" wx:key="recordTime">
+              <image wx:if="{{food.localIconPath}}" src="{{food.localIconPath}}" class="calendar-day__food-icon" mode="aspectFit"></image>
+              <image wx:elif="{{food.iconUrl}}" src="{{food.iconUrl}}" class="calendar-day__food-icon" mode="aspectFit"></image>
+              <text wx:else class="calendar-day__food-emoji">{{food.emoji}}</text>
+              <text class="calendar-day__food-name">{{food.foodName}}</text>
+            </view>
+            <view class="calendar-day__more" wx:if="{{item.recordCount > 6}}">
+              <text>+{{item.recordCount - 6}}更多</text>
             </view>
           </view>
-          <text class="timeline-symptom">症状：{{item.symptomText}}</text>
-          <view class="timeline-food" wx:if="{{item.confirmedFood}}">
-            <image class="timeline-food-img" src="{{item.confirmedFoodImageUrl}}" mode="aspectFill" />
-            <text class="timeline-food-name">确认过敏：{{item.confirmedFoodName}}</text>
-          </view>
-          <text class="timeline-notes" wx:if="{{item.notes}}">{{item.notes}}</text>
-          <text class="timeline-retest" wx:if="{{item.retestDate}}">
-            复测提醒：{{item.retestDate}}
-          </text>
+          <text class="calendar-day__empty" wx:elif="{{item.isCurrentMonth}}">—</text>
+        </view>
+      </view>
+      <view class="scroll-bottom-spacer"></view>
+    </scroll-view>
+  </view>
+</view>
+
+<!-- ===== 日期详情弹窗（position:fixed）===== -->
+<view class="day-modal-mask {{showDayModal ? 'day-modal-mask--show' : ''}}" wx:if="{{renderSelectedDay}}" bindtap="closeDayModal" catchtouchmove="noop"></view>
+<view class="day-modal {{showDayModal ? 'day-modal--show' : ''}}" wx:if="{{renderSelectedDay}}" catchtouchmove="noop" bindtouchstart="onModalDragStart" bindtouchend="onModalDragEnd">
+  <view class="day-modal__handle" catchtouchstart="onModalDragStart" catchtouchend="onModalDragEnd"></view>
+  <view class="day-modal__header" catchtouchstart="onModalDragStart" catchtouchend="onModalDragEnd">
+    <text class="day-modal__title">{{selectedDay.dateText}}</text>
+  </view>
+  <scroll-view scroll-y class="day-modal__body" style="height:{{dayModalScrollHeight}}px">
+    <view class="day-modal__list">
+      <view class="day-modal__item" wx:for="{{selectedDay.foods}}" wx:key="id">
+        <view class="day-modal__icon-box">
+          <image wx:if="{{item.localIconPath}}" src="{{item.localIconPath}}" class="day-modal__food-icon" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" src="{{item.iconUrl}}" class="day-modal__food-icon" mode="aspectFit"></image>
+          <text wx:else class="day-modal__emoji">{{item.emoji}}</text>
+        </view>
+        <view class="day-modal__info">
+          <text class="day-modal__name">{{item.name || item.foodName}}</text>
+          <text class="day-modal__time">{{item.timesStr}}</text>
+        </view>
+        <view class="day-modal__reaction day-modal__reaction--{{item.reactionClass}}" wx:if="{{item.reactionClass !== 'normal'}}">
+          <text>{{item.reaction}}</text>
+        </view>
+        <view class="day-modal__delete" catchtap="onDeleteDayRecord" data-foodid="{{item.id}}" data-name="{{item.name || item.foodName}}" data-count="{{item.times.length}}">
+          <image src="/static/icons/trash.svg" class="day-modal__delete-icon" mode="aspectFit"></image>
         </view>
       </view>
     </view>
-  </view>
-
+    <view class="scroll-bottom-spacer"></view>
+  </scroll-view>
 </view>
+
+<!-- 记录辅食覆盖层 -->
+<record-sheet show="{{showRecordSheet}}" bind:close="onRecordSheetClose" bind:saved="onRecordSaved" />

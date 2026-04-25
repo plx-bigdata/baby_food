@@ -81,8 +81,8 @@
     },
     {
       "id": 4,
-      "key": "protein_meat",
-      "name": "肉类蛋白",
+      "key": "meat",
+      "name": "肉类",
       "icon": "🍖",
       "introduce_month": 6,
       "allergen_risk": "low",
@@ -97,8 +97,8 @@
     },
     {
       "id": 5,
-      "key": "protein_seafood",
-      "name": "水产蛋白",
+      "key": "seafood",
+      "name": "鱼虾水产",
       "icon": "🐟",
       "introduce_month": 7,
       "allergen_risk": "medium",
@@ -115,7 +115,7 @@
     },
     {
       "id": 6,
-      "key": "protein_egg",
+      "key": "egg",
       "name": "蛋类",
       "icon": "🥚",
       "introduce_month": 6,
@@ -129,8 +129,8 @@
     },
     {
       "id": 7,
-      "key": "protein_legume",
-      "name": "豆类",
+      "key": "legume",
+      "name": "豆制品",
       "icon": "🫘",
       "introduce_month": 8,
       "allergen_risk": "medium",
@@ -159,7 +159,7 @@
     },
     {
       "id": 9,
-      "key": "nut_seed",
+      "key": "nut",
       "name": "坚果种子",
       "icon": "🥜",
       "introduce_month": 6,

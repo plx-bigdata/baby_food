@@ -27,6 +27,39 @@ function formatDateStr(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
+function collectUniqueRecordDates(records, today) {
+  const uniqueDates = new Set();
+  records.forEach(record => {
+    const localDate = dateUtil.getRecordDate(record);
+    if (!localDate) return;
+    if (!today || localDate <= today) {
+      uniqueDates.add(localDate);
+    }
+  });
+  return uniqueDates;
+}
+
+function calcMaxConsecutiveDays(sortedDates) {
+  if (!sortedDates || sortedDates.length === 0) return 0;
+
+  let maxStreak = 1;
+  let streak = 1;
+
+  for (let i = 1; i < sortedDates.length; i++) {
+    const prev = new Date(sortedDates[i - 1]);
+    const curr = new Date(sortedDates[i]);
+    const diff = Math.round((curr - prev) / (1000 * 60 * 60 * 24));
+    if (diff === 1) {
+      streak++;
+      maxStreak = Math.max(maxStreak, streak);
+    } else {
+      streak = 1;
+    }
+  }
+
+  return maxStreak;
+}
+
 /**
  * 根据计划数据，获取某天的计划列表
  * @param {string} date YYYY-MM-DD
@@ -135,44 +168,64 @@ function generateFuturePlans(queue, settings, startDate) {
  * @param {Array} records 全部辅食记录
  * @param {Array} allergyLogs 全部过敏日志
  * @param {Object} settings { testDays }
+ * @param {Object} onboardingStates 引导时标记的食物状态 { [foodId]: 'passed' }
+ * @param {Array} extraFoods 额外食物（例如自定义食物）
  * @returns {Object} { [foodId]: { status, startDate, dayIndex, totalDays, foodName, imageUrl } }
  */
-function computeAllFoodStates(records, allergyLogs, settings) {
+function computeAllFoodStates(records, allergyLogs, settings, onboardingStates, extraFoods) {
   const testDays = settings?.testDays || 3;
   const today = dateUtil.getTodayDateStr();
   const foodLibrary = require('../data/food-library');
-  const allFoods = foodLibrary.getAllFoods();
+  const allFoods = [
+    ...foodLibrary.getAllFoods(),
+    ...((extraFoods || []).filter(Boolean)),
+  ];
   const stateMap = {};
-
-  console.log('[PlanEngine] computeAllFoodStates - records:', records.length, 'allergyLogs:', allergyLogs.length, 'testDays:', testDays, 'today:', today);
+  const obStates = onboardingStates || {};
 
   allFoods.forEach(food => {
     const foodRecords = records.filter(r => r.foodId === food.id);
+    // 过敏判定:除了 allergy_log.confirmedFood,也要看 record.reaction === '过敏'
+    // 避免共享宝宝场景下 records 与 allergy_log 拉取时机不同造成两端状态错位
     const foodAllergy = allergyLogs.filter(log =>
       log.confirmedFood === food.id
+    );
+    // saveRecords 里 '过敏' 和 '疑似过敏' 都会自动建 allergy_log,这里两种都判 allergy
+    const hasAllergyRecord = foodRecords.some(r =>
+      r.reaction === '过敏' || r.reaction === '疑似过敏'
     );
 
     let status = 'pending';
     let startDate = null;
     let dayIndex = 0;
 
-    if (foodAllergy.length > 0) {
+    if (foodAllergy.length > 0 || hasAllergyRecord) {
       status = 'allergy';
     } else if (foodRecords.length > 0) {
+      // 收集所有吃过的日期（UTC 日期，与存储一致）
+      const uniqueDates = collectUniqueRecordDates(foodRecords, today);
+      dayIndex = uniqueDates.size;
+
+      // 排序找最早日期作为 startDate
       const sorted = [...foodRecords].sort((a, b) =>
         new Date(a.recordTime) - new Date(b.recordTime)
       );
-      const firstRecord = sorted[0];
-      if (firstRecord.recordTime) {
-        startDate = firstRecord.recordTime.split('T')[0];
-        dayIndex = calcDayIndex(startDate, today);
-        console.log('[PlanEngine] food:', food.name, 'foodId:', food.id, 'firstRecordTime:', firstRecord.recordTime, 'startDate:', startDate, 'dayIndex:', dayIndex, 'testDays:', testDays);
-        if (dayIndex >= testDays) {
-          status = 'passed';
-        } else {
-          status = 'testing';
-        }
+      if (sorted[0]) {
+        startDate = dateUtil.getRecordDate(sorted[0]);
       }
+
+      if (dayIndex >= testDays) {
+        // 累计天数达标，再判断是否有连续 testDays 天
+        const sortedDates = [...uniqueDates].sort();
+        const maxStreak = calcMaxConsecutiveDays(sortedDates);
+        // 连续吃够 testDays 天 → 安全；总天数够但不连续 → 基本安全
+        status = maxStreak >= testDays ? 'passed' : 'preliminary';
+      } else {
+        status = 'testing';
+      }
+    } else if (obStates[food.id]) {
+      // 引导时标记为安全（无实际记录）
+      status = obStates[food.id];
     }
 
     stateMap[food.id] = {
@@ -182,6 +235,55 @@ function computeAllFoodStates(records, allergyLogs, settings) {
       totalDays: testDays,
       foodName: food.name,
       imageUrl: food.imageUrl,
+    };
+  });
+
+  return stateMap;
+}
+
+/**
+ * 根据食物状态构建分类状态
+ * @param {Object} foodStates foodId -> { status, startDate, dayIndex }
+ * @param {Object} settings { testDays }
+ * @returns {Object} { [categoryId]: { status, dayIndex, startDate, totalDays } }
+ */
+function buildCategoryStatesFromFoodStates(foodStates, settings) {
+  const testDays = settings?.testDays || 3;
+  const today = dateUtil.getTodayDateStr();
+  const allCategories = planCategories.getAllCategories();
+  const stateMap = {};
+
+  allCategories.forEach(cat => {
+    const catFoods = cat.foodIds
+      .map(foodId => foodStates[foodId])
+      .filter(Boolean);
+    const testingFoods = catFoods.filter(food => food.status === 'testing');
+    const allergyCount = catFoods.filter(food => food.status === 'allergy').length;
+    const passedCount = catFoods.filter(food => food.status === 'passed').length;
+    const totalFoods = catFoods.length;
+
+    let status = 'pending';
+    let startDate = null;
+    let dayIndex = 0;
+
+    if (allergyCount > 0) {
+      status = 'allergy';
+    } else if (totalFoods > 0 && passedCount === totalFoods && testingFoods.length === 0) {
+      status = 'passed';
+    } else if (testingFoods.length > 0) {
+      status = 'testing';
+      startDate = testingFoods.reduce((earliest, food) => {
+        if (!food.startDate) return earliest;
+        return !earliest || food.startDate < earliest ? food.startDate : earliest;
+      }, null);
+      dayIndex = startDate ? calcDayIndex(startDate, today) : 0;
+    }
+
+    stateMap[cat.id] = {
+      status,
+      dayIndex,
+      startDate,
+      totalDays: testDays,
     };
   });
 
@@ -224,8 +326,9 @@ function computeAllCategoryStates(records, allergyLogs, settings) {
         new Date(a.recordTime) - new Date(b.recordTime)
       );
       const firstRecord = sorted[0];
-      if (firstRecord.recordTime) {
-        startDate = firstRecord.recordTime.split('T')[0];
+      const firstDate = dateUtil.getRecordDate(firstRecord);
+      if (firstDate) {
+        startDate = firstDate;
         dayIndex = calcDayIndex(startDate, today);
         if (dayIndex >= testDays) {
           status = 'passed';
@@ -285,5 +388,6 @@ module.exports = {
   generateFuturePlans,
   computeAllFoodStates,
   computeAllCategoryStates,
+  buildCategoryStatesFromFoodStates,
   suggestNextCategories,
 };

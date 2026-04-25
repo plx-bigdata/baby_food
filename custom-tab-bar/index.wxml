@@ -1,0 +1,30 @@
+<view class="tabbar {{hidden ? 'tabbar--hidden' : ''}}">
+  <view
+    class="tabbar-item {{item.isAction ? 'tabbar-item--record' : (currentSelected === index ? 'tabbar-item--active' : '')}}"
+    wx:for="{{list}}"
+    wx:key="pagePath"
+    bindtap="switchTab"
+    data-index="{{index}}"
+  >
+    <!-- 中间记录按钮用自定义样式 -->
+    <view wx:if="{{item.isAction}}" class="tabbar-icon-wrap record-btn">
+      <view class="record-btn__plus">
+        <view class="record-btn__plus-h"></view>
+        <view class="record-btn__plus-v"></view>
+      </view>
+    </view>
+    <!-- emoji 图标 -->
+    <view wx:elif="{{item.iconEmoji}}" class="tabbar-icon-wrap">
+      <text class="tabbar-icon-emoji {{currentSelected === index ? 'tabbar-icon-emoji--active' : ''}}">{{item.iconEmoji}}</text>
+    </view>
+    <!-- 其他按钮用图片 -->
+    <view wx:else class="tabbar-icon-wrap">
+      <image
+        class="tabbar-icon"
+        src="{{currentSelected === index ? item.selectedIconPath : item.iconPath}}"
+        mode="aspectFit"
+      />
+    </view>
+    <text class="tabbar-text" wx:if="{{item.text}}">{{item.text}}</text>
+  </view>
+</view>

@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "排敏计划",
-  "usingComponents": {}
+  "navigationBarTitleText": "食物列表",
+  "usingComponents": {
+    "record-sheet": "/components/record-sheet/record-sheet"
+  }
 }

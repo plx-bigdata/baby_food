@@ -80,10 +80,17 @@
   border-bottom: none;
 }
 
-.history-item__img {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 10rpx;
+.history-item__emoji {
+  font-size: 56rpx;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.history-item__icon {
+  width: 56rpx;
+  height: 56rpx;
+  display: block;
+  flex-shrink: 0;
 }
 
 .history-item__name {

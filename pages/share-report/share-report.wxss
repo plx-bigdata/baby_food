@@ -1,0 +1,275 @@
+/* pages/share-report/share-report.wxss — 分享报告只读页 */
+
+.page {
+  min-height: 100vh;
+  background: #FDF8F4;
+  color: #5A4A42;
+}
+
+.loading-state,
+.error-state {
+  min-height: 100vh;
+  padding: 0 56rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.loading-dot {
+  width: 40rpx;
+  height: 40rpx;
+  border: 6rpx solid #FFE1D6;
+  border-top-color: #FF8C69;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-text {
+  margin-top: 24rpx;
+  color: #9B8B82;
+  font-size: 15px;
+}
+
+.error-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.error-text {
+  margin-top: 18rpx;
+  color: #9B8B82;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.primary-btn,
+.cta-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 18rpx;
+  background: #FF8C69;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 88rpx;
+}
+
+.primary-btn::after,
+.cta-button::after {
+  border: 0;
+}
+
+.primary-btn {
+  width: 320rpx;
+  margin-top: 42rpx;
+}
+
+.report-scroll {
+  height: 100vh;
+}
+
+.hero {
+  min-height: 300rpx;
+  padding: 74rpx 48rpx 50rpx;
+  background: linear-gradient(135deg, #FF8C69 0%, #D4A9A0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.hero-title {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.hero-badge {
+  margin-top: 22rpx;
+  padding: 12rpx 38rpx;
+  border-radius: 999rpx;
+  background: rgba(255,255,255,0.28);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.hero-age {
+  margin-top: 16rpx;
+  color: rgba(255,255,255,0.82);
+  font-size: 13px;
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14rpx;
+  padding: 24rpx;
+}
+
+.stat-card {
+  min-height: 142rpx;
+  border-radius: 16rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2rpx solid transparent;
+}
+
+.stat-card--passed {
+  background: #F0FAE8;
+  border-color: #9BD278;
+}
+
+.stat-card--testing {
+  background: #FFF7E6;
+  border-color: #F4BF55;
+}
+
+.stat-card--allergy {
+  background: #FFF1F0;
+  border-color: #FF9A8F;
+}
+
+.stat-num {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stat-label {
+  margin-top: 12rpx;
+  color: #7B6A62;
+  font-size: 13px;
+}
+
+.section {
+  padding: 12rpx 24rpx 0;
+}
+
+.section-title {
+  display: block;
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 20rpx;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18rpx 8rpx;
+}
+
+.category-item {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.category-icon {
+  width: 70rpx;
+  height: 70rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34rpx;
+}
+
+.category-name {
+  margin-top: 8rpx;
+  max-width: 100%;
+  color: #5A4A42;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-count {
+  margin-top: 4rpx;
+  color: #FF8C69;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quote-box {
+  margin: 36rpx 24rpx 0;
+  padding: 28rpx;
+  border-radius: 18rpx;
+  background: #fff;
+  box-shadow: 0 8rpx 28rpx rgba(90,74,66,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.quote-text {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.quote-app {
+  color: #D4A9A0;
+  font-size: 13px;
+}
+
+.cta-space {
+  height: 210rpx;
+}
+
+.cta-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20rpx 24rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: rgba(253,248,244,0.96);
+  border-top: 1rpx solid #EDE5DE;
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  box-sizing: border-box;
+}
+
+.cta-copy {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.cta-title {
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.cta-subtitle {
+  color: #9B8B82;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.cta-button {
+  width: 220rpx;
+  height: 88rpx;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -171,6 +171,16 @@ view, text, image, input, button, scroll-view {
   text-align: center;
 }
 
+/* ===== 底部弹窗通用手柄 ===== */
+.panel-handle {
+  width: 80rpx;
+  height: 8rpx;
+  background: #DDDDDD;
+  border-radius: 4rpx;
+  margin: 16rpx auto 32rpx;
+  flex-shrink: 0;
+}
+
 /* ===== 安全区域底部适配 ===== */
 .safe-bottom {
   padding-bottom: constant(safe-area-inset-bottom);

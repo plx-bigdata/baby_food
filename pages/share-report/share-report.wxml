@@ -1,0 +1,69 @@
+<!-- pages/share-report/share-report.wxml — 分享报告只读页 -->
+
+<view class="page">
+  <view class="loading-state" wx:if="{{loading}}">
+    <view class="loading-dot"></view>
+    <text class="loading-text">报告加载中...</text>
+  </view>
+
+  <view class="error-state" wx:elif="{{loadError}}">
+    <text class="error-title">报告打不开了</text>
+    <text class="error-text">{{loadError}}</text>
+    <button class="primary-btn" bindtap="startUse">开始使用</button>
+  </view>
+
+  <block wx:else>
+    <scroll-view class="report-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+      <view class="hero">
+        <text class="hero-title">{{babyName || '宝宝'}}的美食探险日记</text>
+        <view class="hero-badge">
+          <text>{{passedCount}} / {{totalCount}} 种已探索</text>
+        </view>
+        <text class="hero-age" wx:if="{{babyAge}}">{{babyAge}}</text>
+      </view>
+
+      <view class="stats-row">
+        <view class="stat-card stat-card--passed">
+          <text class="stat-num">{{passedCount}}</text>
+          <text class="stat-label">未过敏</text>
+        </view>
+        <view class="stat-card stat-card--testing">
+          <text class="stat-num">{{testingCount}}</text>
+          <text class="stat-label">排敏中</text>
+        </view>
+        <view class="stat-card stat-card--allergy">
+          <text class="stat-num">{{allergyCount}}</text>
+          <text class="stat-label">过敏记录</text>
+        </view>
+      </view>
+
+      <view class="section">
+        <text class="section-title">分类探索进度</text>
+        <view class="category-grid">
+          <view class="category-item" wx:for="{{categoryStats}}" wx:key="id">
+            <view class="category-icon" style="background: {{item.bgColor}};">
+              <text>{{item.icon}}</text>
+            </view>
+            <text class="category-name">{{item.name}}</text>
+            <text class="category-count">{{item.passed}}/{{item.total}}</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="quote-box">
+        <text class="quote-text">{{quote}}</text>
+        <text class="quote-app">呀咪宝宝辅食</text>
+      </view>
+
+      <view class="cta-space"></view>
+    </scroll-view>
+
+    <view class="cta-bar">
+      <view class="cta-copy">
+        <text class="cta-title">{{hasExistingBaby ? '继续查看自己的宝宝数据' : '也想记录宝宝辅食排敏？'}}</text>
+        <text class="cta-subtitle">{{hasExistingBaby ? '先回到首页，再切换到自己的宝宝' : '从宝宝信息开始，建立自己的记录'}}</text>
+      </view>
+      <button class="cta-button" bindtap="startUse">{{hasExistingBaby ? '返回首页' : '开始使用'}}</button>
+    </view>
+  </block>
+</view>

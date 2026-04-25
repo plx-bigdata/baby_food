@@ -5,6 +5,7 @@ const dateUtil = require('../../utils/date');
 const planEngine = require('../../utils/plan-engine');
 const foodLibrary = require('../../data/food-library');
 const planCategories = require('../../data/plan-categories');
+const SHEET_ANIMATION_DURATION = 280;
 
 Page({
   data: {
@@ -19,44 +20,75 @@ Page({
     selectedFoods: [],
     // 记录面板
     showRecordPanel: false,
-    // 首次食物信息
-    firstTimeFoodInfo: null,
+    renderRecordPanel: false,
     // 记录表单
     recordForm: {
       time: '',
-      amount: '正常',
-      reaction: '正常',
-      note: '',
     },
-    amountOptions: ['少量', '正常', '多'],
-    reactionOptions: [
-      { label: '正常', value: '正常', type: 'normal' },
-      { label: '疑似过敏', value: '疑似过敏', type: 'warning' },
-      { label: '过敏', value: '过敏', type: 'danger' },
-    ],
     saving: false,
+    closing: false,
+    hasSelected: false,
 
     // ===== 预计算数据（解决 WXML 不支持箭头函数和 > 运算符）=====
     // 食物卡片类名映射
     foodClassMap: {},
     // 已选食物 ID → true/false（用于 wx:if 替代箭头函数）
     selectedSet: {},
-    // 首次食物天数映射 foodId → dayIndex
-    firstTimeDayIndexMap: {},
+    // 食物天数标签 foodId → { label, type }
+    foodDayLabelMap: {},
     // 过敏风险 → CSS类名
-    riskClassMap: { '高': 'high', '中': 'mid', '低': 'low' },
+    riskClassMap: { '高': 'danger', '中': 'mid', '低': 'low' },
     // 过敏风险 → 标签文字
     riskLabelMap: { '高': '高敏', '中': '中敏', '低': '低' },
+    // 自定义食物
+    customFoods: [],
+    newCustomFoodName: '',
+
+    // 搜索关键词
+    searchKeyword: '',
+
+    // 食材 ID → 状态（pending/testing/passed/preliminary/allergy），用于显示状态角标
+    foodStatusMap: {},
   },
 
   onLoad() {
     const today = dateUtil.getTodayDateStr();
     const now = new Date();
     const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    this.setData({ today, 'recordForm.time': timeStr });
-    this.buildCategoryTabs();
-    this.updateDisplayFoods();
-    this.recomputeAll();
+
+    // 构建分类 tabs
+    const planCats = planCategories.getAllCategories();
+    const categoryTabs = [
+      { id: 'all', name: '全部' },
+      ...planCats.map(cat => ({ id: cat.id, name: cat.name })),
+      { id: 'custom', name: '自定义' },
+    ];
+
+    // 加载自定义食物
+    const babyId = app.globalData.currentBabyId || 'default';
+    const customFoods = foodLibrary.getCustomFoods(babyId);
+
+    // 构建食物列表(全部 tab = 官方 + 自定义)
+    const displayFoods = [...foodLibrary.getAllFoods(), ...customFoods];
+
+    // 预计算 foodClassMap（初始无选中，全部为默认类名）
+    const foodClassMap = {};
+    displayFoods.forEach(f => { foodClassMap[f.id] = 'food-card'; });
+
+    // 一次性 setData，避免多次渲染抖动
+    this.setData({
+      today,
+      'recordForm.time': timeStr,
+      categoryTabs,
+      displayFoods,
+      customFoods,
+      foodClassMap,
+      selectedSet: {},
+      hasSelected: false,
+    });
+
+    // 计算当前是否有食材处于"排敏中"以及各食材的禁用状态
+    this._computeTestingFood();
   },
 
   /**
@@ -69,8 +101,35 @@ Page({
   },
 
   /**
-   * 根据已选食物计算每个卡片的类名映射
+   * 计算各食材的当前状态，用于显示角标
    */
+  _computeTestingFood() {
+    const app = getApp();
+    const records = app.globalData.allRecords || [];
+    const allergyLogs = app.globalData.allergyLogs || [];
+    const babyId = app.globalData.currentBabyId || 'default';
+    const settings = app.globalData.currentBaby?.settings || {};
+    const testDays = settings.testDays || 3;
+    const onboardingStates = app.globalData.onboardingStates
+      || wx.getStorageSync(`onboardingStates_${babyId}`) || {};
+    const customFoods = foodLibrary.getCustomFoods(babyId);
+
+    const states = planEngine.computeAllFoodStates(
+      records,
+      allergyLogs,
+      { testDays },
+      onboardingStates,
+      customFoods
+    );
+    app.globalData.foodStates = states;
+
+    const statusMap = {};
+    for (const [foodId, state] of Object.entries(states)) {
+      statusMap[foodId] = state.status || 'pending';
+    }
+
+    this.setData({ foodStatusMap: statusMap });
+  },
   computeFoodClassMap() {
     const { selectedFoods, displayFoods } = this.data;
     const map = {};
@@ -116,6 +175,7 @@ Page({
         id: cat.id,
         name: cat.name,
       })),
+      { id: 'custom', name: '自定义' },
     ];
     this.setData({ categoryTabs: tabs });
   },
@@ -125,53 +185,104 @@ Page({
    */
   switchCategory(e) {
     const id = e.currentTarget.dataset.id;
-    this.setData({ currentCategory: id });
-    this.updateDisplayFoods();
-    this.recomputeAll();
+    this.setData({ currentCategory: id }, () => {
+      this.updateDisplayFoods();
+    });
+  },
+
+  /**
+   * 搜索框输入
+   */
+  onSearchInput(e) {
+    this.setData({ searchKeyword: e.detail.value }, () => {
+      this.updateDisplayFoods();
+    });
+  },
+
+  /**
+   * 清空搜索
+   */
+  clearSearch() {
+    this.setData({ searchKeyword: '' }, () => {
+      this.updateDisplayFoods();
+    });
   },
 
   /**
    * 更新展示的食物列表
    */
   updateDisplayFoods() {
-    const { currentCategory } = this.data;
-    let foods = foodLibrary.getAllFoods();
-    if (currentCategory !== 'all') {
-      // plan category id 格式为 cat_grain，需去掉前缀匹配 food.category
+    const { currentCategory, selectedFoods, customFoods, searchKeyword } = this.data;
+    const kw = (searchKeyword || '').trim().toLowerCase();
+    let foods;
+    if (kw) {
+      // 搜索模式:跨分类,在官方 + 自定义全集中按名称过滤
+      const all = [...foodLibrary.getAllFoods(), ...customFoods];
+      foods = all.filter(f => (f.name || '').toLowerCase().includes(kw));
+    } else if (currentCategory === 'custom') {
+      foods = customFoods;
+    } else if (currentCategory === 'all') {
+      foods = [...foodLibrary.getAllFoods(), ...customFoods];
+    } else {
       const foodCategory = currentCategory.startsWith('cat_')
         ? currentCategory.replace('cat_', '')
         : currentCategory;
-      foods = foods.filter(f => f.category === foodCategory);
+      foods = foodLibrary.getFoodsByCategory(foodCategory);
     }
-    this.setData({ displayFoods: foods });
-    this.recomputeAll();
+    // 同步重算 foodClassMap，合并成一次 setData
+    const firstSelectedId = selectedFoods.length > 0 ? selectedFoods[0].id : null;
+    const foodClassMap = {};
+    foods.forEach(f => {
+      const isSelected = selectedFoods.some(sf => sf.id === f.id);
+      if (isSelected) {
+        foodClassMap[f.id] = 'food-card food-card--selected' + (f.id === firstSelectedId ? ' food-card--first' : '');
+      } else {
+        foodClassMap[f.id] = 'food-card';
+      }
+    });
+    this.setData({ displayFoods: foods, foodClassMap });
   },
 
   /**
-   * 选中食物
+   * 选中食物（无限制，自由选择）
    */
   selectFood(e) {
     const id = e.currentTarget.dataset.id;
-    const { selectedFoods } = this.data;
-    const food = foodLibrary.getFoodById(id);
+    const { selectedFoods, displayFoods } = this.data;
+
+    // 优先从当前显示列表中查找（自定义食物不在 foodLibrary 中）
+    let food = displayFoods.find(f => f.id === id);
+    if (!food) food = foodLibrary.getFoodById(id);
     if (!food) return;
 
     const idx = selectedFoods.findIndex(sf => sf.id === id);
-    if (idx > -1) {
-      this.setData({ selectedFoods: selectedFoods.filter(sf => sf.id !== id) });
-    } else {
-      this.setData({ selectedFoods: [...selectedFoods, food] });
-    }
-    this.recomputeAll();
+    const newSelected = idx > -1
+      ? selectedFoods.filter(sf => sf.id !== id)
+      : [...selectedFoods, food];
+
+    this._applySelection(newSelected, displayFoods);
   },
 
-  /**
-   * 移除已选食物
-   */
   removeFood(e) {
     const id = e.currentTarget.dataset.id;
-    this.setData({ selectedFoods: this.data.selectedFoods.filter(sf => sf.id !== id) });
-    this.recomputeAll();
+    const { selectedFoods, displayFoods } = this.data;
+    this._applySelection(selectedFoods.filter(sf => sf.id !== id), displayFoods);
+  },
+
+  // 内部辅助：更新选中状态并一次性 setData
+  _applySelection(newSelected, displayFoods) {
+    const firstId = newSelected.length > 0 ? newSelected[0].id : null;
+    const selectedSet = {};
+    const foodClassMap = {};
+    newSelected.forEach(f => { selectedSet[f.id] = true; });
+    displayFoods.forEach(f => {
+      if (selectedSet[f.id]) {
+        foodClassMap[f.id] = 'food-card food-card--selected' + (f.id === firstId ? ' food-card--first' : '');
+      } else {
+        foodClassMap[f.id] = 'food-card';
+      }
+    });
+    this.setData({ selectedFoods: newSelected, selectedSet, foodClassMap, hasSelected: newSelected.length > 0 });
   },
 
   /**
@@ -185,45 +296,155 @@ Page({
     }
 
     const allRecords = app.globalData.allRecords || [];
-    const firstTimeInfos = [];
-    const firstTimeDayIndexMap = {};
+    const foodStates = app.globalData.foodStates || {};
+    const foodDayLabelMap = {};
 
     selectedFoods.forEach(food => {
-      const existing = allRecords.find(r => r.foodId === food.id);
-      let dayIndex = 0;
-      let isFirstTime = false;
+      const state = foodStates[food.id] || {};
+      const foodStatus = state.status || 'pending';
 
-      if (!existing) {
-        isFirstTime = true;
-        const cat = planCategories.getCategoryByFoodId(food.id);
-        if (cat) {
-          const catRecords = allRecords
-            .filter(r => cat.foodIds.includes(r.foodId))
-            .sort((a, b) => new Date(a.recordTime) - new Date(b.recordTime));
-          if (catRecords.length > 0) {
-            const firstDate = catRecords[0].recordTime.split('T')[0];
-            const today = dateUtil.getTodayDateStr();
-            dayIndex = planEngine.calcDayIndex(firstDate, today) + 1;
-          } else {
-            dayIndex = 1;
-          }
+      // 过敏或已确认未过敏
+      if (foodStatus === 'allergy') {
+        foodDayLabelMap[food.id] = { label: '过敏', type: 'danger' };
+      } else if (foodStatus === 'passed' || foodStatus === 'preliminary') {
+        foodDayLabelMap[food.id] = { label: '未过敏', type: 'safe' };
+      } else {
+        // 计算这个食物本身被吃过的次数
+        const foodRecords = allRecords
+          .filter(r => r.foodId === food.id)
+          .sort((a, b) => new Date(b.recordTime) - new Date(a.recordTime));
+        const eatenCount = foodRecords.length;
+
+        if (eatenCount === 0) {
+          // 从没吃过
+          foodDayLabelMap[food.id] = { label: '第1天·首次', type: 'testing' };
         } else {
-          dayIndex = 1;
+          // 吃过了，本次是第几天
+          foodDayLabelMap[food.id] = { label: '第' + (eatenCount + 1) + '天', type: 'testing' };
         }
       }
-      firstTimeInfos.push({ foodId: food.id, dayIndex, isFirstTime });
-      firstTimeDayIndexMap[food.id] = dayIndex;
     });
 
     this.setData({
-      showRecordPanel: true,
-      firstTimeFoodInfo: firstTimeInfos,
-      firstTimeDayIndexMap,
+      renderRecordPanel: true,
+      showRecordPanel: false,
+      foodDayLabelMap,
+    }, () => {
+      setTimeout(() => this.setData({ showRecordPanel: true }), 16);
     });
   },
 
   closeRecordPanel() {
-    this.setData({ showRecordPanel: false });
+    if (!this.data.renderRecordPanel && !this.data.showRecordPanel) return;
+    this.setData({ showRecordPanel: false }, () => {
+      clearTimeout(this._recordPanelTimer);
+      this._recordPanelTimer = setTimeout(() => {
+        this.setData({ renderRecordPanel: false });
+      }, SHEET_ANIMATION_DURATION);
+    });
+  },
+
+  _recordPanelDragY: 0,
+  onRecordPanelDragStart(e) {
+    this._recordPanelDragY = e.touches[0].clientY;
+  },
+  onRecordPanelDragEnd(e) {
+    if (e.changedTouches[0].clientY - this._recordPanelDragY > 80) {
+      this.closeRecordPanel();
+    }
+  },
+
+  /** ===== 自定义食物 ===== */
+  onCustomFoodNameInput(e) {
+    this.setData({ newCustomFoodName: e.detail.value });
+  },
+
+  addCustomFood() {
+    const name = this.data.newCustomFoodName.trim();
+    if (!name) {
+      wx.showToast({ title: '请输入食物名称', icon: 'none' });
+      return;
+    }
+    const babyId = app.globalData.currentBabyId || 'default';
+    const newFood = {
+      id: foodLibrary.generateCustomFoodId(),
+      name,
+      category: 'custom',
+      allergyRisk: '低',
+      recommendMonth: null,
+      isCustom: true,
+    };
+    foodLibrary.enrichCustomFood(newFood);
+    const customFoods = [...this.data.customFoods, newFood];
+    foodLibrary.saveCustomFoods(babyId, customFoods);
+    this.setData({ customFoods, newCustomFoodName: '' });
+    if (this.data.currentCategory === 'custom') {
+      this.updateDisplayFoods();
+    }
+  },
+
+  deleteCustomFood(e) {
+    const id = e.currentTarget.dataset.id;
+    const babyId = app.globalData.currentBabyId || 'default';
+    const customFoods = this.data.customFoods.filter(f => f.id !== id);
+    foodLibrary.saveCustomFoods(babyId, customFoods);
+    this.setData({ customFoods });
+    if (this.data.currentCategory === 'custom') {
+      this.updateDisplayFoods();
+    }
+  },
+
+  goBack() {
+    this.setData({ closing: true });
+    setTimeout(() => {
+      wx.navigateBack({
+        delta: 1,
+        fail: () => {
+          const app = getApp();
+          const returnUrl = app.globalData.recordReturnUrl || '/pages/index/index';
+          wx.reLaunch({ url: returnUrl });
+        },
+      });
+    }, 280);
+  },
+
+  // 拖拽关闭手势（sheet-body 非 scroll-view 区域共用）
+  _sheetDragY: 0,
+  _sheetDragging: false,
+  onSheetDragStart(e) {
+    this._sheetDragY = e.touches[0].clientY;
+    this._sheetDragging = true;
+  },
+  onSheetDragMove(e) {
+    if (this._sheetDragging) {
+      this._sheetDragY = e.touches[0].clientY;
+    }
+  },
+  onSheetDragEnd(e) {
+    if (!this._sheetDragging) return;
+    const delta = e.changedTouches[0].clientY - this._sheetDragY;
+    this._sheetDragging = false;
+    if (delta > 80) this.goBack();
+  },
+
+  // scroll-view 区域下滑关闭：需在内容滚到顶部时下拉才关闭
+  _foodGridAtTop: true,
+  _foodGridDragY: 0,
+  _foodGridStartAtTop: false,
+  onFoodGridScrollUpper() {
+    this._foodGridAtTop = true;
+  },
+  onFoodGridScroll(e) {
+    this._foodGridAtTop = (e.detail.scrollTop || 0) <= 0;
+  },
+  onFoodGridDragStart(e) {
+    this._foodGridDragY = e.touches[0].clientY;
+    this._foodGridStartAtTop = this._foodGridAtTop;
+  },
+  onFoodGridDragEnd(e) {
+    const delta = e.changedTouches[0].clientY - this._foodGridDragY;
+    if (this._foodGridStartAtTop && delta > 80) this.goBack();
+    this._foodGridStartAtTop = false;
   },
 
   onTimeChange(e) {
@@ -234,42 +455,31 @@ Page({
     this.setData({ today: e.detail.value });
   },
 
-  selectAmount(e) {
-    this.setData({ 'recordForm.amount': e.currentTarget.dataset.value });
-  },
-
-  selectReaction(e) {
-    this.setData({ 'recordForm.reaction': e.currentTarget.dataset.value });
-  },
-
-  onNoteInput(e) {
-    this.setData({ 'recordForm.note': e.detail.value });
-  },
-
   /**
    * 保存记录
    */
   saveRecord() {
-    const { selectedFoods, recordForm, today, firstTimeFoodInfo, saving } = this.data;
+    const { selectedFoods, recordForm, today, saving } = this.data;
     if (saving || selectedFoods.length === 0) return;
 
     this.setData({ saving: true });
 
     try {
-      const recordTime = new Date(`${today}T${recordForm.time}:00`).toISOString();
+      const allRecords = app.globalData.allRecords || [];
+      const recordTime = `${today}T${recordForm.time}:00`;
       const newRecords = selectedFoods.map(food => {
-        const ftInfo = firstTimeFoodInfo.find(f => f.foodId === food.id) || {};
+        const foodRecords = allRecords.filter(r => r.foodId === food.id);
+        const isFirstTime = foodRecords.length === 0;
         return {
           foodId: food.id,
           foodName: food.name,
           category: food.category,
           imageUrl: food.imageUrl,
-          amount: recordForm.amount,
-          reaction: recordForm.reaction,
-          reactionNote: recordForm.note,
-          isFirstTime: !!ftInfo.isFirstTime,
-          dayIndex: ftInfo.dayIndex || 0,
+          reaction: '正常',
+          isFirstTime,
+          dayIndex: foodRecords.length + 1,
           recordTime,
+          recordDate: today,
           recordedAt: new Date().toISOString(),
         };
       });
@@ -278,21 +488,23 @@ Page({
 
       wx.showToast({ title: '记录成功', icon: 'success' });
 
-      this.setData({
-        showRecordPanel: false,
-        selectedFoods: [],
-        'recordForm.note': '',
-        'recordForm.reaction': '正常',
-        saving: false,
-        firstTimeFoodInfo: null,
-        firstTimeDayIndexMap: {},
-      });
-
-      setTimeout(() => wx.switchTab({ url: '/pages/index/index' }), 800);
+      // 关闭记录页
+      setTimeout(() => {
+        wx.navigateBack({
+          delta: 1,
+          fail: () => {
+            const app = getApp();
+            const returnUrl = app.globalData.recordReturnUrl || '/pages/index/index';
+            wx.reLaunch({ url: returnUrl });
+          },
+        });
+      }, 500);
     } catch (err) {
       console.error('[记录页] 保存失败:', err);
       wx.showToast({ title: '保存失败', icon: 'none' });
       this.setData({ saving: false });
     }
   },
+
+  noop() {},
 });

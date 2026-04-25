@@ -1,0 +1,192 @@
+<!-- pages/allergy/allergy.wxml — 过敏排查页 -->
+<view class="page-container">
+
+  <!-- 自定义顶部头图 -->
+  <view class="allergy-hero">
+    <view class="custom-nav custom-nav--hero">
+      <text class="custom-nav__title custom-nav__title--hero">过敏排查</text>
+    </view>
+  </view>
+
+  <view class="allergy-content">
+
+  <!-- ===== 过敏表单弹窗 ===== -->
+  <view class="form-mask {{showForm ? 'form-mask--show' : ''}}" wx:if="{{renderForm}}" bindtap="closeAllergyForm" catchtouchmove="noop"></view>
+  <view class="form-panel {{showForm ? 'form-panel--show' : ''}}" wx:if="{{renderForm}}" catchtouchmove="noop" bindtouchstart="onFormDragStart" bindtouchend="onFormDragEnd">
+    <view class="panel-handle" catchtouchstart="onFormDragStart" catchtouchend="onFormDragEnd"></view>
+
+    <view class="form-panel__body">
+      <!-- 日期 + 时间 -->
+      <view class="form-row">
+        <view class="form-field flex-1">
+          <text class="form-field__label">日期</text>
+          <picker mode="date" value="{{allergyForm.date}}" bindchange="onDateChange">
+            <view class="form-field__picker">{{allergyForm.date}}</view>
+          </picker>
+        </view>
+        <view class="form-field flex-1">
+          <text class="form-field__label">时间</text>
+          <picker mode="time" value="{{allergyForm.time}}" bindchange="onTimeChange">
+            <view class="form-field__picker">{{allergyForm.time}}</view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 症状类型（多选） -->
+      <view class="form-field">
+        <text class="form-field__label">症状类型（可多选）</text>
+        <view class="symptom-grid">
+          <view
+            class="symptom-chip symptom-chip--{{selectedSymptomMap[item.value] ? 'selected' : 'default'}}"
+            wx:for="{{symptomTypes}}"
+            wx:key="value"
+            catchtap="toggleSymptom"
+            data-value="{{item.value}}"
+          >{{item.label}}</view>
+        </view>
+        <input
+          wx:if="{{showOtherInput}}"
+          class="other-symptom-input"
+          placeholder="请描述其他症状..."
+          value="{{otherSymptomText}}"
+          bindinput="onOtherSymptomInput"
+        />
+      </view>
+
+      <!-- 严重程度 -->
+      <view class="form-field" style="margin-bottom: 40rpx;">
+        <text class="form-field__label">严重程度</text>
+        <view class="severity-row">
+          <view
+            class="severity-btn {{severity === item.value ? 'severity-btn--active' : ''}}"
+            wx:for="{{severityOptions}}"
+            wx:key="value"
+            bindtap="selectSeverity"
+            data-value="{{item.value}}"
+          >{{item.label}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-panel__footer">
+      <view class="form-btn-row">
+        <button class="form-submit-btn" bindtap="analyzeAllergy">
+          开始溯源分析
+        </button>
+        <button class="form-direct-save-btn" bindtap="directSaveAllergy">
+          直接保存记录
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 可疑食物分析弹窗 ===== -->
+  <view class="form-mask {{showSuspectModal ? 'form-mask--show' : ''}}" wx:if="{{renderSuspectModal}}" bindtap="closeSuspectModal" catchtouchmove="noop"></view>
+  <view class="suspect-panel {{showSuspectModal ? 'suspect-panel--show' : ''}}" wx:if="{{renderSuspectModal}}" catchtouchmove="noop">
+    <view class="panel-handle" bindtouchstart="onSuspectDragStart" bindtouchend="onSuspectDragEnd"></view>
+    <view class="suspect-panel__header">
+      <text class="suspect-panel__title">可疑食物分析</text>
+      <text class="suspect-panel__close" bindtap="closeSuspectModal">×</text>
+    </view>
+    <scroll-view scroll-y class="suspect-panel__body">
+      <text class="suspect-hint">过去7天内记录，首次食用优先可疑</text>
+
+      <view class="suspect-list">
+        <view
+          class="suspect-item {{item.confidence === '高' ? 'suspect-item--high' : item.confidence === '中' ? 'suspect-item--mid' : ''}}"
+          wx:for="{{suspectList}}"
+          wx:key="foodId"
+        >
+          <view class="suspect-rank rank-{{index + 1 <= 3 ? index + 1 : 'other'}}">{{index + 1}}</view>
+          <image wx:if="{{item.localIconPath}}" src="{{item.localIconPath}}" class="suspect-icon" mode="aspectFit"></image>
+          <image wx:elif="{{item.iconUrl}}" src="{{item.iconUrl}}" class="suspect-icon" mode="aspectFit"></image>
+          <text wx:else class="suspect-emoji">{{item.emoji}}</text>
+          <view class="suspect-info flex-1">
+            <text class="suspect-name">{{item.foodName}}</text>
+            <view class="suspect-tags">
+              <text class="suspect-tag tag-primary" wx:if="{{item.isFirstTime}}">首次</text>
+              <text class="suspect-tag tag-{{item.allergyRisk === '高' ? 'danger' : item.allergyRisk === '中' ? 'warning' : 'primary'}}">{{item.allergyRisk}}风险</text>
+              <text class="suspect-time">{{item.timeAgoText}}前食用</text>
+            </view>
+          </view>
+          <view class="suspect-confidence suspect-confidence--{{item.confidence === '高' ? 'high' : item.confidence === '中' ? 'mid' : 'low'}}">
+            {{item.confidence}}可疑
+          </view>
+        </view>
+      </view>
+
+      <view class="confirm-section">
+        <text class="confirm-title">确认是哪种食物过敏？</text>
+        <view class="confirm-btns">
+          <view
+            class="confirm-btn {{confirmedFoodId === item.foodId ? 'confirm-btn--selected' : ''}}"
+            wx:for="{{suspectList}}"
+            wx:key="foodId"
+            bindtap="confirmFood"
+            data-id="{{item.foodId}}"
+            data-name="{{item.foodName}}"
+          >{{item.foodName}}</view>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="suspect-panel__footer" wx:if="{{confirmedFoodId}}">
+      <button class="save-allergy-btn" bindtap="saveAllergyRecord">
+        确认并加入过敏黑名单
+      </button>
+    </view>
+  </view>
+
+  <!-- ===== 过敏历史时间线 ===== -->
+  <view class="history-section">
+    <text class="section-title" style="padding: 0 30rpx; margin-bottom: 16rpx;">过敏历史</text>
+
+    <view class="empty-state" wx:if="{{allergyHistory.length === 0}}">
+      <text class="empty-state__text">暂无过敏记录</text>
+    </view>
+
+    <view class="timeline" wx:else>
+      <view class="timeline-item" wx:for="{{allergyHistory}}" wx:key="_id">
+        <view class="timeline-dot"></view>
+        <view class="timeline-line" wx:if="{{index < allergyHistory.length - 1}}"></view>
+        <view class="timeline-content card">
+          <view class="timeline-header">
+            <text class="timeline-date">{{item.dateText}} {{item.timeText}}</text>
+            <view class="timeline-header__right">
+              <view class="tag tag-{{item.severity === '重度' ? 'danger' : item.severity === '中度' ? 'warning' : 'primary'}}">
+                {{item.severity}}
+              </view>
+              <view class="timeline-delete" catchtap="onDeleteAllergy" data-id="{{item._id}}">
+                <image src="/static/icons/trash.svg" class="timeline-delete__icon" mode="aspectFit"></image>
+              </view>
+            </view>
+          </view>
+          <text class="timeline-symptom">症状：{{item.symptomText}}</text>
+          <view class="timeline-food" wx:if="{{item.confirmedFood}}">
+            <image wx:if="{{item.confirmedFoodLocalIconPath}}" src="{{item.confirmedFoodLocalIconPath}}" class="timeline-food-icon" mode="aspectFit"></image>
+            <image wx:elif="{{item.confirmedFoodIconUrl}}" src="{{item.confirmedFoodIconUrl}}" class="timeline-food-icon" mode="aspectFit"></image>
+            <text wx:else class="timeline-food-emoji">{{item.confirmedFoodEmoji}}</text>
+            <text class="timeline-food-name">确认过敏：{{item.confirmedFoodName}}</text>
+          </view>
+          <text class="timeline-notes" wx:if="{{item.notes}}">{{item.notes}}</text>
+          <text class="timeline-retest" wx:if="{{item.retestDate}}">
+            复测提醒：{{item.retestDate}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ===== 底部按钮 ===== -->
+  <view class="bottom-btn-bar" wx:if="{{!showForm && !showSuspectModal}}">
+    <view class="bottom-btn bottom-btn--back" bindtap="goBack">
+      <text class="bottom-btn__text">返回</text>
+    </view>
+    <view class="bottom-btn bottom-btn--record" bindtap="openAllergyForm">
+      <text class="bottom-btn__icon">🔔</text>
+      <text class="bottom-btn__text bottom-btn__text--white">记录过敏症状</text>
+    </view>
+  </view>
+
+  </view>
+
+</view>
