@@ -294,7 +294,7 @@ App({
     if (!this.globalData.cloudReady || !wx.cloud) return;
     if (this.globalData.cloudSyncStatus === 'syncing') return;
     const now = Date.now();
-    if (!force && this._lastCloudSyncAt && now - this._lastCloudSyncAt < 15000) return;
+    if (!force && this._lastCloudSyncAt && now - this._lastCloudSyncAt < 90000) return;
     this._lastCloudSyncAt = now;
     this.syncFromCloud();
   },
@@ -303,7 +303,7 @@ App({
     if (this._realtimeSyncTimer) return;
     this._realtimeSyncTimer = setInterval(() => {
       this.syncFromCloudThrottled();
-    }, 15000);
+    }, 90000);
   },
 
   stopRealtimeSync() {
@@ -376,6 +376,8 @@ App({
    * 处理"已运行的小程序"被分享卡片唤起的场景
    */
   onShow(opts) {
+    // 切回前台立即同步一次,不等下一个 90s 周期(force=true 跳过节流)
+    this.syncFromCloudThrottled(true);
     this.startRealtimeSync();
     if (opts && opts.query && opts.query.joinCode) {
       this.globalData.pendingJoinCode = opts.query.joinCode;
