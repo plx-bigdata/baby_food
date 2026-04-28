@@ -79,6 +79,12 @@
         <text class="about-section__text about-section__text--copy" bindtap="copyAboutEmail">13026334211@163.com</text>
       </view>
 
+      <view class="about-section" wx:if="{{oaAvailable}}">
+        <text class="about-section__label">关注公众号</text>
+        <text class="about-section__text">关注「圆爸圆妈养娃记」获取育儿干货,反馈与合作也可以在公众号留言</text>
+        <official-account bindload="onOaLoad" binderror="onOaError"></official-account>
+      </view>
+
       <view class="about-section">
         <text class="about-section__label">协议</text>
         <view class="about-link-row">

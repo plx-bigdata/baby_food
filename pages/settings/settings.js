@@ -17,6 +17,8 @@ Page({
     legalTitle: '',
     legalIntro: '',
     legalSections: [],
+    // 公众号组件可用性(组件未关联或加载失败时隐藏整个 section,避免空白)
+    oaAvailable: true,
   },
 
   onShow() {
@@ -134,6 +136,13 @@ Page({
       data: '13026334211@163.com',
       success: () => wx.showToast({ title: '邮箱已复制', icon: 'success' }),
     });
+  },
+
+  // 公众号组件回调:加载失败(未关联/已关注/session 内已展示过)隐藏 section
+  onOaLoad() {},
+  onOaError(e) {
+    console.warn('[official-account] error', e && e.detail);
+    this.setData({ oaAvailable: false });
   },
   openUserAgreement() {
     this._openLegalModal({
