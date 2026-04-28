@@ -11,14 +11,15 @@ Page({
     // 关于弹窗
     showAbout: false,
     renderAbout: false,
+    // 联系我们弹窗
+    showContact: false,
+    renderContact: false,
     // 协议弹窗
     showLegalModal: false,
     renderLegalModal: false,
     legalTitle: '',
     legalIntro: '',
     legalSections: [],
-    // 公众号组件可用性(组件未关联或加载失败时隐藏整个 section,避免空白)
-    oaAvailable: true,
   },
 
   onShow() {
@@ -131,6 +132,25 @@ Page({
   onAboutDragEnd(e) {
     if (e.changedTouches[0].clientY - this._aboutDragY > 80) this.closeAbout();
   },
+
+  /**
+   * 联系我们弹窗
+   */
+  openContact() {
+    this.setData({ renderContact: true }, () => {
+      setTimeout(() => this.setData({ showContact: true }), 16);
+    });
+  },
+  closeContact() {
+    this.setData({ showContact: false });
+    setTimeout(() => this.setData({ renderContact: false }), 280);
+  },
+  onContactDragStart(e) {
+    this._contactDragY = e.touches[0].clientY;
+  },
+  onContactDragEnd(e) {
+    if (e.changedTouches[0].clientY - this._contactDragY > 80) this.closeContact();
+  },
   copyAboutEmail() {
     wx.setClipboardData({
       data: '13026334211@163.com',
@@ -138,12 +158,6 @@ Page({
     });
   },
 
-  // 公众号组件回调:加载失败(未关联/已关注/session 内已展示过)隐藏 section
-  onOaLoad() {},
-  onOaError(e) {
-    console.warn('[official-account] error', e && e.detail);
-    this.setData({ oaAvailable: false });
-  },
   openUserAgreement() {
     this._openLegalModal({
       title: '用户协议',

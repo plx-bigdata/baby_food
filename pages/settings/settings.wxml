@@ -48,6 +48,14 @@
         <text class="menu-item__text">关于</text>
         <text class="menu-item__arrow">›</text>
       </view>
+      <view class="menu-divider"></view>
+      <view class="menu-item" bindtap="openContact" hover-class="menu-item--hover">
+        <view class="menu-item__icon menu-item__icon--green">
+          <text>💌</text>
+        </view>
+        <text class="menu-item__text">联系我们</text>
+        <text class="menu-item__arrow">›</text>
+      </view>
     </view>
 
     <!-- ===== 关于弹窗 ===== -->
@@ -75,17 +83,6 @@
       </view>
 
       <view class="about-section">
-        <text class="about-section__label">联系邮箱</text>
-        <text class="about-section__text about-section__text--copy" bindtap="copyAboutEmail">13026334211@163.com</text>
-      </view>
-
-      <view class="about-section" wx:if="{{oaAvailable}}">
-        <text class="about-section__label">关注公众号</text>
-        <text class="about-section__text">关注「圆爸圆妈养娃记」获取育儿干货,反馈与合作也可以在公众号留言</text>
-        <official-account bindload="onOaLoad" binderror="onOaError"></official-account>
-      </view>
-
-      <view class="about-section">
         <text class="about-section__label">协议</text>
         <view class="about-link-row">
           <text class="about-link" bindtap="openUserAgreement">《用户协议》</text>
@@ -95,6 +92,41 @@
 
       <view class="about-section about-section--disclaimer">
         <text class="about-section__disclaimer">本工具仅供家庭辅食记录,不能替代医生诊断。如宝宝出现过敏反应,请及时就医。</text>
+      </view>
+    </view>
+
+    <!-- ===== 联系我们弹窗(复用 about 样式) ===== -->
+    <view class="about-mask {{showContact ? 'about-mask--show' : ''}}" wx:if="{{renderContact}}" bindtap="closeContact"></view>
+    <view
+      class="about-panel {{showContact ? 'about-panel--show' : ''}}"
+      wx:if="{{renderContact}}"
+      catchtouchmove="noop"
+      bindtouchstart="onContactDragStart"
+      bindtouchend="onContactDragEnd"
+    >
+      <view class="about-panel__handle"></view>
+      <view class="about-panel__header">
+        <text class="about-panel__title">联系我们</text>
+      </view>
+
+      <view class="about-section">
+        <text class="about-section__label">公众号</text>
+        <text class="about-section__text">长按识别下方二维码,关注「圆爸圆妈养娃记」获取育儿干货,反馈与合作也可以在公众号留言</text>
+        <image
+          class="contact-qrcode"
+          src="/static/qrcode/yuanba.jpg"
+          mode="widthFix"
+          show-menu-by-longpress="{{true}}"
+        />
+      </view>
+
+      <view class="about-section">
+        <text class="about-section__label">联系邮箱</text>
+        <text class="about-section__text about-section__text--copy" bindtap="copyAboutEmail">13026334211@163.com</text>
+      </view>
+
+      <view class="about-section about-section--disclaimer">
+        <text class="about-section__disclaimer">如有产品建议、合作或问题反馈,欢迎通过以上方式联系我们。</text>
       </view>
     </view>
 
