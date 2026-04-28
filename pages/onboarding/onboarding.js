@@ -4,6 +4,7 @@ const app = getApp();
 const foodLib = require('../../data/food-library');
 const planCats = require('../../data/plan-categories');
 const dateUtil = require('../../utils/date');
+const { chooseAndUploadAvatar } = require('../../utils/avatar-uploader');
 const SHEET_ANIMATION_DURATION = 280;
 
 Page({
@@ -322,15 +323,9 @@ Page({
   onBirthdayChange(e) {
     this.setData({ 'babyForm.birthday': e.detail.value });
   },
-  chooseBabyAvatar() {
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album', 'camera'],
-      success: res => {
-        this.setData({ 'babyForm.avatarUrl': res.tempFiles[0].tempFilePath });
-      },
-    });
+  async chooseBabyAvatar() {
+    const fileID = await chooseAndUploadAvatar();
+    if (fileID) this.setData({ 'babyForm.avatarUrl': fileID });
   },
   selectGender(e) {
     this.setData({ 'babyForm.gender': e.currentTarget.dataset.gender });

@@ -22,3 +22,6 @@ output/
 _preview*/
 _*.log
 .claude/settings.local.json
+
+# 项目记忆(本机/iCloud 维护,不进 git)
+memory/

@@ -5,6 +5,7 @@ const dateUtil = require('../../utils/date');
 const planEngine = require('../../utils/plan-engine');
 const suggestionEngine = require('../../utils/suggestion-engine');
 const planCategories = require('../../data/plan-categories');
+const { chooseAndUploadAvatar } = require('../../utils/avatar-uploader');
 const SHEET_ANIMATION_DURATION = 280;
 
 Page({
@@ -576,16 +577,9 @@ Page({
   /**
    * 选择宝宝头像
    */
-  chooseBabyAvatar() {
-    wx.chooseMedia({
-      count: 1,
-      mediaType: ['image'],
-      sourceType: ['album', 'camera'],
-      success: (res) => {
-        const tempFilePath = res.tempFiles[0].tempFilePath;
-        this.setData({ 'babyForm.avatarUrl': tempFilePath });
-      },
-    });
+  async chooseBabyAvatar() {
+    const fileID = await chooseAndUploadAvatar();
+    if (fileID) this.setData({ 'babyForm.avatarUrl': fileID });
   },
 
   /**
