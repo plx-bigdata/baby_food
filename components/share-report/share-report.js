@@ -214,28 +214,38 @@ Component({
     },
 
     _doSaveImage(filePath, onSuccess) {
-      wx.getSetting({
-        success: res => {
-          if (res.authSetting['scope.writePhotosAlbum'] === false) {
+      // 直接调 saveImageToPhotosAlbum,新版微信会自动弹权限框
+      // 失败时根据 errMsg 区分:权限拒绝 → 引导去设置;其他 → toast 提示
+      wx.saveImageToPhotosAlbum({
+        filePath,
+        success: onSuccess,
+        fail: (err) => {
+          const msg = (err && err.errMsg) || '';
+          if (/deny|denied|auth/i.test(msg)) {
             wx.showModal({
               title: '需要相册权限',
-              content: '请在设置中允许保存到相册',
+              content: '保存图片到相册,需要先在「设置」中允许相册权限',
               confirmText: '去设置',
-              success: m => { if (m.confirm) wx.openSetting(); },
+              cancelText: '取消',
+              success: m => {
+                if (!m.confirm) return;
+                wx.openSetting({
+                  success: settingRes => {
+                    // 用户从设置授权回来,自动重试一次
+                    if (settingRes.authSetting && settingRes.authSetting['scope.writePhotosAlbum']) {
+                      wx.saveImageToPhotosAlbum({
+                        filePath,
+                        success: onSuccess,
+                        fail: () => wx.showToast({ title: '保存失败,请稍后重试', icon: 'none' }),
+                      });
+                    }
+                  },
+                });
+              },
             });
-            return;
+          } else {
+            wx.showToast({ title: '保存失败,请稍后重试', icon: 'none' });
           }
-          wx.authorize({
-            scope: 'scope.writePhotosAlbum',
-            success: () => {
-              wx.saveImageToPhotosAlbum({
-                filePath,
-                success: onSuccess,
-                fail: () => wx.showToast({ title: '保存失败', icon: 'none' }),
-              });
-            },
-            fail: () => wx.showToast({ title: '需要相册权限', icon: 'none' }),
-          });
         },
       });
     },
